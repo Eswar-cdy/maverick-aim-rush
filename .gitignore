@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+
+# Python/virtualenv
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django
+*.log
+media/
+staticfiles/
+db.sqlite3
+
+# Node (if added later)
+node_modules/
+
+# Env/secrets
+.env
+*.env

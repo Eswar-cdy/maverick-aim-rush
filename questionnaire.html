@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/style.css">
+	<title>Maverick Aim Rush - Personalize Your Plan</title>
+</head>
+
+<body class="questionnaire-page">
+	<div class="wrapper">
+		<header class="header">
+			<div class="header__container">
+				<a href="index.html" class="header__logo"><img src="Images/LOGO.png" alt="logo"></a>
+				<nav class="header__menu menu">
+					<div class="menu__body">
+						<ul class="menu__list">
+							<li class="menu__item"><a href="index.html" class="menu__link">Dashboard</a></li>
+							<li class="menu__item"><a href="about.html" class="menu__link">Workout Tracker</a></li>
+							<li class="menu__item"><a href="services.html" class="menu__link">Nutrition Log</a></li>
+							<li class="menu__item"><a href="contact.html" class="menu__link">Progress</a></li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+		</header>
+		<main class="main">
+			<section class="main__questionnaire questionnaire">
+				<div class="questionnaire__container">
+					<h1 class="questionnaire__title">Personalize Your Fitness Plan</h1>
+					<p class="questionnaire__subtitle">Answer a few questions to generate a workout plan tailored to you.</p>
+					
+					<form id="questionnaire-form" class="questionnaire-form">
+						<!-- Step 1: Fitness Goal -->
+						<div class="form-step active-step" id="step-1">
+							<h3 class="form-step__title">What is your primary fitness goal?</h3>
+							<div class="form-step__options">
+								<label><input type="radio" name="fitness_goal" value="weight_loss" checked><span>Weight Loss</span></label>
+								<label><input type="radio" name="fitness_goal" value="hypertrophy"><span>Muscle Gain (Hypertrophy)</span></label>
+								<label><input type="radio" name="fitness_goal" value="endurance"><span>Endurance</span></label>
+							</div>
+							<button type="button" class="next-step">Next</button>
+						</div>
+
+						<!-- Step 2: Fitness Level -->
+						<div class="form-step" id="step-2">
+							<h3 class="form-step__title">What is your current fitness level?</h3>
+							<div class="form-step__options">
+								<label><input type="radio" name="fitness_level" value="beginner" checked><span>Beginner</span></label>
+								<label><input type="radio" name="fitness_level" value="intermediate"><span>Intermediate</span></label>
+								<label><input type="radio" name="fitness_level" value="advanced"><span>Advanced</span></label>
+							</div>
+							<button type="button" class="prev-step">Back</button>
+							<button type="button" class="next-step">Next</button>
+						</div>
+
+						<!-- Step 3: Days Per Week -->
+						<div class="form-step" id="step-3">
+							<h3 class="form-step__title">How many days per week can you work out?</h3>
+							<div class="form-step__options">
+								<label><input type="radio" name="days_per_week" value="2" checked><span>2 days</span></label>
+								<label><input type="radio" name="days_per_week" value="3"><span>3 days</span></label>
+								<label><input type="radio" name="days_per_week" value="4"><span>4 days</span></label>
+								<label><input type="radio" name="days_per_week" value="5"><span>5 days</span></label>
+							</div>
+							<button type="button" class="prev-step">Back</button>
+							<button type="button" class="next-step">Next</button>
+						</div>
+
+						<!-- Step 4: Equipment Access -->
+						<div class="form-step" id="step-4">
+							<h3 class="form-step__title">What equipment do you have access to?</h3>
+							<div class="form-step__options">
+								<label><input type="radio" name="equipment_access" value="none" checked><span>None (Bodyweight)</span></label>
+								<label><input type="radio" name="equipment_access" value="home_gym"><span>Home Gym (Dumbbells, Bands)</span></label>
+								<label><input type="radio" name="equipment_access" value="full_gym"><span>Full Gym Access</span></label>
+							</div>
+							<button type="button" class="prev-step">Back</button>
+							<button type="submit">Generate My Plan</button>
+						</div>
+					</form>
+					<div id="generation-status"></div>
+				</div>
+			</section>
+		</main>
+		<footer class="footer">
+			<div class="footer__container">
+				<!-- Your existing footer content -->
+			</div>
+		</footer>
+	</div>
+	<script src="js/questionnaire.js"></script>
+</body>
+
+</html>
