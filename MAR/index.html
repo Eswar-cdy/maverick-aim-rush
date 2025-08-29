@@ -1,0 +1,344 @@
+<!-- Image paths updated to use MAR/images/ consolidation on 2024-08-25 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <title>Maverick Aim Rush - Fitness Dashboard</title>
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <div class="wrapper">
+    <header class="header">
+      <div class="header__container">
+        <a href="index.html" class="header__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.75rem;vertical-align:middle;" /></a>
+        <div class="header__navigation">
+          <div class="header__menu menu">
+            <nav class="menu__body">
+              <ul class="menu__list">
+                <li class="menu__item"><a href="index.html" class="menu__link">Dashboard</a></li>
+                <li class="menu__item"><a href="about.html" class="menu__link">Workout Tracker</a></li>
+                <li class="menu__item"><a href="services.html" class="menu__link">Nutrition Log</a></li>
+                <li class="menu__item"><a href="contact.html" class="menu__link">Progress</a></li>
+              </ul>
+              <a href="about.html" class="actions-header__button">Log Workout</a>
+            </nav>
+          </div>
+          <div class="header__actions actions-header">
+            <!-- User Status Display -->
+            <div id="user-status" style="display: none;">
+              <span id="welcome-message"></span>
+              <button id="logout-button" class="actions-header__button actions-header__button_logout">Logout</button>
+            </div>
+            <button type="button" class="menu__icon icon-menu"><span></span></button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="page">
+      <!-- Authentication Section -->
+      <section id="auth-section" class="page__auth auth-section">
+        <div class="auth-section__container">
+          <!-- Login Form -->
+          <div class="auth-form">
+            <h2 class="auth-form__title title">Login</h2>
+            <form id="login-form">
+              <div class="form-group">
+                <label for="login-username">Username</label>
+                <input type="text" id="login-username" required>
+              </div>
+              <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" required>
+              </div>
+              <button type="submit" class="auth-form__button button">Login</button>
+              <p id="login-message" class="auth-message"></p>
+            </form>
+          </div>
+          <!-- Registration Form -->
+          <div class="auth-form">
+            <h2 class="auth-form__title title">Register</h2>
+            <form id="register-form">
+              <div class="form-group">
+                <label for="register-username">Username</label>
+                <input type="text" id="register-username" required>
+              </div>
+              <div class="form-group">
+                <label for="register-email">Email</label>
+                <input type="email" id="register-email">
+              </div>
+              <div class="form-group">
+                <label for="register-password">Password</label>
+                <input type="password" id="register-password" required>
+              </div>
+              <button type="submit" class="auth-form__button button">Register</button>
+              <p id="register-message" class="auth-message"></p>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Content - Initially hidden if not logged in -->
+      <div id="main-content" style="display: none;">
+        <section class="page__main main">
+          <div class="main__container">
+            <h3 class="main__caption">Your Fitness Journey</h3>
+            <h1 class="main__title">Dashboard</h1>
+            <div class="main__text">
+              Track your workouts, monitor nutrition, and achieve your fitness goals with comprehensive progress tracking.
+            </div>
+            <a href="about.html" class="main__button">Log Today's Workout</a>
+          </div>
+        </section>
+        
+        <!-- START: Recent Workouts Section -->
+        <section class="page__workout-history workout-history" style="padding-top: 2rem; padding-bottom: 2rem; background: #f8f9fa;">
+          <div class="workout-history__container">
+            <h2 class="workout-history__title title" style="font-size: 2.5rem;">Recent Workouts</h2>
+            <div class="workout-history__list" id="workout-history">
+              <!-- Workout history will be loaded here -->
+              <p>Loading recent workouts...</p>
+            </div>
+          </div>
+        </section>
+        <!-- END: Recent Workouts Section -->
+
+        <section class="page__about about">
+          <div class="about__container">
+            <div class="about__image"><img src="images/Home/Dashboard- Hero.jpg" alt="Fitness Progress" /></div>
+            <div class="about__content">
+              <h2 class="about__title title">Today's Summary</h2>
+              <div class="about__text">
+                <p>
+                  <strong>Calories Consumed:</strong> <span id="dashboard-calories">0</span> / 2000 | <strong>Workouts:</strong> 1 | <strong>Steps:</strong> 8,240
+                </p>
+                <p>
+                  <strong>Meals Completed:</strong> <span id="dashboard-meals">0</span> / 5 | <strong>Weight:</strong> 165 lbs | <strong>Nutrition Goal:</strong> <span id="dashboard-nutrition-progress">0</span>% Complete
+                </p>
+              </div>
+              <a href="contact.html" class="about__button button">View Full Progress</a>
+            </div>
+          </div>
+        </section>
+        <section class="page__services services">
+          <div class="services__container">
+            <h2 class="services__title title">Quick Actions</h2>
+            <div class="services__row">
+              <div class="services__column">
+                <div class="services__item item-services">
+                  <a class="item-services__top" href="about.html">
+                    <div class="item-services__image">
+                      <img src="images/Home/home-1.png" alt="Workout Tracking" />
+                    </div>
+                    <h3 class="item-services__title">Log Workout</h3>
+                  </a>
+                  <div class="item-services__text">
+                    Record your exercises, sets, reps, and track your performance over time.
+                  </div>
+                  <a href="about.html" class="item-services__button button">Start Workout</a>
+                </div>
+              </div>
+              <div class="services__column">
+                <div class="services__item item-services">
+                  <a class="item-services__top" href="services.html">
+                    <div class="item-services__image">
+                      <img src="images/Home/Dashboard-log meal.jpg" alt="Nutrition Tracking" />
+                    </div>
+                    <h3 class="item-services__title">Log Meal</h3>
+                  </a>
+                  <div class="item-services__text">
+                    Track your daily nutrition, calories, and macronutrients for optimal results.
+                  </div>
+                  <a href="services.html" class="item-services__button button">Add Meal</a>
+                </div>
+              </div>
+              <div class="services__column">
+                <div class="services__item item-services">
+                  <a class="item-services__top" href="about.html#weekly-schedule">
+                    <div class="item-services__image">
+                      <img src="images/Home/home-2.png" alt="Weekly Schedule" />
+                    </div>
+                    <h3 class="item-services__title">View Weekly Plan</h3>
+                  </a>
+                  <div class="item-services__text">
+                    Access your 7-day workout program and log your daily progress.
+                  </div>
+                  <a href="about.html#weekly-schedule" class="item-services__button button">View Plan</a>
+                </div>
+              </div>
+              <div class="services__column">
+                <div class="services__item item-services">
+                  <a class="item-services__top" href="contact.html">
+                    <div class="item-services__image">
+                      <img src="images/Home/home-3.png" alt="Progress Tracking" />
+                    </div>
+                    <h3 class="item-services__title">Update Progress</h3>
+                  </a>
+                  <div class="item-services__text">
+                    Log measurements, weight, and body composition to monitor your transformation.
+                  </div>
+                  <a href="contact.html" class="item-services__button button">Log Progress</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="page__testimonial testimonial">
+          <div class="testimonial__container">
+            <h3 class="testiomonial__caption">Weekly Achievement</h3>
+            <h2 class="testimonial__title title">
+              Congratulations! You've completed 5 workouts this week and are on track to reach your monthly goal.
+            </h2>
+            <div class="testimonial__item item-testimonial">
+              <div class="item-testimonial__image">
+                <img src="images/Home/home-4.png" alt="Achievement Badge" />
+              </div>
+              <h4 class="item-testimonial__title">Weekly Streak</h4>
+              <div class="item-testimonial__caption">5 Days Active</div>
+            </div>
+          </div>
+        </section>
+        <section class="page__outro outro outro_home">
+          <div class="outro__container">
+            <h2 class="outro__title title">Ready to Crush Your Goals?</h2>
+            <div class="outro__text">
+              Stay consistent, track your progress, and watch your fitness transformation unfold. Every workout counts toward your ultimate goal.
+            </div>
+            <a href="about.html" class="outro__button button">Start Today's Workout</a>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer class="footer">
+      <div class="footer__container">
+        <a href="contact.html" class="footer__policy">Privacy Policy – Terms & Conditions</a>
+        <a href="index.html" class="footer__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.2rem;vertical-align:middle;" /></a>
+        <div class="footer__copyright">Copyright © 2025 Maverick Aim Rush – All Rights Reserved</div>
+      </div>
+    </footer>
+  </div>
+  <script src="js/script.js"></script>
+  <script src="js/api.js?v=2"></script>
+  <script src="js/workout.js"></script>
+  <script>
+    // Update dashboard with nutrition data from localStorage (will be replaced later)
+    function updateDashboardFromLocalStorage() {
+      const nutritionData = localStorage.getItem('nutritionData');
+      if (nutritionData) {
+        try {
+          const data = JSON.parse(nutritionData);
+          const today = new Date().toDateString();
+          const savedDate = new Date(data.lastUpdated).toDateString();
+          
+          if (today === savedDate) {
+            if (document.getElementById('dashboard-calories')) {
+              document.getElementById('dashboard-calories').textContent = Math.round(data.consumed.calories || 0);
+            }
+            if (document.getElementById('dashboard-meals')) {
+              const completedMeals = Object.values(data.mealPlan || {}).filter(meal => meal.completed).length;
+              document.getElementById('dashboard-meals').textContent = completedMeals;
+            }
+            if (document.getElementById('dashboard-nutrition-progress')) {
+              const calorieProgress = Math.min(((data.consumed.calories || 0) / 2000) * 100, 100);
+              document.getElementById('dashboard-nutrition-progress').textContent = Math.round(calorieProgress);
+            }
+          }
+        } catch (error) {
+          console.error('Error loading nutrition data for dashboard:', error);
+        }
+      }
+    }
+
+    // --- NEW AUTHENTICATION LOGIC ---
+    document.addEventListener('DOMContentLoaded', () => {
+      const authSection = document.getElementById('auth-section');
+      const mainContent = document.getElementById('main-content');
+      const userStatus = document.getElementById('user-status');
+      const welcomeMessage = document.getElementById('welcome-message');
+      
+      const loginForm = document.getElementById('login-form');
+      const registerForm = document.getElementById('register-form');
+      const logoutButton = document.getElementById('logout-button');
+      
+      const loginMessage = document.getElementById('login-message');
+      const registerMessage = document.getElementById('register-message');
+
+      function checkLoginState() {
+        const token = getAccessToken();
+        if (token) {
+          // User is logged in
+          authSection.style.display = 'none';
+          mainContent.style.display = 'block';
+          userStatus.style.display = 'flex';
+          // You would typically decode the JWT to get the username.
+          // For now, we'll just show a generic welcome.
+          welcomeMessage.textContent = 'Welcome!'; 
+          updateDashboardFromLocalStorage(); // Load dashboard data
+          
+          // Also load workout history on dashboard
+          if (typeof workoutTracker !== 'undefined' && workoutTracker.loadBackendHistory) {
+            workoutTracker.loadBackendHistory();
+          }
+
+        } else {
+          // User is logged out
+          authSection.style.display = 'block';
+          mainContent.style.display = 'none';
+          userStatus.style.display = 'none';
+        }
+      }
+
+      // --- Event Listeners ---
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        loginMessage.textContent = '';
+        const username = document.getElementById('login-username').value;
+        const password = document.getElementById('login-password').value;
+        
+        const success = await login(username, password);
+        
+        if (success) {
+          checkLoginState();
+        } else {
+          loginMessage.textContent = 'Login failed. Please check your credentials.';
+        }
+      });
+
+      registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        registerMessage.textContent = '';
+        const username = document.getElementById('register-username').value;
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+
+        try {
+          const response = await register(username, password, email);
+          if (response && response.id) {
+            registerMessage.textContent = 'Registration successful! Please log in.';
+            registerForm.reset();
+          } else {
+            // Display server errors if available
+            const errorText = Object.values(response).join(' ');
+            registerMessage.textContent = `Registration failed: ${errorText}`;
+          }
+        } catch (error) {
+          registerMessage.textContent = 'Registration failed. Please try again.';
+        }
+      });
+      
+      logoutButton.addEventListener('click', () => {
+        logout();
+        checkLoginState();
+      });
+
+      // Initial check when the page loads
+      checkLoginState();
+    });
+  </script>
+</body>
+
+</html>

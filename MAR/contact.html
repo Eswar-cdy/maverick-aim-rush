@@ -1,0 +1,185 @@
+<!-- Image paths updated to use MAR/images/ consolidation on 2024-08-25 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <title>Maverick Aim Rush - Progress Tracking</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <div class="wrapper">
+    <header class="header">
+      <div class="header__container">
+        <a href="index.html" class="header__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.75rem;vertical-align:middle;" /></a>
+        <div class="header__navigation">
+          <div class="header__menu menu">
+            <nav class="menu__body">
+              <ul class="menu__list">
+                <li class="menu__item"><a href="index.html" class="menu__link">Dashboard</a></li>
+                <li class="menu__item"><a href="about.html" class="menu__link">Workout Tracker</a></li>
+                <li class="menu__item"><a href="services.html" class="menu__link">Nutrition Log</a></li>
+                <li class="menu__item"><a href="contact.html" class="menu__link">Progress</a></li>
+              </ul>
+              <a href="about.html" class="actions-header__button">Log Workout</a>
+            </nav>
+          </div>
+          <div class="header__actions actions-header">
+            <button type="button" class="menu__icon icon-menu"><span></span></button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="page">
+      <section class="page__main main main_contact main_pages">
+        <div class="main__container main__container_pages">
+          <h1 class="main__title">Progress Tracking</h1>
+          <div class="main__text main__text_pages">
+            Monitor your body measurements, track weight changes, and visualize your fitness transformation over time.
+          </div>
+        </div>
+      </section>
+      <section class="page__contact contact">
+        <div class="contact__container">
+          <div class="contact__contacts">
+            <h2 class="contact__title">Your Progress Summary</h2>
+            <div class="contact__connect connect-contact">
+              <div class="connect-contact__item">
+                <div class="connect-contact__icon"><img src="images/contact/phone.svg" alt="Sessions" /></div>
+                <div class="connect-contact__content">
+                  <h3 class="connect-contant__type">Sessions This Week</h3>
+                  <div class="connect-contact__label" id="kpi-sessions-week">—</div>
+                </div>
+              </div>
+              <div class="connect-contact__item">
+                <div class="connect-contact__icon"><img src="images/contact/email.svg" alt="Volume" /></div>
+                <div class="connect-contact__content">
+                  <h3 class="connect-contant__type">Total Volume (Last 7 Days)</h3>
+                  <div class="connect-contact__label" id="kpi-volume-7d">—</div>
+                </div>
+              </div>
+              <div class="connect-contact__item">
+                <div class="connect-contact__icon"><img src="images/contact/address.svg" alt="Top PR" /></div>
+                <div class="connect-contact__content">
+                  <h3 class="connect-contant__type">Top Personal Record</h3>
+                  <div class="connect-contact__label" id="kpi-top-pr">—</div>
+                </div>
+              </div>
+            </div>
+            <div class="contact__links">
+              <a href="#" class="contact__link"><img src="images/contact/fb.svg" alt="Share" /></a>
+              <a href="#" class="contact__link"><img src="images/contact/tw.svg" alt="Share" /></a>
+              <a href="#" class="contact__link"><img src="images/contact/ig.svg" alt="Share" /></a>
+              <a href="#" class="contact__link"><img src="images/contact/youtube.svg" alt="Share" /></a>
+              <a href="#" class="contact__link"><img src="images/contact/in.svg" alt="Share" /></a>
+            </div>
+          </div>
+          <div class="contact__info">
+            <h2 class="contact__title">Goals & Insights</h2>
+            <div class="contact__text">
+              <p id="insight-trend">Keep logging workouts to see trends here.</p>
+              <p id="insight-best">Your best lift will appear here after a few sessions.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="page__map map">
+        <div class="progress-lists" style="max-width:72rem;margin:0 auto;padding:1rem;display:grid;gap:2rem;grid-template-columns:1fr;">
+          <div class="progress-controls" style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+            <button id="range-7" class="button" style="padding:.4rem .8rem;">Last 7 days</button>
+            <button id="range-30" class="button" style="padding:.4rem .8rem;">Last 30 days</button>
+            <button id="range-90" class="button" style="padding:.4rem .8rem;">Last 90 days</button>
+            <button id="range-all" class="button" style="padding:.4rem .8rem;">All</button>
+            <div style="flex:1"></div>
+            <button id="export-csv" class="button" style="background:#10b981;padding:.4rem .8rem;">Export CSV</button>
+          </div>
+          <div>
+            <h3 class="title" style="font-size:1.6rem;">Recent Sessions</h3>
+            <div id="list-sessions" class="list-card"></div>
+          </div>
+          <div>
+            <h3 class="title" style="font-size:1.6rem;">Personal Records</h3>
+            <div id="list-prs" class="list-card"></div>
+          </div>
+          <div>
+            <h3 class="title" style="font-size:1.6rem;">Volume Trend</h3>
+            <div id="list-volume" class="list-card"></div>
+          </div>
+          <div>
+            <h3 class="title" style="font-size:1.6rem;">Log Body Measurements</h3>
+            <form id="form-measurement" style="display:grid;gap:.5rem;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));align-items:end;">
+              <div><label>Date<br><input type="date" id="m-date"></label></div>
+              <div><label>Weight (kg)<br><input type="number" step="0.1" id="m-weight"></label></div>
+              <div><label>Body Fat (%)<br><input type="number" step="0.1" id="m-bf"></label></div>
+              <div><label>Height (cm)<br><input type="number" step="0.1" id="m-height"></label></div>
+              <div><label>Neck (cm)<br><input type="number" step="0.1" id="m-neck"></label></div>
+              <div><label>Chest (cm)<br><input type="number" step="0.1" id="m-chest"></label></div>
+              <div><label>Shoulder (cm)<br><input type="number" step="0.1" id="m-shoulder"></label></div>
+              <div><label>L Bicep (cm)<br><input type="number" step="0.1" id="m-lb"></label></div>
+              <div><label>R Bicep (cm)<br><input type="number" step="0.1" id="m-rb"></label></div>
+              <div><label>L Forearm (cm)<br><input type="number" step="0.1" id="m-lf"></label></div>
+              <div><label>R Forearm (cm)<br><input type="number" step="0.1" id="m-rf"></label></div>
+              <div><label>Waist (cm)<br><input type="number" step="0.1" id="m-waist"></label></div>
+              <div><label>Hips (cm)<br><input type="number" step="0.1" id="m-hips"></label></div>
+              <div><label>L Thigh (cm)<br><input type="number" step="0.1" id="m-lt"></label></div>
+              <div><label>R Thigh (cm)<br><input type="number" step="0.1" id="m-rt"></label></div>
+              <div><label>L Calf (cm)<br><input type="number" step="0.1" id="m-lc"></label></div>
+              <div><label>R Calf (cm)<br><input type="number" step="0.1" id="m-rc"></label></div>
+              <div><label>Skinfold Sum (mm)<br><input type="number" step="0.1" id="m-skin"></label></div>
+              <div style="grid-column:1/-1;display:flex;gap:.5rem;align-items:center;">
+                <input type="url" id="m-photo" placeholder="Photo URL (optional)" style="flex:1;">
+                <button id="m-save" type="button" class="button">Save Measurement</button>
+              </div>
+            </form>
+            <div id="list-measurements" class="list-card" style="margin-top:1rem;"></div>
+          </div>
+          <div>
+            <h3 class="title" style="font-size:1.6rem;">Goals</h3>
+            <form id="form-goal" style="display:grid;gap:.5rem;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));align-items:end;">
+              <div><label>Type<br>
+                <select id="g-type">
+                  <option value="weight_loss">Weight Loss</option>
+                  <option value="muscle_gain">Muscle Gain</option>
+                  <option value="performance">Performance</option>
+                </select>
+              </label></div>
+              <div><label>Metric<br>
+                <select id="g-metric">
+                  <option value="weight_kg">Body Weight (kg)</option>
+                  <option value="body_fat">Body Fat (%)</option>
+                  <option value="lift_kg">Lift (kg)</option>
+                </select>
+              </label></div>
+              <div id="g-ex-wrap"><label>Exercise (if Lift)<br>
+                <input list="ex-options" id="g-ex-name" placeholder="Start typing exercise name">
+                <datalist id="ex-options"></datalist>
+                <input type="hidden" id="g-ex">
+              </label></div>
+              <div><label>Target<br><input type="number" step="0.1" id="g-target"></label></div>
+              <div><label>Notes<br><input type="text" id="g-notes"></label></div>
+              <div><label>Start<br><input type="date" id="g-start"></label></div>
+              <div><label>End<br><input type="date" id="g-end"></label></div>
+              <div style="grid-column:1/-1"><button id="g-save" type="button" class="button">Save Goal</button></div>
+            </form>
+            <div id="list-goals" class="list-card" style="margin-top:1rem;"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="footer__container">
+        <a href="contact.html" class="footer__policy">Privacy Policy – Terms & Conditions</a>
+        <a href="index.html" class="footer__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.2rem;vertical-align:middle;" /></a>
+        <div class="footer__copyright">Copyright © 2025 Maverick Aim Rush – All Rights Reserved</div>
+      </div>
+    </footer>
+  </div>
+  <script src="js/script.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/progress.js"></script>
+</body>
+
+</html>

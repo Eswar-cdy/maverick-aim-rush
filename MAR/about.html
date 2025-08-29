@@ -1,0 +1,253 @@
+<!-- Image paths updated to use MAR/images/ consolidation on 2024-08-25 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <title>Maverick Aim Rush - Workout Tracker</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <div class="wrapper">
+    <header class="header">
+      <div class="header__container">
+        <a href="index.html" class="header__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.75rem;vertical-align:middle;" /></a>
+        <div class="header__navigation">
+          <div class="header__menu menu">
+            <nav class="menu__body">
+              <ul class="menu__list">
+                <li class="menu__item"><a href="index.html" class="menu__link">Dashboard</a></li>
+                <li class="menu__item"><a href="about.html" class="menu__link">Workout Tracker</a></li>
+                <li class="menu__item"><a href="services.html" class="menu__link">Nutrition Log</a></li>
+                <li class="menu__item"><a href="contact.html" class="menu__link">Progress</a></li>
+              </ul>
+              <a href="about.html" class="actions-header__button">Log Workout</a>
+            </nav>
+          </div>
+          <div class="header__actions actions-header">
+            <button type="button" class="menu__icon icon-menu"><span></span></button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="page">
+      <section class="page__main main main_about main_pages">
+        <div class="main__container main__container_pages">
+          <h1 class="main__title">Workout Tracker</h1>
+          <div class="main__text main__text_pages">
+            Log your exercises, track performance, and monitor your fitness progress with detailed workout analytics.
+          </div>
+        </div>
+      </section>
+      <!-- Workout Overview -->
+      <section class="page__workout-overview workout-overview">
+        <div class="workout-overview__container">
+          <h2 class="workout-overview__title title">Today's Workout Progress</h2>
+          <div class="workout-overview__stats">
+            <div class="workout-stat">
+              <div class="workout-stat__label">Calories Burned</div>
+              <div class="workout-stat__value" id="calories-burned">0</div>
+              <div class="workout-stat__progress">
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" id="calories-progress" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="workout-stat">
+              <div class="workout-stat__label">Workout Duration</div>
+              <div class="workout-stat__value" id="workout-duration">0 min</div>
+              <div class="workout-stat__progress">
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" id="duration-progress" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="workout-stat">
+              <div class="workout-stat__label">Exercises</div>
+              <div class="workout-stat__value" id="exercises-completed">0</div>
+              <div class="workout-stat__progress">
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" id="exercises-progress" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="workout-stat">
+              <div class="workout-stat__label">Personal Records</div>
+              <div class="workout-stat__value" id="personal-records">0</div>
+              <div class="workout-stat__progress">
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" id="records-progress" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Exercise Categories -->
+      <section class="page__exercise-categories exercise-categories">
+        <div class="exercise-categories__container">
+          <h2 class="exercise-categories__title title">Exercise Categories</h2>
+          <div class="exercise-categories__grid">
+            <div class="exercise-category" data-category="strength">
+              <div class="exercise-category__icon">💪</div>
+              <h3 class="exercise-category__title">Strength Training</h3>
+              <p class="exercise-category__description">Build muscle and increase strength</p>
+              <button class="exercise-category__button" onclick="showExercises('strength')">View Exercises</button>
+            </div>
+            <div class="exercise-category" data-category="cardio">
+              <div class="exercise-category__icon">🏃</div>
+              <h3 class="exercise-category__title">Cardio</h3>
+              <p class="exercise-category__description">Improve endurance and burn calories</p>
+              <button class="exercise-category__button" onclick="showExercises('cardio')">View Exercises</button>
+            </div>
+            <div class="exercise-category" data-category="flexibility">
+              <div class="exercise-category__icon">🧘</div>
+              <h3 class="exercise-category__title">Flexibility</h3>
+              <p class="exercise-category__description">Improve mobility and prevent injury</p>
+              <button class="exercise-category__button" onclick="showExercises('flexibility')">View Exercises</button>
+            </div>
+            <div class="exercise-category" data-category="bodyweight">
+              <div class="exercise-category__icon">🏋️</div>
+              <h3 class="exercise-category__title">Bodyweight</h3>
+              <p class="exercise-category__description">No equipment needed workouts</p>
+              <button class="exercise-category__button" onclick="showExercises('bodyweight')">View Exercises</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Exercise List -->
+      <section class="page__exercise-list exercise-list" id="exercise-list" style="display: none;">
+        <div class="exercise-list__container">
+          <div class="exercise-list__header">
+            <h2 class="exercise-list__title title" id="exercise-list-title">Exercises</h2>
+            <button class="exercise-list__back" onclick="hideExercises()">← Back to Categories</button>
+          </div>
+          <div class="exercise-filters" id="exercise-filters" style="margin: 0.5rem 0 1rem; display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+            <input id="filter-search" type="text" placeholder="Search (e.g., bench)" />
+            <select id="filter-difficulty">
+              <option value="">All difficulties</option>
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+            <select id="filter-goal">
+              <option value="">All goals</option>
+              <option value="weight_loss">Weight Loss</option>
+              <option value="muscle_gain">Muscle Gain</option>
+              <option value="performance">Performance</option>
+              <option value="general_fitness">General Fitness</option>
+            </select>
+            <div class="filter-group">
+              <input id="filter-equipment" type="text" placeholder="Equipment (e.g., Barbell)" />
+              <div id="equipment-facets" class="facet-chips"></div>
+            </div>
+            <div class="filter-group">
+              <div style="display:flex; gap:0.5rem; align-items:center;">
+                <input id="filter-muscle" type="text" placeholder="Muscle (e.g., Chest)" style="flex:1;" />
+                <select id="filter-muscle-role" title="Match muscle role">
+                  <option value="any">Any</option>
+                  <option value="primary">Primary only</option>
+                  <option value="secondary">Secondary only</option>
+                </select>
+              </div>
+              <div id="muscle-facets" class="facet-chips"></div>
+            </div>
+            <button id="filter-apply" type="button">Apply</button>
+            <button id="filter-reset" type="button">Reset</button>
+          </div>
+          <div class="exercise-list__grid" id="exercise-grid">
+            <!-- Exercises will be loaded here dynamically -->
+          </div>
+          <div id="pagination-controls" class="pagination-controls">
+            <!-- Pagination will be rendered here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Active Workout -->
+      <section class="page__active-workout active-workout" id="active-workout" style="display: none;">
+        <div class="active-workout__container">
+          <div class="active-workout__header">
+            <h2 class="active-workout__title title">Active Workout</h2>
+            <div class="active-workout__timer" id="workout-timer">00:00</div>
+            <button class="active-workout__end" onclick="endWorkout()">End Workout</button>
+          </div>
+          
+          <div class="active-workout__exercises" id="active-exercises">
+            <!-- Active exercises will be shown here -->
+          </div>
+          
+          <div class="active-workout__summary">
+            <h3>Workout Summary</h3>
+            <div class="workout-summary__stats">
+              <div class="summary-stat">
+                <span class="summary-stat__label">Total Time:</span>
+                <span class="summary-stat__value" id="total-time">00:00</span>
+              </div>
+              <div class="summary-stat">
+                <span class="summary-stat__label">Calories Burned:</span>
+                <span class="summary-stat__value" id="total-calories">0</span>
+              </div>
+              <div class="summary-stat">
+                <span class="summary-stat__label">Exercises:</span>
+                <span class="summary-stat__value" id="total-exercises">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Workout History -->
+      <section class="page__workout-history workout-history">
+        <div class="workout-history__container">
+          <h2 class="workout-history__title title">Recent Workouts</h2>
+          <div class="workout-history__list" id="workout-history">
+            <!-- Workout history will be loaded here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Weekly Workout Schedule -->
+      <section class="page__weekly-schedule weekly-schedule">
+        <div class="weekly-schedule__container">
+          <h2 class="weekly-schedule__title title">Weekly Workout Schedule</h2>
+          <div class="weekly-schedule__subtitle">7-Day Complete Fitness Program</div>
+          
+          <!-- Day Navigation -->
+          <div class="weekly-schedule__tabs">
+            <button class="schedule-tab active" data-day="Day1" onclick="showDaySchedule('Day1')">Day 1</button>
+            <button class="schedule-tab" data-day="Day2" onclick="showDaySchedule('Day2')">Day 2</button>
+            <button class="schedule-tab" data-day="Day3" onclick="showDaySchedule('Day3')">Day 3</button>
+            <button class="schedule-tab" data-day="Day4" onclick="showDaySchedule('Day4')">Day 4</button>
+            <button class="schedule-tab" data-day="Day5" onclick="showDaySchedule('Day5')">Day 5</button>
+            <button class="schedule-tab" data-day="Day6" onclick="showDaySchedule('Day6')">Day 6</button>
+            <button class="schedule-tab" data-day="Day7" onclick="showDaySchedule('Day7')">Day 7</button>
+          </div>
+
+          <!-- Day Content -->
+          <div class="weekly-schedule__content" id="schedule-content">
+            <!-- Day content will be loaded here dynamically -->
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="footer__container">
+        <a href="contact.html" class="footer__policy">Privacy Policy – Terms & Conditions</a>
+        <a href="index.html" class="footer__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.2rem;vertical-align:middle;" /></a>
+        <div class="footer__copyright">Copyright © 2025 Maverick Aim Rush – All Rights Reserved</div>
+      </div>
+    </footer>
+  </div>
+  <script src="js/script.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/workout.js"></script>
+  <script src="js/weekly-schedule.js"></script>
+</body>
+
+</html>

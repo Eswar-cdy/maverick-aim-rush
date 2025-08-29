@@ -1,0 +1,363 @@
+<!-- Image paths updated to use MAR/images/ consolidation on 2024-08-25 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <title>Maverick Aim Rush - Nutrition Log</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <div class="wrapper">
+    <header class="header">
+      <div class="header__container">
+        <a href="index.html" class="header__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.75rem;vertical-align:middle;" /></a>
+        <div class="header__navigation">
+          <div class="header__menu menu">
+            <nav class="menu__body">
+                <ul class="menu__list">
+                  <li class="menu__item"><a href="index.html" class="menu__link">Dashboard</a></li>
+                  <li class="menu__item"><a href="about.html" class="menu__link">Workout Tracker</a></li>
+                  <li class="menu__item"><a href="services.html" class="menu__link">Nutrition Log</a></li>
+                  <li class="menu__item"><a href="contact.html" class="menu__link">Progress</a></li>
+                </ul>
+                <a href="about.html" class="actions-header__button">Log Workout</a>
+              </nav>
+          </div>
+          <div class="header__actions actions-header">
+            <button type="button" class="menu__icon icon-menu"><span></span></button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="page">
+      <section class="page__main main main_services main_pages">
+        <div class="main__container main__container_pages">
+          <h1 class="main__title">Nutrition Log</h1>
+          <div class="main__text main__text_pages">
+            Follow your personalized fitness meal plan and track your daily nutrition goals.
+          </div>
+        </div>
+      </section>
+
+      <!-- Daily Progress Overview -->
+      <section class="page__nutrition-overview nutrition-overview">
+        <div class="nutrition-overview__container">
+          <h2 class="nutrition-overview__title title">Today's Nutrition Progress</h2>
+          <div class="nutrition-overview__stats">
+            <div class="nutrition-stat">
+              <div class="nutrition-stat__label">Calories</div>
+              <div class="nutrition-stat__progress">
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" data-progress="0" style="width: 0%"></div>
+                </div>
+                <div class="nutrition-stat__numbers">
+                  <span id="calories-consumed">0</span> / <span>2000</span> kcal
+                </div>
+              </div>
+            </div>
+            <div class="nutrition-stat">
+              <div class="nutrition-stat__label">Protein</div>
+              <div class="nutrition-stat__progress">
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" data-progress="0" style="width: 0%"></div>
+                </div>
+                <div class="nutrition-stat__numbers">
+                  <span id="protein-consumed">0</span> / <span>120</span>g
+                </div>
+              </div>
+            </div>
+            <div class="nutrition-stat">
+              <div class="nutrition-stat__label">Carbs</div>
+              <div class="nutrition-stat__progress">
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" data-progress="0" style="width: 0%"></div>
+                </div>
+                <div class="nutrition-stat__numbers">
+                  <span id="carbs-consumed">0</span> / <span>200</span>g
+                </div>
+              </div>
+            </div>
+            <div class="nutrition-stat">
+              <div class="nutrition-stat__label">Fat</div>
+              <div class="nutrition-stat__progress">
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" data-progress="0" style="width: 0%"></div>
+                </div>
+                <div class="nutrition-stat__numbers">
+                  <span id="fat-consumed">0</span> / <span>78</span>g
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Meal Plan Schedule -->
+      <section class="page__meal-plan meal-plan">
+        <div class="meal-plan__container">
+          <h2 class="meal-plan__title title">Your Daily Meal Plan</h2>
+          <div class="meal-plan__subtitle">Maverick Aim Rush - Fat Loss Diet Plan</div>
+          
+          <!-- Meal 1 - Breakfast -->
+          <div class="meal-card" data-meal="breakfast">
+            <div class="meal-card__header">
+              <div class="meal-card__info">
+                <h3 class="meal-card__title">Meal 1 - Breakfast</h3>
+                <div class="meal-card__calories">500 calories</div>
+              </div>
+              <div class="meal-card__status">
+                <input type="checkbox" id="breakfast-complete" class="meal-checkbox">
+                <label for="breakfast-complete" class="meal-status-label">Complete</label>
+              </div>
+            </div>
+            <div class="meal-card__content">
+              <div class="food-items">
+                <div class="food-item">
+                  <span class="food-name">Rolled oats</span>
+                  <span class="food-quantity">50g</span>
+                  <span class="food-calories">190 cal</span>
+                  <button class="adjust-btn" onclick="adjustPortion('breakfast', 'oats', this)">±</button>
+                </div>
+                <div class="food-item">
+                  <span class="food-name">Peanut butter</span>
+                  <span class="food-quantity">1 tbsp (16g)</span>
+                  <span class="food-calories">95 cal</span>
+                  <button class="adjust-btn" onclick="adjustPortion('breakfast', 'peanut-butter', this)">±</button>
+                </div>
+                <div class="food-item">
+                  <span class="food-name">Whey protein</span>
+                  <span class="food-quantity">1 scoop (25g)</span>
+                  <span class="food-calories">110 cal</span>
+                  <button class="adjust-btn" onclick="adjustPortion('breakfast', 'whey', this)">±</button>
+                </div>
+                <div class="food-item">
+                  <span class="food-name">Banana</span>
+                  <span class="food-quantity">1 medium (~120g)</span>
+                  <span class="food-calories">105 cal</span>
+                  <button class="adjust-btn" onclick="adjustPortion('breakfast', 'banana', this)">±</button>
+                </div>
+              </div>
+              <div class="meal-totals">
+                <strong>Totals: 500 cal | 30g protein | 13.5g fat | 65g carbs</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Meal 2 - Mid-Morning Snack -->
+          <div class="meal-card" data-meal="mid-morning">
+            <div class="meal-card__header">
+              <div class="meal-card__info">
+                <h3 class="meal-card__title">Meal 2 - Mid-Morning Snack</h3>
+                <div class="meal-card__calories">300 calories</div>
+              </div>
+              <div class="meal-card__status">
+                <input type="checkbox" id="mid-morning-complete" class="meal-checkbox">
+                <label for="mid-morning-complete" class="meal-status-label">Complete</label>
+              </div>
+            </div>
+            <div class="meal-card__content">
+              <div class="food-items">
+                <div class="food-item">
+                  <span class="food-name">Boiled eggs</span>
+                  <span class="food-quantity">3 whole</span>
+                  <span class="food-calories">210 cal</span>
+                  <button class="adjust-btn" onclick="adjustPortion('mid-morning', 'eggs', this)">±</button>
+                </div>
+                <div class="food-item">
+                  <span class="food-name">Almonds</span>
+                  <span class="food-quantity">10 pcs (15g)</span>
+                  <span class="food-calories">90 cal</span>
+                  <button class="adjust-btn" onclick="adjustPortion('mid-morning', 'almonds', this)">±</button>
+                </div>
+              </div>
+              <div class="meal-totals">
+                <strong>Totals: 300 cal | 21g protein | 22g fat | 2g carbs</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Meal 3 - Lunch -->
+          <div class="meal-card" data-meal="lunch">
+            <div class="meal-card__header">
+              <div class="meal-card__info">
+                <h3 class="meal-card__title">Meal 3 - Lunch</h3>
+                <div class="meal-card__calories">465 calories</div>
+              </div>
+              <div class="meal-card__status">
+                <input type="checkbox" id="lunch-complete" class="meal-checkbox">
+                <label for="lunch-complete" class="meal-status-label">Complete</label>
+              </div>
+            </div>
+            <div class="meal-card__content">
+              <div class="food-items">
+                <div class="food-item">
+                  <span class="food-name">Grilled chicken</span>
+                  <span class="food-quantity">150g raw weight</span>
+                  <span class="food-calories">250 cal</span>
+                  <button class="adjust-btn" onclick="adjustPortion('lunch', 'chicken', this)">±</button>
+                </div>
+                <div class="food-item">
+                  <span class="food-name">Cooked white rice</span>
+                  <span class="food-quantity">100g</span>
+                  <span class="food-calories">130 cal</span>
+                  <button class="adjust-btn" onclick="adjustPortion('lunch', 'rice', this)">±</button>
+                </div>
+                <div class="food-item">
+                  <span class="food-name">Mixed vegetables</span>
+                  <span class="food-quantity">100g</span>
+                  <span class="food-calories">40 cal</span>
+                  <button class="adjust-btn" onclick="adjustPortion('lunch', 'vegetables', this)">±</button>
+                </div>
+                <div class="food-item">
+                  <span class="food-name">Ghee</span>
+                  <span class="food-quantity">1 tsp (5g)</span>
+                  <span class="food-calories">45 cal</span>
+                  <button class="adjust-btn" onclick="adjustPortion('lunch', 'ghee', this)">±</button>
+                </div>
+              </div>
+              <div class="meal-totals">
+                <strong>Totals: 465 cal | 39.5g protein | 11g fat | 36g carbs</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Meal 4 - Pre-Workout Snack -->
+          <div class="meal-card" data-meal="pre-workout">
+            <div class="meal-card__header">
+              <div class="meal-card__info">
+                <h3 class="meal-card__title">Meal 4 - Pre-Workout Snack</h3>
+                <div class="meal-card__calories">244 calories</div>
+              </div>
+              <div class="meal-card__status">
+                <input type="checkbox" id="pre-workout-complete" class="meal-checkbox">
+                <label for="pre-workout-complete" class="meal-status-label">Complete</label>
+              </div>
+            </div>
+            <div class="meal-card__content">
+              <div class="food-items">
+                <div class="food-item">
+                  <span class="food-name">Boiled egg</span>
+                  <span class="food-quantity">1 whole</span>
+                  <span class="food-calories">70 cal</span>
+                  <button class="adjust-btn" onclick="adjustPortion('pre-workout', 'egg', this)">±</button>
+                </div>
+                <div class="food-item">
+                  <span class="food-name">Egg whites</span>
+                  <span class="food-quantity">2</span>
+                  <span class="food-calories">34 cal</span>
+                  <button class="adjust-btn" onclick="adjustPortion('pre-workout', 'egg-whites', this)">±</button>
+                </div>
+                <div class="food-item">
+                  <span class="food-name">Apple</span>
+                  <span class="food-quantity">1 medium (~150g)</span>
+                  <span class="food-calories">95 cal</span>
+                  <button class="adjust-btn" onclick="adjustPortion('pre-workout', 'apple', this)">±</button>
+                </div>
+                <div class="food-item">
+                  <span class="food-name">Walnuts</span>
+                  <span class="food-quantity">1 tbsp (7g)</span>
+                  <span class="food-calories">45 cal</span>
+                  <button class="adjust-btn" onclick="adjustPortion('pre-workout', 'walnuts', this)">±</button>
+                </div>
+              </div>
+              <div class="meal-totals">
+                <strong>Totals: 244 cal | 14.5g protein | 9.5g fat | 28g carbs</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Meal 5 - Post-Workout -->
+          <div class="meal-card" data-meal="post-workout">
+            <div class="meal-card__header">
+              <div class="meal-card__info">
+                <h3 class="meal-card__title">Meal 5 - Post-Workout</h3>
+                <div class="meal-card__calories">190 calories</div>
+              </div>
+              <div class="meal-card__status">
+                <input type="checkbox" id="post-workout-complete" class="meal-checkbox">
+                <label for="post-workout-complete" class="meal-status-label">Complete</label>
+              </div>
+            </div>
+            <div class="meal-card__content">
+              <div class="food-items">
+                <div class="food-item">
+                  <span class="food-name">Whey protein</span>
+                  <span class="food-quantity">1 scoop (25g)</span>
+                  <span class="food-calories">110 cal</span>
+                  <button class="adjust-btn" onclick="adjustPortion('post-workout', 'whey-protein', this)">±</button>
+                </div>
+                <div class="food-item">
+                  <span class="food-name">Dates</span>
+                  <span class="food-quantity">3 pcs (~20g)</span>
+                  <span class="food-calories">80 cal</span>
+                  <button class="adjust-btn" onclick="adjustPortion('post-workout', 'dates', this)">±</button>
+                </div>
+              </div>
+              <div class="meal-totals">
+                <strong>Totals: 190 cal | 21g protein | 1.5g fat | 20g carbs</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Extra Food Logging -->
+      <section class="page__extra-logging extra-logging">
+        <div class="extra-logging__container">
+          <h2 class="extra-logging__title title">Log Additional Food</h2>
+          <div class="extra-logging__form">
+            <div class="form-group">
+              <label for="food-name">Food Item</label>
+              <input type="text" id="food-name" placeholder="e.g., Banana, Chicken breast">
+            </div>
+            <div class="form-group">
+              <label for="food-quantity">Quantity</label>
+              <input type="text" id="food-quantity" placeholder="e.g., 100g, 1 cup">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="food-calories">Calories</label>
+                <input type="number" id="food-calories" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label for="food-protein">Protein (g)</label>
+                <input type="number" id="food-protein" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label for="food-carbs">Carbs (g)</label>
+                <input type="number" id="food-carbs" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label for="food-fat">Fat (g)</label>
+                <input type="number" id="food-fat" placeholder="0">
+              </div>
+            </div>
+            <button class="extra-logging__button button" onclick="addExtraFood()">Log Food</button>
+          </div>
+          
+          <div class="extra-foods-list" id="extra-foods-list">
+            <h3>Additional Foods Today:</h3>
+            <div id="extra-foods-container">
+              <!-- Extra foods will be added here dynamically -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="footer__container">
+        <a href="contact.html" class="footer__policy">Privacy Policy – Terms & Conditions</a>
+        <a href="index.html" class="footer__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.2rem;vertical-align:middle;" /></a>
+        <div class="footer__copyright">Copyright © 2025 Maverick Aim Rush – All Rights Reserved</div>
+      </div>
+    </footer>
+  </div>
+  <script src="js/script.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/nutrition.js"></script>
+</body>
+
+</html>
