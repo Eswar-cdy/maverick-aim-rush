@@ -48,7 +48,7 @@ A comprehensive full-stack fitness tracking web application built with Django RE
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/maverick-aim-rush.git
+   git clone https://github.com/Eswar-cdy/maverick-aim-rush.git
    cd maverick-aim-rush
    ```
 
@@ -247,8 +247,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Author
 
-**Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
+**Eswar Geddam**
+- GitHub: [@Eswar-cdy](https://github.com/Eswar-cdy)
 - LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
 - Portfolio: [Your Portfolio](https://yourportfolio.com)
 
@@ -271,7 +271,7 @@ If you have any questions or need help:
 
 **Made with ❤️ for fitness enthusiasts everywhere**
 
-![GitHub stars](https://img.shields.io/github/stars/yourusername/maverick-aim-rush?style=social)
-![GitHub forks](https://img.shields.io/github/forks/yourusername/maverick-aim-rush?style=social)
-![GitHub issues](https://img.shields.io/github/issues/yourusername/maverick-aim-rush)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/maverick-aim-rush)
+![GitHub stars](https://img.shields.io/github/stars/Eswar-cdy/maverick-aim-rush?style=social)
+![GitHub forks](https://img.shields.io/github/forks/Eswar-cdy/maverick-aim-rush?style=social)
+![GitHub issues](https://img.shields.io/github/issues/Eswar-cdy/maverick-aim-rush)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/Eswar-cdy/maverick-aim-rush)
