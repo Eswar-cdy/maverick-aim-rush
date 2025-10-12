@@ -7,7 +7,18 @@ psycopg2-binary==2.9.9
 gunicorn==21.2.0
 whitenoise==6.6.0
 dj-database-url==2.1.0
+
 # Phase 2: Real-time features
 channels==4.0.0
 channels-redis==4.1.0
 redis==5.0.1
+
+# Development and CI dependencies
+flake8==6.1.0
+safety==3.0.1
+corsheaders==4.3.1
+
+# Testing dependencies
+pytest==7.4.3
+pytest-django==4.7.0
+coverage==7.3.2
