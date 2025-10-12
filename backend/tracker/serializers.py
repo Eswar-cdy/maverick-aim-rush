@@ -6,7 +6,14 @@ from django.contrib.auth.models import User
 from .models import (
     Goal, BodyMeasurement, ExerciseCatalog, WorkoutSession, StrengthSet,
     CardioEntry, NutritionLog, SleepLog, InjuryLog, Plan, PlannedExercise,
-    FoodCatalog, Muscle, Equipment, Tag, ExerciseMuscle
+    FoodCatalog, Muscle, Equipment, Tag, ExerciseMuscle, MacroTarget, CalculatorResult,
+    ProgressPhoto, PhotoComparison, BodyPartMeasurement, ProgressMilestone,
+    MuscleGroup, BodyComposition, MuscleGroupMeasurement, BodyAnalytics, ProgressPrediction,
+    # Enhanced Nutrition Models
+    FoodCategory, Recipe, RecipeIngredient, RecipeInstruction, MealPlan, MealPlanDay,
+    MealPlanMeal, MealTemplate, NutritionGoal, WaterIntake, SupplementLog, MealRating,
+    GroceryList, RestaurantFood, NutritionalAnalysis, TrainerProfile, ExerciseContraindication,
+    UserProfile
 )
 
 class UserSerializer(serializers.ModelSerializer):
@@ -38,11 +45,67 @@ class CardioEntrySerializer(serializers.ModelSerializer):
 class WorkoutSessionSerializer(serializers.ModelSerializer):
     strength_sets = StrengthSetSerializer(many=True, read_only=True)
     cardio_entries = CardioEntrySerializer(many=True, read_only=True)
+    duration = serializers.SerializerMethodField()
+    exercise_count = serializers.SerializerMethodField()
+    total_volume = serializers.SerializerMethodField()
 
     class Meta:
         model = WorkoutSession
-        fields = ('id', 'user', 'date', 'duration_minutes', 'notes', 'strength_sets', 'cardio_entries')
-        read_only_fields = ('user',)
+        fields = ('id', 'user', 'start_time', 'end_time', 'notes', 'strength_sets', 'cardio_entries', 'duration', 'exercise_count', 'total_volume')
+        read_only_fields = ('user', 'start_time')
+    
+    def get_duration(self, obj):
+        """Calculate duration in seconds"""
+        if obj.end_time and obj.start_time:
+            delta = obj.end_time - obj.start_time
+            return int(delta.total_seconds())
+        return None
+    
+    def get_exercise_count(self, obj):
+        """Count unique exercises in this session"""
+        return obj.strength_sets.values('exercise').distinct().count()
+    
+    def get_total_volume(self, obj):
+        """Calculate total volume (weight × reps) in kg"""
+        from django.db.models import Sum, F
+        result = obj.strength_sets.aggregate(
+            total=Sum(F('weight_kg') * F('reps'))
+        )
+        return int(result['total'] or 0)
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        exclude = ('user', 'onboarding_state') # Exclude user and internal state
+        read_only_fields = ('completed_onboarding_at',)
+
+
+class TrainerProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TrainerProfile
+        fields = '__all__'
+        read_only_fields = ('user', 'updated_at')
+
+
+class ExerciseContraindicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExerciseContraindication
+        fields = '__all__'
+        read_only_fields = ('user', 'created_at')
+
+
+class OnboardingStatusSerializer(serializers.Serializer):
+    completed = serializers.BooleanField()
+    completed_on = serializers.DateTimeField(allow_null=True)
+    version = serializers.CharField()
+    current_step = serializers.CharField(allow_null=True)
+
+
+class OnboardingAnswersSerializer(serializers.Serializer):
+    version = serializers.CharField()
+    step = serializers.CharField()
+    answers = serializers.DictField()
 
 class PlannedExerciseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -187,3 +250,341 @@ class InjuryLogSerializer(serializers.ModelSerializer):
         model = InjuryLog
         fields = '__all__'
         read_only_fields = ('user',)
+
+class MacroTargetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MacroTarget
+        fields = '__all__'
+        read_only_fields = ('user', 'created_at')
+
+class CalculatorResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CalculatorResult
+        fields = '__all__'
+        read_only_fields = ('user', 'calculated_at')
+
+
+class ProgressPhotoSerializer(serializers.ModelSerializer):
+    """Serializer for progress photos."""
+    image_url = serializers.SerializerMethodField()
+    thumbnail_url = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = ProgressPhoto
+        fields = [
+            'id', 'photo_type', 'image', 'thumbnail', 'image_url', 'thumbnail_url',
+            'date_taken', 'weight_at_time', 'body_fat_at_time', 'notes',
+            'is_analyzed', 'analysis_data', 'is_public', 'allow_comparisons',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ('user', 'created_at', 'updated_at', 'date_taken')
+    
+    def get_image_url(self, obj):
+        if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
+        return None
+    
+    def get_thumbnail_url(self, obj):
+        if obj.thumbnail:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.thumbnail.url)
+            return obj.thumbnail.url
+        return None
+
+
+class PhotoComparisonSerializer(serializers.ModelSerializer):
+    """Serializer for photo comparisons."""
+    before_photo_data = ProgressPhotoSerializer(source='before_photo', read_only=True)
+    after_photo_data = ProgressPhotoSerializer(source='after_photo', read_only=True)
+    
+    class Meta:
+        model = PhotoComparison
+        fields = [
+            'id', 'before_photo', 'after_photo', 'before_photo_data', 'after_photo_data',
+            'comparison_type', 'time_difference_days', 'weight_change', 'body_fat_change',
+            'title', 'description', 'is_public', 'is_featured', 'created_at'
+        ]
+        read_only_fields = ('user', 'created_at')
+
+
+class BodyPartMeasurementSerializer(serializers.ModelSerializer):
+    """Serializer for body part measurements."""
+    progress_photo_data = ProgressPhotoSerializer(source='progress_photo', read_only=True)
+    
+    class Meta:
+        model = BodyPartMeasurement
+        fields = [
+            'id', 'body_part', 'measurement_cm', 'measurement_inches',
+            'progress_photo', 'progress_photo_data', 'is_flexed', 'is_relaxed',
+            'measurement_date', 'notes'
+        ]
+        read_only_fields = ('user', 'measurement_date')
+
+
+class ProgressMilestoneSerializer(serializers.ModelSerializer):
+    """Serializer for progress milestones."""
+    milestone_photos_data = ProgressPhotoSerializer(source='milestone_photos', many=True, read_only=True)
+    
+    class Meta:
+        model = ProgressMilestone
+        fields = [
+            'id', 'milestone_type', 'title', 'description', 'milestone_photos',
+            'milestone_photos_data', 'target_value', 'achieved_value',
+            'achievement_date', 'is_celebrated', 'celebration_notes'
+        ]
+        read_only_fields = ('user', 'achievement_date')
+
+
+class MuscleGroupSerializer(serializers.ModelSerializer):
+    """Serializer for muscle groups."""
+    class Meta:
+        model = MuscleGroup
+        fields = ['id', 'name', 'display_name', 'description']
+
+
+class BodyCompositionSerializer(serializers.ModelSerializer):
+    """Serializer for body composition data."""
+    class Meta:
+        model = BodyComposition
+        fields = [
+            'id', 'date', 'weight_kg', 'body_fat_percentage', 'muscle_mass_kg',
+            'bone_mass_kg', 'water_percentage', 'visceral_fat_level',
+            'bmr_calories', 'metabolic_age', 'body_shape_type',
+            'measurement_method', 'notes'
+        ]
+        read_only_fields = ('user', 'date')
+
+
+class MuscleGroupMeasurementSerializer(serializers.ModelSerializer):
+    """Serializer for muscle group measurements."""
+    muscle_group_data = MuscleGroupSerializer(source='muscle_group', read_only=True)
+    body_composition_data = BodyCompositionSerializer(source='body_composition', read_only=True)
+    progress_photo_data = ProgressPhotoSerializer(source='progress_photo', read_only=True)
+    
+    class Meta:
+        model = MuscleGroupMeasurement
+        fields = [
+            'id', 'muscle_group', 'muscle_group_data', 'date',
+            'circumference_cm', 'circumference_inches', 'muscle_density',
+            'is_flexed', 'is_pumped', 'workout_context',
+            'body_composition', 'body_composition_data',
+            'progress_photo', 'progress_photo_data', 'notes'
+        ]
+        read_only_fields = ('user', 'date')
+
+
+class BodyAnalyticsSerializer(serializers.ModelSerializer):
+    """Serializer for body analytics."""
+    fastest_growing_muscle_data = MuscleGroupSerializer(source='fastest_growing_muscle', read_only=True)
+    slowest_growing_muscle_data = MuscleGroupSerializer(source='slowest_growing_muscle', read_only=True)
+    
+    class Meta:
+        model = BodyAnalytics
+        fields = [
+            'id', 'analysis_date', 'total_muscle_growth_kg', 'total_fat_loss_kg',
+            'net_weight_change_kg', 'fastest_growing_muscle', 'fastest_growing_muscle_data',
+            'slowest_growing_muscle', 'slowest_growing_muscle_data',
+            'body_fat_trend', 'muscle_mass_trend', 'symmetry_score',
+            'balance_score', 'progress_score', 'predicted_body_fat_30_days',
+            'predicted_muscle_mass_30_days', 'predicted_weight_30_days',
+            'key_insights', 'recommendations'
+        ]
+        read_only_fields = ('user', 'analysis_date')
+
+
+class ProgressPredictionSerializer(serializers.ModelSerializer):
+    """Serializer for progress predictions."""
+    class Meta:
+        model = ProgressPrediction
+        fields = [
+            'id', 'prediction_date', 'prediction_horizon_days', 'confidence_level',
+            'predicted_weight', 'predicted_body_fat', 'predicted_muscle_mass',
+            'muscle_predictions', 'current_trends', 'historical_data_points',
+            'prediction_accuracy_score', 'is_active', 'actual_vs_predicted'
+        ]
+        read_only_fields = ('user', 'prediction_date')
+
+
+# ============================================================================
+# ENHANCED NUTRITION SYSTEM SERIALIZERS
+# ============================================================================
+
+class FoodCategorySerializer(serializers.ModelSerializer):
+    """Serializer for food categories."""
+    class Meta:
+        model = FoodCategory
+        fields = ['id', 'name', 'description', 'color', 'icon', 'sort_order']
+
+
+class RecipeIngredientSerializer(serializers.ModelSerializer):
+    """Serializer for recipe ingredients."""
+    food_name = serializers.ReadOnlyField(source='food.name')
+    food_calories_per_100g = serializers.ReadOnlyField(source='food.calories_per_100g')
+    
+    class Meta:
+        model = RecipeIngredient
+        fields = ['id', 'food', 'food_name', 'food_calories_per_100g', 'quantity', 'unit', 'notes']
+
+
+class RecipeInstructionSerializer(serializers.ModelSerializer):
+    """Serializer for recipe instructions."""
+    class Meta:
+        model = RecipeInstruction
+        fields = ['id', 'step_number', 'instruction', 'duration_minutes', 'temperature_celsius']
+
+
+class RecipeSerializer(serializers.ModelSerializer):
+    """Serializer for recipes with ingredients and instructions."""
+    ingredients = RecipeIngredientSerializer(many=True, read_only=True)
+    instructions = RecipeInstructionSerializer(many=True, read_only=True)
+    created_by_username = serializers.ReadOnlyField(source='created_by.username')
+    
+    class Meta:
+        model = Recipe
+        fields = [
+            'id', 'name', 'description', 'prep_time_minutes', 'cook_time_minutes',
+            'servings', 'difficulty', 'calories_per_serving', 'protein_g_per_serving',
+            'carbs_g_per_serving', 'fat_g_per_serving', 'fiber_g_per_serving',
+            'sugar_g_per_serving', 'sodium_mg_per_serving', 'cuisine_type',
+            'meal_type', 'dietary_tags', 'created_by', 'created_by_username',
+            'is_public', 'image_url', 'created_at', 'updated_at', 'ingredients', 'instructions'
+        ]
+        read_only_fields = ('created_by', 'created_at', 'updated_at')
+
+
+class MealPlanMealSerializer(serializers.ModelSerializer):
+    """Serializer for individual meals in meal plans."""
+    recipe_name = serializers.ReadOnlyField(source='recipe.name')
+    
+    class Meta:
+        model = MealPlanMeal
+        fields = [
+            'id', 'meal_type', 'meal_time', 'recipe', 'recipe_name', 'custom_foods',
+            'calories', 'protein_g', 'carbs_g', 'fat_g', 'notes'
+        ]
+
+
+class MealPlanDaySerializer(serializers.ModelSerializer):
+    """Serializer for meal plan days."""
+    meals = MealPlanMealSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = MealPlanDay
+        fields = [
+            'id', 'date', 'day_name', 'target_calories', 'target_protein_g',
+            'target_carbs_g', 'target_fat_g', 'meals'
+        ]
+
+
+class MealPlanSerializer(serializers.ModelSerializer):
+    """Serializer for meal plans."""
+    days = MealPlanDaySerializer(many=True, read_only=True)
+    user_username = serializers.ReadOnlyField(source='user.username')
+    
+    class Meta:
+        model = MealPlan
+        fields = [
+            'id', 'user', 'user_username', 'name', 'description', 'start_date',
+            'end_date', 'target_calories', 'target_protein_g', 'target_carbs_g',
+            'target_fat_g', 'is_active', 'created_at', 'updated_at', 'days'
+        ]
+        read_only_fields = ('user', 'created_at', 'updated_at')
+
+
+class MealTemplateSerializer(serializers.ModelSerializer):
+    """Serializer for meal templates."""
+    recipe_name = serializers.ReadOnlyField(source='recipe.name')
+    created_by_username = serializers.ReadOnlyField(source='created_by.username')
+    
+    class Meta:
+        model = MealTemplate
+        fields = [
+            'id', 'name', 'description', 'meal_type', 'target_calories',
+            'target_protein_g', 'target_carbs_g', 'target_fat_g', 'recipe',
+            'recipe_name', 'food_items', 'goal_type', 'dietary_tags',
+            'created_by', 'created_by_username', 'is_public', 'created_at'
+        ]
+        read_only_fields = ('created_by', 'created_at')
+
+
+class NutritionGoalSerializer(serializers.ModelSerializer):
+    """Serializer for nutrition goals."""
+    class Meta:
+        model = NutritionGoal
+        fields = [
+            'id', 'goal_type', 'target_weight_kg', 'target_body_fat_percentage',
+            'target_date', 'target_calories', 'target_protein_g', 'target_carbs_g',
+            'target_fat_g', 'target_fiber_g', 'target_water_liters', 'is_active',
+            'start_date', 'notes', 'created_at', 'updated_at'
+        ]
+        read_only_fields = ('user', 'created_at', 'updated_at')
+
+
+class WaterIntakeSerializer(serializers.ModelSerializer):
+    """Serializer for water intake tracking."""
+    class Meta:
+        model = WaterIntake
+        fields = ['id', 'date', 'amount_ml', 'timestamp', 'notes']
+        read_only_fields = ('user', 'timestamp')
+
+
+class SupplementLogSerializer(serializers.ModelSerializer):
+    """Serializer for supplement logging."""
+    class Meta:
+        model = SupplementLog
+        fields = ['id', 'date', 'supplement_name', 'dosage', 'time_taken', 'notes']
+        read_only_fields = ('user',)
+
+
+class MealRatingSerializer(serializers.ModelSerializer):
+    """Serializer for meal ratings."""
+    meal_plan_meal_name = serializers.ReadOnlyField(source='meal_plan_meal.meal_type')
+    
+    class Meta:
+        model = MealRating
+        fields = [
+            'id', 'meal_plan_meal', 'meal_plan_meal_name', 'rating', 'taste_rating',
+            'satiety_rating', 'difficulty_rating', 'feedback', 'would_make_again',
+            'created_at'
+        ]
+        read_only_fields = ('user', 'created_at')
+
+
+class GroceryListSerializer(serializers.ModelSerializer):
+    """Serializer for grocery lists."""
+    meal_plan_name = serializers.ReadOnlyField(source='meal_plan.name')
+    
+    class Meta:
+        model = GroceryList
+        fields = [
+            'id', 'meal_plan', 'meal_plan_name', 'name', 'week_start_date',
+            'week_end_date', 'items', 'is_completed', 'created_at', 'updated_at'
+        ]
+        read_only_fields = ('user', 'created_at', 'updated_at')
+
+
+class RestaurantFoodSerializer(serializers.ModelSerializer):
+    """Serializer for restaurant food items."""
+    class Meta:
+        model = RestaurantFood
+        fields = [
+            'id', 'restaurant_name', 'item_name', 'description', 'serving_size',
+            'calories', 'protein_g', 'carbs_g', 'fat_g', 'fiber_g', 'sugar_g',
+            'sodium_mg', 'category', 'dietary_tags', 'created_at', 'updated_at'
+        ]
+
+
+class NutritionalAnalysisSerializer(serializers.ModelSerializer):
+    """Serializer for nutritional analysis."""
+    class Meta:
+        model = NutritionalAnalysis
+        fields = [
+            'id', 'analysis_date', 'analysis_type', 'findings', 'recommendations',
+            'nutrient_gaps', 'excess_nutrients', 'overall_score', 'variety_score',
+            'balance_score', 'created_at'
+        ]
+        read_only_fields = ('user', 'created_at')

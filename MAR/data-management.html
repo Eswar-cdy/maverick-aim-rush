@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ff6b35">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Maverick Aim Rush">
+    <title>Data Management - Maverick Aim Rush</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="images/favicon.png">
+    <link rel="stylesheet" href="css/reset.css?v=3">
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Header -->
+        <header class="header" id="main-header">
+            <div class="header__container">
+                <div class="header__content">
+                    <div class="header__logo">
+                        <img src="images/LOGO.png" alt="Maverick Aim Rush" class="header__logo-img">
+                        <span class="header__logo-text">Maverick Aim Rush</span>
+                    </div>
+                    <nav class="header__nav">
+                        <a href="index.html" class="header__nav-link">Dashboard</a>
+                        <a href="calculator.html" class="header__nav-link">Calculator</a>
+                        <a href="recommendations.html" class="header__nav-link">AI Recommendations</a>
+                        <a href="social.html" class="header__nav-link">Social</a>
+                        <a href="data-management.html" class="header__nav-link active">Data Management</a>
+                    </nav>
+                    <div class="header__actions">
+                        <button id="notification-settings-btn" class="header__btn header__btn--secondary" title="Notification Settings">🔔</button>
+                        <button id="units-toggle" class="header__btn header__btn--secondary">Units: Imperial</button>
+                        <button id="logout-button" class="header__btn header__btn--primary">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main page-offset" id="main-content">
+            <div class="data-management">
+                <div class="data-management__container">
+                    <div class="data-management__header">
+                        <h1 class="data-management__title">📊 Data Management</h1>
+                        <p class="data-management__subtitle">Export, import, and manage your fitness data</p>
+                    </div>
+
+                    <!-- Export Section -->
+                    <section class="data-section">
+                        <div class="data-section__header">
+                            <h2>📤 Export Your Data</h2>
+                            <p>Download your fitness data in various formats for backup or analysis</p>
+                        </div>
+                        
+                        <div class="export-options">
+                            <div class="export-option">
+                                <div class="export-option__icon">📄</div>
+                                <div class="export-option__content">
+                                    <h3>JSON Export</h3>
+                                    <p>Complete data export in JSON format. Best for backups and data migration.</p>
+                                    <button class="button button--primary" data-export="json">
+                                        Export as JSON
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="export-option">
+                                <div class="export-option__icon">📊</div>
+                                <div class="export-option__content">
+                                    <h3>CSV Export</h3>
+                                    <p>Spreadsheet-friendly format for data analysis in Excel or Google Sheets.</p>
+                                    <button class="button button--primary" data-export="csv">
+                                        Export as CSV
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="export-option">
+                                <div class="export-option__icon">📋</div>
+                                <div class="export-option__content">
+                                    <h3>Summary Report</h3>
+                                    <p>Human-readable summary of your fitness progress and achievements.</p>
+                                    <button class="button button--primary" data-export="summary">
+                                        Export Summary
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="export-info" class="export-info"></div>
+                    </section>
+
+                    <!-- Import Section -->
+                    <section class="data-section">
+                        <div class="data-section__header">
+                            <h2>📥 Import Data</h2>
+                            <p>Restore your data from a previous export or migrate from another platform</p>
+                        </div>
+                        
+                        <div class="import-section">
+                            <div class="import-info">
+                                <h3>Supported Import Formats</h3>
+                                <ul>
+                                    <li>✅ JSON files exported from Maverick Aim Rush</li>
+                                    <li>✅ Data from previous backups</li>
+                                    <li>✅ Migration from other fitness apps (with conversion)</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="import-actions">
+                                <button class="button button--secondary" data-import>
+                                    Import Data
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Data Overview -->
+                    <section class="data-section">
+                        <div class="data-section__header">
+                            <h2>📈 Your Data Overview</h2>
+                            <p>Summary of your stored fitness data</p>
+                        </div>
+                        
+                        <div class="data-overview">
+                            <div class="data-card">
+                                <div class="data-card__icon">💪</div>
+                                <div class="data-card__content">
+                                    <h3>Workouts</h3>
+                                    <div class="data-card__count" id="workout-count">-</div>
+                                    <p>Total workout sessions</p>
+                                </div>
+                            </div>
+                            
+                            <div class="data-card">
+                                <div class="data-card__icon">🍽️</div>
+                                <div class="data-card__content">
+                                    <h3>Nutrition Logs</h3>
+                                    <div class="data-card__count" id="nutrition-count">-</div>
+                                    <p>Meal and nutrition entries</p>
+                                </div>
+                            </div>
+                            
+                            <div class="data-card">
+                                <div class="data-card__icon">📅</div>
+                                <div class="data-card__content">
+                                    <h3>Weekly Schedules</h3>
+                                    <div class="data-card__count" id="schedule-count">-</div>
+                                    <p>Planned workout schedules</p>
+                                </div>
+                            </div>
+                            
+                            <div class="data-card">
+                                <div class="data-card__icon">🏆</div>
+                                <div class="data-card__content">
+                                    <h3>Achievements</h3>
+                                    <div class="data-card__count" id="achievement-count">-</div>
+                                    <p>Unlocked achievements</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Backup Recommendations -->
+                    <section class="data-section">
+                        <div class="data-section__header">
+                            <h2>💾 Backup Recommendations</h2>
+                            <p>Keep your data safe with these best practices</p>
+                        </div>
+                        
+                        <div class="backup-tips">
+                            <div class="backup-tip">
+                                <div class="backup-tip__icon">🔄</div>
+                                <div class="backup-tip__content">
+                                    <h3>Regular Backups</h3>
+                                    <p>Export your data monthly to ensure you never lose your progress.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="backup-tip">
+                                <div class="backup-tip__icon">☁️</div>
+                                <div class="backup-tip__content">
+                                    <h3>Cloud Storage</h3>
+                                    <p>Store your exported files in cloud storage for extra security.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="backup-tip">
+                                <div class="backup-tip__icon">🔒</div>
+                                <div class="backup-tip__content">
+                                    <h3>Data Privacy</h3>
+                                    <p>Your data is encrypted and stored securely. We never share your personal information.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer__container">
+                <div class="footer__content">
+                    <div class="footer__logo">
+                        <img src="images/LOGO.png" alt="Maverick Aim Rush" class="footer__logo-img">
+                        <span class="footer__logo-text">Maverick Aim Rush</span>
+                    </div>
+                    <div class="footer__links">
+                        <a href="index.html" class="footer__link">Dashboard</a>
+                        <a href="calculator.html" class="footer__link">Calculator</a>
+                        <a href="recommendations.html" class="footer__link">Recommendations</a>
+                        <a href="social.html" class="footer__link">Social</a>
+                    </div>
+                </div>
+                <div class="footer__bottom">
+                    <p>&copy; 2024 Maverick Aim Rush. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js?v=3"></script>
+    <script src="js/data-export.js?v=3"></script>
+    <script src="js/mobile.js?v=5"></script>
+    <script src="js/notifications.js?v=5"></script>
+    <script src="js/notification-ui.js?v=5"></script>
+    <script src="js/smart-notifications.js?v=5"></script>
+    
+    <script>
+        // Load data overview
+        async function loadDataOverview() {
+            try {
+                const token = localStorage.getItem('access_token');
+                if (!token) return;
+
+                // Load workout count
+                const workoutResponse = await fetch('http://localhost:8000/api/sessions/', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (workoutResponse.ok) {
+                    const workouts = await workoutResponse.json();
+                    document.getElementById('workout-count').textContent = workouts.count || workouts.length || 0;
+                }
+
+                // Load nutrition count
+                const nutritionResponse = await fetch('http://localhost:8000/api/nutrition-logs/', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (nutritionResponse.ok) {
+                    const nutrition = await nutritionResponse.json();
+                    document.getElementById('nutrition-count').textContent = nutrition.count || nutrition.length || 0;
+                }
+
+                // Load other data counts
+                document.getElementById('schedule-count').textContent = '0'; // Placeholder
+                document.getElementById('achievement-count').textContent = '0'; // Placeholder
+
+            } catch (error) {
+                console.error('Error loading data overview:', error);
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDataOverview();
+            
+            // Setup logout functionality
+            const logoutButton = document.getElementById('logout-button');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', () => {
+                    localStorage.removeItem('access_token');
+                    localStorage.removeItem('refresh_token');
+                    window.location.href = 'index.html';
+                });
+            }
+
+            // Setup units toggle
+            const unitsToggle = document.getElementById('units-toggle');
+            if (unitsToggle) {
+                unitsToggle.addEventListener('click', () => {
+                    const currentUnits = localStorage.getItem('preferred_units') || 'imperial';
+                    const newUnits = currentUnits === 'imperial' ? 'metric' : 'imperial';
+                    localStorage.setItem('preferred_units', newUnits);
+                    unitsToggle.textContent = `Units: ${newUnits === 'imperial' ? 'Imperial' : 'Metric'}`;
+                });
+            }
+
+            // Load current units
+            const currentUnits = localStorage.getItem('preferred_units') || 'imperial';
+            if (unitsToggle) {
+                unitsToggle.textContent = `Units: ${currentUnits === 'imperial' ? 'Imperial' : 'Metric'}`;
+            }
+        });
+
+        // Register Service Worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

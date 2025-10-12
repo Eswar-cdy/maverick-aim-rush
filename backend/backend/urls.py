@@ -4,16 +4,51 @@ URL configuration for backend project.
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.generic import TemplateView
+from django.http import FileResponse
+import os
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from rest_framework.routers import DefaultRouter
+from users.views import UserProfileViewSet
+
+router = DefaultRouter()
+router.register(r'profile', UserProfileViewSet, basename='userprofile')
+
+# Frontend file serving for development
+def serve_mar_file(request, file_path):
+    """Serve MAR frontend files during development"""
+    mar_dir = os.path.join(settings.BASE_DIR, '..', 'MAR')
+    full_path = os.path.join(mar_dir, file_path)
+    
+    if os.path.exists(full_path) and os.path.isfile(full_path):
+        return FileResponse(open(full_path, 'rb'))
+    else:
+        from django.http import Http404
+        raise Http404("File not found")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # JWT Authentication routes
+    
+    # JWT Authentication routes (legacy - will be deprecated)
     path('api/auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    # App-specific routes
+    
+    # API v1 (current version)
+    path('api/v1/', include('tracker.urls_v1')),
+    
+    # Legacy API routes (for backward compatibility - will be deprecated)
+    path('api/', include(router.urls)),
     path('api/', include('tracker.urls')),
+    
+    # Frontend file serving (development only)
+    path('MAR/<path:file_path>', serve_mar_file, name='serve_mar_file'),
 ]
+
+# Serve media files during development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

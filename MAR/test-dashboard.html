@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 15px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>Dashboard Cards Test</h1>
+    
+    <div class="test-section info">
+        <h3>Test Instructions</h3>
+        <p>1. Make sure you're logged in (use demo mode if needed)</p>
+        <p>2. Click the test buttons below to verify each dashboard card</p>
+        <p>3. Check the results in each section</p>
+    </div>
+
+    <div class="test-section">
+        <h3>KPI Cards Test</h3>
+        <button onclick="testKPICards()">Test KPI Cards</button>
+        <div id="kpi-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Recent Activity Test</h3>
+        <button onclick="testRecentActivity()">Test Recent Activity</button>
+        <div id="activity-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Today's Plan Test</h3>
+        <button onclick="testTodaysPlan()">Test Today's Plan</button>
+        <div id="plan-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>AI Recommendations Test</h3>
+        <button onclick="testAIRecommendations()">Test AI Recommendations</button>
+        <div id="ai-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Progress Summary Test</h3>
+        <button onclick="testProgressSummary()">Test Progress Summary</button>
+        <div id="progress-result" class="result"></div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        function showResult(elementId, success, message, data = null) {
+            const element = document.getElementById(elementId);
+            element.className = `result ${success ? 'success' : 'error'}`;
+            element.innerHTML = `
+                <strong>${success ? '✅ SUCCESS' : '❌ ERROR'}:</strong> ${message}
+                ${data ? `<pre>${JSON.stringify(data, null, 2)}</pre>` : ''}
+            `;
+        }
+
+        async function testKPICards() {
+            try {
+                const resp = await apiFetch('/progress/summary/');
+                if (resp && resp.ok) {
+                    const data = await resp.json();
+                    showResult('kpi-result', true, 'KPI data loaded successfully', data);
+                } else {
+                    showResult('kpi-result', false, `API call failed with status: ${resp.status}`);
+                }
+            } catch (error) {
+                showResult('kpi-result', false, `Error: ${error.message}`);
+            }
+        }
+
+        async function testRecentActivity() {
+            try {
+                const resp = await apiFetch('/sessions/?page_size=5');
+                if (resp && resp.ok) {
+                    const data = await resp.json();
+                    showResult('activity-result', true, 'Recent activity loaded successfully', data);
+                } else {
+                    showResult('activity-result', false, `API call failed with status: ${resp.status}`);
+                }
+            } catch (error) {
+                showResult('activity-result', false, `Error: ${error.message}`);
+            }
+        }
+
+        async function testTodaysPlan() {
+            try {
+                const resp = await apiFetch('/weekly-plan/');
+                if (resp && resp.ok) {
+                    const data = await resp.json();
+                    showResult('plan-result', true, 'Today\'s plan loaded successfully', data);
+                } else {
+                    showResult('plan-result', false, `API call failed with status: ${resp.status}`);
+                }
+            } catch (error) {
+                showResult('plan-result', false, `Error: ${error.message}`);
+            }
+        }
+
+        async function testAIRecommendations() {
+            try {
+                const resp = await apiFetch('/recommendations/');
+                if (resp && resp.ok) {
+                    const data = await resp.json();
+                    showResult('ai-result', true, 'AI recommendations loaded successfully', data);
+                } else {
+                    showResult('ai-result', false, `API call failed with status: ${resp.status}`);
+                }
+            } catch (error) {
+                showResult('ai-result', false, `Error: ${error.message}`);
+            }
+        }
+
+        async function testProgressSummary() {
+            try {
+                const resp = await apiFetch('/progress/summary/');
+                if (resp && resp.ok) {
+                    const data = await resp.json();
+                    showResult('progress-result', true, 'Progress summary loaded successfully', data);
+                } else {
+                    showResult('progress-result', false, `API call failed with status: ${resp.status}`);
+                }
+            } catch (error) {
+                showResult('progress-result', false, `Error: ${error.message}`);
+            }
+        }
+
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            console.log('Dashboard test page loaded');
+            console.log('Access token:', getAccessToken() ? 'Present' : 'Missing');
+        });
+    </script>
+</body>
+</html>

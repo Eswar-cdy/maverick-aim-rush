@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Test - Maverick Aim Rush</title>
+    <link rel="stylesheet" href="css/uno.css">
+    <link rel="stylesheet" href="css/modern-components.css">
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-connected { background: #10b981; }
+        .status-disconnected { background: #ef4444; }
+        .status-connecting { background: #f59e0b; }
+        .log-container {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 1rem;
+            border-radius: 8px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .log-entry {
+            margin: 4px 0;
+            padding: 2px 0;
+        }
+        .log-info { color: #3b82f6; }
+        .log-success { color: #10b981; }
+        .log-error { color: #ef4444; }
+        .log-warning { color: #f59e0b; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur shadow-sm">
+        <nav class="mx-auto max-w-6xl flex items-center justify-between px-4 py-3">
+            <a href="index.html" class="flex items-center gap-2 font-display text-xl text-gray-900">
+                <img src="/MAR/Images/LOGO.png" alt="" class="h-8 w-8"> Maverick Aim Rush
+            </a>
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="test-container">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="text-2xl font-bold">WebSocket Connection Test</h1>
+                <p class="text-gray-600 mt-2">Test the real-time WebSocket connection for Maverick Aim Rush</p>
+            </div>
+            
+            <div class="card-body">
+                <!-- Connection Status -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3">Connection Status</h3>
+                    <div class="flex items-center gap-3">
+                        <span id="status-indicator" class="status-indicator status-disconnected"></span>
+                        <span id="status-text" class="font-medium">Disconnected</span>
+                    </div>
+                </div>
+
+                <!-- Test Buttons -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3">Test Controls</h3>
+                    <div class="flex gap-3">
+                        <button id="test-basic" class="btn btn-primary">Test Basic WebSocket</button>
+                        <button id="test-social" class="btn btn-secondary">Test Social WebSocket</button>
+                        <button id="clear-log" class="btn btn-ghost">Clear Log</button>
+                    </div>
+                </div>
+
+                <!-- Authentication Status -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3">Authentication Status</h3>
+                    <div id="auth-status" class="text-sm text-gray-600">
+                        Checking authentication...
+                    </div>
+                </div>
+
+                <!-- Connection Log -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Connection Log</h3>
+                    <div id="log-container" class="log-container">
+                        <div class="log-entry log-info">WebSocket test page loaded</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        class WebSocketTester {
+            constructor() {
+                this.websocket = null;
+                this.logContainer = document.getElementById('log-container');
+                this.statusIndicator = document.getElementById('status-indicator');
+                this.statusText = document.getElementById('status-text');
+                this.authStatus = document.getElementById('auth-status');
+                
+                this.setupEventListeners();
+                this.checkAuthentication();
+            }
+            
+            setupEventListeners() {
+                document.getElementById('test-basic').addEventListener('click', () => this.testBasicWebSocket());
+                document.getElementById('test-social').addEventListener('click', () => this.testSocialWebSocket());
+                document.getElementById('clear-log').addEventListener('click', () => this.clearLog());
+            }
+            
+            checkAuthentication() {
+                const token = this.getAuthToken();
+                if (token) {
+                    this.authStatus.innerHTML = `
+                        <span class="text-green-600">✓ Authenticated</span>
+                        <div class="text-xs mt-1">Token found: ${token.substring(0, 20)}...</div>
+                    `;
+                } else {
+                    this.authStatus.innerHTML = `
+                        <span class="text-red-600">✗ Not Authenticated</span>
+                        <div class="text-xs mt-1">No authentication token found</div>
+                    `;
+                }
+            }
+            
+            getAuthToken() {
+                // Try to get token from cookies or localStorage
+                const cookies = document.cookie.split(';');
+                for (let cookie of cookies) {
+                    const [name, value] = cookie.trim().split('=');
+                    if (name === 'access_token') {
+                        return value;
+                    }
+                }
+                
+                // Try localStorage
+                return localStorage.getItem('access_token');
+            }
+            
+            testBasicWebSocket() {
+                this.log('Testing basic WebSocket connection...', 'info');
+                this.connectToWebSocket('ws://localhost:8000/ws/simple-test/');
+            }
+            
+            testSocialWebSocket() {
+                const token = this.getAuthToken();
+                if (!token) {
+                    this.log('Cannot test social WebSocket - no authentication token', 'error');
+                    return;
+                }
+                
+                this.log('Testing social WebSocket connection...', 'info');
+                this.connectToWebSocket('ws://localhost:8000/ws/social/');
+            }
+            
+            connectToWebSocket(url) {
+                if (this.websocket && this.websocket.readyState === WebSocket.OPEN) {
+                    this.websocket.close();
+                }
+                
+                this.updateStatus('connecting', 'Connecting...');
+                this.log(`Connecting to: ${url}`, 'info');
+                
+                try {
+                    this.websocket = new WebSocket(url);
+                    
+                    this.websocket.onopen = (event) => {
+                        this.log('WebSocket connection opened successfully!', 'success');
+                        this.updateStatus('connected', 'Connected');
+                        
+                        // Send a test message
+                        setTimeout(() => {
+                            this.websocket.send(JSON.stringify({
+                                type: 'test_message',
+                                data: 'Hello from WebSocket test!',
+                                timestamp: new Date().toISOString()
+                            }));
+                        }, 1000);
+                    };
+                    
+                    this.websocket.onmessage = (event) => {
+                        this.log(`Received: ${event.data}`, 'success');
+                    };
+                    
+                    this.websocket.onclose = (event) => {
+                        this.log(`WebSocket connection closed. Code: ${event.code}, Reason: ${event.reason}`, 'warning');
+                        this.updateStatus('disconnected', 'Disconnected');
+                    };
+                    
+                    this.websocket.onerror = (error) => {
+                        this.log(`WebSocket error: ${error}`, 'error');
+                        this.updateStatus('disconnected', 'Connection Error');
+                    };
+                    
+                } catch (error) {
+                    this.log(`Failed to create WebSocket: ${error.message}`, 'error');
+                    this.updateStatus('disconnected', 'Connection Failed');
+                }
+            }
+            
+            updateStatus(status, text) {
+                this.statusIndicator.className = `status-indicator status-${status}`;
+                this.statusText.textContent = text;
+            }
+            
+            log(message, type = 'info') {
+                const entry = document.createElement('div');
+                entry.className = `log-entry log-${type}`;
+                entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                this.logContainer.appendChild(entry);
+                this.logContainer.scrollTop = this.logContainer.scrollHeight;
+            }
+            
+            clearLog() {
+                this.logContainer.innerHTML = '<div class="log-entry log-info">Log cleared</div>';
+            }
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new WebSocketTester();
+        });
+    </script>
+</body>
+</html>

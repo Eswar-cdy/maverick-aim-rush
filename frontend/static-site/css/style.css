@@ -8,7 +8,7 @@
   font-family: "Righteous", cursive;
   font-weight: 700;
   font-size: 1.5rem;
-  color: #ff6b35;
+  color: #ffb347;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -32,7 +32,7 @@ body {
   border-radius: 30px;
   transition: all 0.3s;
   color: #fff;
-  background: linear-gradient(45deg, #ff6b35, #f7931e);
+  background: linear-gradient(45deg, #ffb347, #ffa726);
   box-shadow: 0 3px 10px rgba(255, 107, 53, 0.3);
   transform: translateY(0);
 }
@@ -46,7 +46,7 @@ body {
   font-family: "Righteous", cursive;
   font-size: 3.5rem;
   font-weight: 600;
-  color: #ff6b35;
+  color: #ffb347;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -105,7 +105,7 @@ body {
 .workout-stat__value {
   font-size: 2rem;
   font-weight: bold;
-  color: #ff6b35;
+  color: #ffb347;
   margin-bottom: 1rem;
 }
 
@@ -166,7 +166,7 @@ body {
 }
 
 .exercise-category__button {
-  background: linear-gradient(45deg, #ff6b35, #f7931e);
+  background: linear-gradient(45deg, #ffb347, #ffa726);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -239,7 +239,7 @@ body {
 }
 
 .exercise-item__category {
-  background: #ff6b35;
+  background: #ffb347;
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 15px;
@@ -307,11 +307,11 @@ body {
 .active-workout__timer {
   font-size: 2rem;
   font-weight: bold;
-  color: #ff6b35;
+  color: #ffb347;
 }
 
 .active-workout__end {
-  background: #dc3545;
+  background: #ff8c42;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -342,7 +342,7 @@ body {
 }
 
 .active-exercise__category {
-  background: #ff6b35;
+  background: #ffb347;
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 15px;
@@ -385,7 +385,7 @@ body {
 }
 
 .set-remove {
-  background: #dc3545;
+  background: #ff8c42;
   color: white;
   border: none;
   padding: 0.25rem 0.5rem;
@@ -421,7 +421,7 @@ body {
 }
 
 .exercise-remove {
-  background: #dc3545;
+  background: #ff8c42;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -466,7 +466,7 @@ body {
 .summary-stat__value {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #ff6b35;
+  color: #ffb347;
 }
 
 /* Workout History */
@@ -511,7 +511,7 @@ body {
 }
 
 .workout-history__duration {
-  background: #ff6b35;
+  background: #ffb347;
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 15px;
@@ -629,7 +629,7 @@ body {
 
 .progress-bar__fill {
   height: 100%;
-  background: linear-gradient(45deg, #ff6b35, #f7931e);
+  background: linear-gradient(45deg, #ffb347, #ffa726);
   transition: width 0.3s ease;
 }
 
@@ -918,7 +918,7 @@ body {
 }
 
 .portion-controls button {
-  background: #ff6b35;
+  background: #ffb347;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -985,7 +985,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(90deg, #ff6b35 0%, #f7931e 100%);
+  background: linear-gradient(90deg, #ffb347 0%, #ffa726 100%);
   z-index: 1000;
   color: #fff;
 }
@@ -1045,7 +1045,7 @@ body {
   font-weight: 600;
   display: inline-block;
   padding: 0.75rem 1.5rem;
-  border: 2px solid #ff6b35;
+  border: 2px solid #ffb347;
   border-radius: 30px;
   transition: all 0.3s;
   position: relative;
@@ -1055,7 +1055,7 @@ body {
 }
 
 .actions-header__button:hover {
-  background: linear-gradient(90deg, #f7931e 0%, #ff6b35 100%) !important;
+  background: linear-gradient(90deg, #ffa726 0%, #ffb347 100%) !important;
   color: #fff !important;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
@@ -1121,7 +1121,7 @@ body.home .main {
   border-radius: 30px;
   transition: all 0.3s;
   color: #fff;
-  background: linear-gradient(45deg, #ff6b35, #f7931e);
+  background: linear-gradient(45deg, #ffb347, #ffa726);
   letter-spacing: 0.02em;
   font-size: 1.375rem;
   line-height: 110%;
@@ -1141,7 +1141,7 @@ body.home .main {
 /* ************ABOUT**************** */
 
 .main_about {
-  background: linear-gradient(120deg, #ff6b35 0%, #00bfae 100%);
+  background: linear-gradient(120deg, #ffb347 0%, #00bfae 100%);
   color: #fff;
 }
 
@@ -1255,7 +1255,7 @@ body.home .main {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
-  color: #ff6b35;
+  color: #ffb347;
 }
 
 .item-services__text {
@@ -1293,7 +1293,7 @@ body.home .main {
   margin-bottom: 4rem;
   font-weight: 600;
   text-transform: uppercase;
-  color: #f7931e;
+  color: #ffa726;
 }
 
 .testimonial__title {
@@ -1303,7 +1303,7 @@ body.home .main {
   max-width: 40.75rem;
   line-height: 136%;
   font-weight: 500;
-  color: #ff6b35;
+  color: #ffb347;
 }
 
 .item-testimonial__image {
@@ -1324,7 +1324,7 @@ body.home .main {
   font-family: "Righteous", cursive;
   margin-bottom: 0.25rem;
   font-weight: 600;
-  color: #ff6b35;
+  color: #ffb347;
 }
 
 .item-testimonial__caption {

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Measurements Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 15px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 3px; }
+        input, select { padding: 8px; margin: 5px; border: 1px solid #ccc; border-radius: 3px; }
+        .form-group { margin: 10px 0; }
+        label { display: inline-block; width: 120px; }
+    </style>
+</head>
+<body>
+    <h1>Measurements Test</h1>
+    
+    <div class="test-section info">
+        <h3>Test Instructions</h3>
+        <p>1. Make sure you're logged in (use demo mode if needed)</p>
+        <p>2. Test fetching existing measurements</p>
+        <p>3. Create a new measurement</p>
+        <p>4. Verify it appears in the list</p>
+    </div>
+
+    <div class="test-section">
+        <h3>Fetch Measurements</h3>
+        <button onclick="fetchMeasurements()">Fetch All Measurements</button>
+        <div id="fetch-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Create New Measurement</h3>
+        <div class="form-group">
+            <label>Date:</label>
+            <input type="date" id="measurement-date" value="">
+        </div>
+        <div class="form-group">
+            <label>Weight (kg):</label>
+            <input type="number" id="measurement-weight" step="0.1" placeholder="70.5">
+        </div>
+        <div class="form-group">
+            <label>Body Fat (%):</label>
+            <input type="number" id="measurement-bodyfat" step="0.1" placeholder="15.0">
+        </div>
+        <div class="form-group">
+            <label>Height (cm):</label>
+            <input type="number" id="measurement-height" step="0.1" placeholder="175.0">
+        </div>
+        <button onclick="createMeasurement()">Create Measurement</button>
+        <div id="create-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Measurement History Display</h3>
+        <button onclick="displayMeasurements()">Display in List Format</button>
+        <div id="display-result" class="result"></div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        // Set today's date as default
+        document.getElementById('measurement-date').value = new Date().toISOString().split('T')[0];
+
+        function showResult(elementId, success, message, data = null) {
+            const element = document.getElementById(elementId);
+            element.className = `result ${success ? 'success' : 'error'}`;
+            element.innerHTML = `
+                <strong>${success ? '✅ SUCCESS' : '❌ ERROR'}:</strong> ${message}
+                ${data ? `<pre>${JSON.stringify(data, null, 2)}</pre>` : ''}
+            `;
+        }
+
+        async function fetchMeasurements() {
+            try {
+                const resp = await apiFetch('/measurements/');
+                if (resp && resp.ok) {
+                    const data = await resp.json();
+                    const measurements = Array.isArray(data) ? data : (data.results || []);
+                    showResult('fetch-result', true, `Found ${measurements.length} measurements`, measurements);
+                } else {
+                    showResult('fetch-result', false, `API call failed with status: ${resp.status}`);
+                }
+            } catch (error) {
+                showResult('fetch-result', false, `Error: ${error.message}`);
+            }
+        }
+
+        async function createMeasurement() {
+            try {
+                const payload = {
+                    date: document.getElementById('measurement-date').value,
+                    weight_kg: parseFloat(document.getElementById('measurement-weight').value) || null,
+                    body_fat_percentage: parseFloat(document.getElementById('measurement-bodyfat').value) || null,
+                    height_cm: parseFloat(document.getElementById('measurement-height').value) || null,
+                };
+
+                if (!payload.date) {
+                    showResult('create-result', false, 'Please select a date');
+                    return;
+                }
+
+                const resp = await apiFetch('/measurements/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (resp && resp.ok) {
+                    const data = await resp.json();
+                    showResult('create-result', true, 'Measurement created successfully', data);
+                    // Clear form
+                    document.getElementById('measurement-weight').value = '';
+                    document.getElementById('measurement-bodyfat').value = '';
+                    document.getElementById('measurement-height').value = '';
+                } else {
+                    showResult('create-result', false, `API call failed with status: ${resp.status}`);
+                }
+            } catch (error) {
+                showResult('create-result', false, `Error: ${error.message}`);
+            }
+        }
+
+        async function displayMeasurements() {
+            try {
+                const resp = await apiFetch('/measurements/');
+                if (resp && resp.ok) {
+                    const data = await resp.json();
+                    const measurements = Array.isArray(data) ? data : (data.results || []);
+                    
+                    if (measurements.length === 0) {
+                        showResult('display-result', true, 'No measurements found. Create one above!');
+                        return;
+                    }
+
+                    const html = measurements.slice(0, 10).map(m => {
+                        const bmi = m.bmi != null ? `BMI: ${m.bmi}` : '';
+                        const bf = m.body_fat_percentage != null ? `${m.body_fat_percentage}%` : '—';
+                        const w = m.weight_kg != null ? `${m.weight_kg} kg` : '—';
+                        return `<div style="padding:.5rem 0;border-bottom:1px solid #eee;display:flex;justify-content:space-between;gap:1rem;align-items:center;">
+                            <div><strong>${m.date}</strong> · Weight: ${w} · Body Fat: ${bf} ${bmi ? ' · '+bmi : ''}</div>
+                            ${m.photo_url ? `<a href="${m.photo_url}" target="_blank" style="color:#3b82f6;">Photo</a>` : ''}
+                        </div>`;
+                    }).join('');
+
+                    showResult('display-result', true, `Displaying ${measurements.length} measurements:`, html);
+                } else {
+                    showResult('display-result', false, `API call failed with status: ${resp.status}`);
+                }
+            } catch (error) {
+                showResult('display-result', false, `Error: ${error.message}`);
+            }
+        }
+
+        // Auto-run fetch on page load
+        window.addEventListener('load', () => {
+            console.log('Measurements test page loaded');
+            console.log('Access token:', getAccessToken() ? 'Present' : 'Missing');
+            fetchMeasurements();
+        });
+    </script>
+</body>
+</html>

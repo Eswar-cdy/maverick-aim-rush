@@ -1,0 +1,167 @@
+<figure id="body-map" class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+  <header class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div class="h-2 w-2 rounded-full bg-emerald-500"></div>
+      <p class="text-sm text-gray-600 dark:text-gray-300">Tip: Click a body area to focus the matching field.</p>
+    </div>
+    <div class="inline-flex rounded-xl border border-gray-200 bg-white p-1 dark:border-gray-700 dark:bg-gray-900">
+      <button type="button" class="bm-view-btn rounded-lg px-3 py-1.5 text-sm font-medium data-[active=true]:bg-orange-50 data-[active=true]:text-orange-700"
+              data-view="front" aria-pressed="true">Front</button>
+      <button type="button" class="bm-view-btn rounded-lg px-3 py-1.5 text-sm font-medium data-[active=true]:bg-orange-50 data-[active=true]:text-orange-700"
+              data-view="back" aria-pressed="false">Back</button>
+    </div>
+  </header>
+
+  <div class="relative">
+    <!-- FRONT VIEW -->
+    <svg class="bm-svg" data-view="front" viewBox="0 0 360 640" role="img" aria-labelledby="bmTitle bmDesc"
+         preserveAspectRatio="xMidYMid meet">
+      <title id="bmTitle">Body measurement map (front)</title>
+      <desc id="bmDesc">Select a body area to fill the corresponding field.</desc>
+      <defs>
+        <linearGradient id="bmAccent" x1="0" x2="1">
+          <stop offset="0" stop-color="hsl(28 90% 54%)"/><!-- amber-500 -->
+          <stop offset="1" stop-color="hsl(28 84% 47%)"/><!-- amber-600 -->
+        </linearGradient>
+        <style>
+          .bm-outline{fill:none;stroke:#374151;stroke-width:2} /* gray-700 */
+          .bm-grid{stroke:#e5e7eb;stroke-dasharray:4 6}        /* gray-200 */
+          .bm-label{font:600 12px/1.2 ui-sans-serif,system-ui;fill:#6b7280} /* gray-500 */
+          .bm-region{fill:transparent;stroke:transparent;cursor:pointer;transition:fill .15s ease}
+          .bm-region:hover,.bm-region:focus-visible{fill:color-mix(in srgb, hsl(28 90% 54%) 16%, transparent);outline:none}
+          .bm-region.is-active{fill:url(#bmAccent);filter:drop-shadow(0 2px 6px rgba(0,0,0,.18))}
+          @media (prefers-color-scheme: dark) {
+            .bm-outline{stroke:#9ca3af} /* gray-400 */
+            .bm-grid{stroke:#374151}    /* gray-700 */
+            .bm-label{fill:#9ca3af}     /* gray-400 */
+          }
+        </style>
+      </defs>
+
+      <!-- vertical guide -->
+      <line x1="320" y1="30" x2="320" y2="610" class="bm-grid"/>
+
+      <!-- silhouette -->
+      <g class="bm-outline">
+        <circle cx="180" cy="70" r="28"/>
+        <path d="M150,98 Q180,108 210,98 C228,112 244,132 250,154 C260,188 260,236 260,288 C260,352 244,394 228,414 C216,430 206,456 206,484 L154,484 C154,456 144,430 132,414 C116,394 100,352 100,288 C100,236 100,188 110,154 C116,132 132,112 150,98 Z"/>
+        <path d="M154,484 L154,580 Q154,606 180,606 Q206,606 206,580 L206,484"/>
+        <path d="M154,580 Q154,618 136,618 M206,580 Q206,618 224,618"/>
+      </g>
+
+      <!-- clickable regions (ID ↔ input IDs in JS) -->
+      <g id="neck" class="bm-region" role="button" tabindex="0" aria-label="Neck">
+        <rect x="168" y="92" width="24" height="16" rx="8"/>
+      </g>
+      <g id="shoulder" class="bm-region" role="button" tabindex="0" aria-label="Shoulders">
+        <rect x="124" y="112" width="112" height="22" rx="11"/>
+      </g>
+      <g id="chest" class="bm-region" role="button" tabindex="0" aria-label="Chest">
+        <rect x="120" y="150" width="120" height="28" rx="14"/>
+      </g>
+      <g id="waist" class="bm-region" role="button" tabindex="0" aria-label="Waist">
+        <rect x="132" y="206" width="96" height="26" rx="13"/>
+      </g>
+      <g id="hips" class="bm-region" role="button" tabindex="0" aria-label="Hips">
+        <rect x="130" y="252" width="100" height="28" rx="14"/>
+      </g>
+      <g id="l_bicep" class="bm-region" role="button" tabindex="0" aria-label="Left bicep">
+        <rect x="92" y="172" width="24" height="42" rx="12"/>
+      </g>
+      <g id="r_bicep" class="bm-region" role="button" tabindex="0" aria-label="Right bicep">
+        <rect x="244" y="172" width="24" height="42" rx="12"/>
+      </g>
+      <g id="l_forearm" class="bm-region" role="button" tabindex="0" aria-label="Left forearm">
+        <rect x="92" y="218" width="24" height="40" rx="12"/>
+      </g>
+      <g id="r_forearm" class="bm-region" role="button" tabindex="0" aria-label="Right forearm">
+        <rect x="244" y="218" width="24" height="40" rx="12"/>
+      </g>
+      <g id="l_thigh" class="bm-region" role="button" tabindex="0" aria-label="Left thigh">
+        <rect x="150" y="410" width="26" height="64" rx="13"/>
+      </g>
+      <g id="r_thigh" class="bm-region" role="button" tabindex="0" aria-label="Right thigh">
+        <rect x="184" y="410" width="26" height="64" rx="13"/>
+      </g>
+      <g id="l_calf" class="bm-region" role="button" tabindex="0" aria-label="Left calf">
+        <rect x="152" y="486" width="22" height="60" rx="11"/>
+      </g>
+      <g id="r_calf" class="bm-region" role="button" tabindex="0" aria-label="Right calf">
+        <rect x="186" y="486" width="22" height="60" rx="11"/>
+      </g>
+
+      <!-- labels (front) -->
+      <text x="24" y="104" class="bm-label">Neck</text>
+      <text x="24" y="128" class="bm-label">Shoulder</text>
+      <text x="24" y="170" class="bm-label">Chest</text>
+      <text x="24" y="222" class="bm-label">Waist</text>
+      <text x="24" y="270" class="bm-label">Hips</text>
+      <text x="274" y="196" class="bm-label">Right Bicep</text>
+      <text x="274" y="240" class="bm-label">Right Forearm</text>
+      <text x="10"  y="196" class="bm-label">Left Bicep</text>
+      <text x="6"   y="240" class="bm-label">Left Forearm</text>
+      <text x="274" y="446" class="bm-label">Right Thigh</text>
+      <text x="274" y="520" class="bm-label">Right Calf</text>
+      <text x="10"  y="446" class="bm-label">Left Thigh</text>
+      <text x="10"  y="520" class="bm-label">Left Calf</text>
+    </svg>
+
+    <!-- BACK VIEW -->
+    <svg class="bm-svg hidden" data-view="back" viewBox="0 0 360 640" role="img" aria-label="Body measurement map (back)"
+         preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="bmAccentBack" x1="0" x2="1">
+          <stop offset="0" stop-color="hsl(28 90% 54%)"/>
+          <stop offset="1" stop-color="hsl(28 84% 47%)"/>
+        </linearGradient>
+        <style>
+          .bm-outline{fill:none;stroke:#374151;stroke-width:2}
+          .bm-grid{stroke:#e5e7eb;stroke-dasharray:4 6}
+          .bm-label{font:600 12px/1.2 ui-sans-serif,system-ui;fill:#6b7280}
+          .bm-region{fill:transparent;stroke:transparent;cursor:pointer;transition:fill .15s ease}
+          .bm-region:hover,.bm-region:focus-visible{fill:color-mix(in srgb, hsl(28 90% 54%) 16%, transparent);outline:none}
+          .bm-region.is-active{fill:url(#bmAccentBack);filter:drop-shadow(0 2px 6px rgba(0,0,0,.18))}
+          @media (prefers-color-scheme: dark) {
+            .bm-outline{stroke:#9ca3af}
+            .bm-grid{stroke:#374151}
+            .bm-label{fill:#9ca3af}
+          }
+        </style>
+      </defs>
+
+      <line x1="320" y1="30" x2="320" y2="610" class="bm-grid"/>
+
+      <!-- back silhouette (simplified) -->
+      <g class="bm-outline">
+        <circle cx="180" cy="70" r="28"/>
+        <path d="M150,98 Q180,108 210,98 C228,112 244,132 250,154 C260,188 260,236 260,288 C260,352 244,394 228,414 C216,430 206,456 206,484 L154,484 C154,456 144,430 132,414 C116,394 100,352 100,288 C100,236 100,188 110,154 C116,132 132,112 150,98 Z"/>
+        <path d="M154,484 L154,580 Q154,606 180,606 Q206,606 206,580 L206,484"/>
+        <path d="M154,580 Q154,618 136,618 M206,580 Q206,618 224,618"/>
+      </g>
+
+      <!-- back-specific regions -->
+      <g id="upper_back" class="bm-region" role="button" tabindex="0" aria-label="Upper back">
+        <rect x="120" y="150" width="120" height="36" rx="18"/>
+      </g>
+      <g id="lower_back" class="bm-region" role="button" tabindex="0" aria-label="Lower back">
+        <rect x="132" y="206" width="96" height="36" rx="18"/>
+      </g>
+      <g id="glutes" class="bm-region" role="button" tabindex="0" aria-label="Glutes">
+        <rect x="130" y="252" width="100" height="40" rx="20"/>
+      </g>
+      <g id="l_hamstring" class="bm-region" role="button" tabindex="0" aria-label="Left hamstring">
+        <rect x="150" y="410" width="26" height="64" rx="13"/>
+      </g>
+      <g id="r_hamstring" class="bm-region" role="button" tabindex="0" aria-label="Right hamstring">
+        <rect x="184" y="410" width="26" height="64" rx="13"/>
+      </g>
+
+      <!-- labels (back) -->
+      <text x="24" y="170" class="bm-label">Upper Back</text>
+      <text x="24" y="222" class="bm-label">Lower Back</text>
+      <text x="24" y="270" class="bm-label">Glutes</text>
+      <text x="274" y="446" class="bm-label">Right Hamstring</text>
+      <text x="10"  y="446" class="bm-label">Left Hamstring</text>
+    </svg>
+  </div>
+</figure>

@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Body Map — Clean View</title>
+<style>
+  :root{
+    --bg-1: #6b7bef;
+    --bg-2: #7b53b0;
+    --card-bg: #ffffff;
+    --muted: #6b7280;
+    --accent-stroke: #9fb6d9;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: linear-gradient(90deg, rgba(107,123,239,1) 0%, rgba(123,83,176,1) 100%);
+    color:#1f2937;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:32px;
+  }
+
+  .wrap{
+    max-width:1200px;
+    margin:0 auto;
+    background:var(--card-bg);
+    border-radius:14px;
+    padding:36px;
+    box-shadow:0 18px 46px rgba(15,23,42,0.16);
+  }
+
+  header{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:18px;
+  }
+  h1{font-size:20px; margin:0; letter-spacing:0.4px}
+  .subtitle{color:var(--muted); font-size:13px; margin-top:4px}
+
+  .layout{
+    display:grid;
+    grid-template-columns: 1fr 420px 1fr;
+    gap:24px;
+    align-items:start;
+    position:relative;
+  }
+
+  /* center card for diagram */
+  .diagram-card{
+    grid-column: 1 / -1;
+    margin: 8px auto;
+    width:420px;
+    border-radius:14px;
+    padding:28px 20px;
+    background: linear-gradient(180deg, #fbfdff 0%, #f6f9ff 100%);
+    box-shadow: 0 10px 30px rgba(43,60,120,0.06);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+
+  .diagram-wrap{ width:320px; height:auto; display:block; }
+
+  @media (max-width: 920px){
+    .layout{ grid-template-columns: 1fr; }
+    .diagram-card{ grid-column:1 / -1; width:86%; }
+    .wrap{ padding:20px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap" role="main">
+    <header>
+      <div>
+        <h1>Body Map</h1>
+        <div class="subtitle">Clean view — human silhouette adjusted to match your screenshot</div>
+      </div>
+      <div style="color:var(--muted); font-size:13px;">&nbsp;</div>
+    </header>
+
+    <div class="layout">
+      <!-- centered diagram card -->
+      <div class="diagram-card" aria-hidden="false">
+        <div class="diagram-wrap" role="img" aria-label="Stylized front-facing human silhouette">
+          <!-- SVG: stylized human, long torso/legs, rounded shoulders, subtle centerline -->
+          <svg viewBox="0 0 240 820" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" width="320">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#e9f2ff"/>
+                <stop offset="1" stop-color="#d6e8ff"/>
+              </linearGradient>
+              <linearGradient id="g2" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+                <stop offset="1" stop-color="#ffffff" stop-opacity="0.18"/>
+              </linearGradient>
+            </defs>
+
+            <!-- faint rounded card background inside SVG for soft center panel -->
+            <rect x="8" y="8" width="224" height="804" rx="20" fill="url(#g2)" opacity="0.25"/>
+
+            <!-- faint centerline -->
+            <line x1="120" y1="28" x2="120" y2="780" stroke="#9fb6d9" stroke-width="0.8" opacity="0.12" stroke-dasharray="3 4"/>
+
+            <!-- head -->
+            <ellipse cx="120" cy="76" rx="30" ry="34" fill="url(#g1)" stroke="#9fb6d9" stroke-width="1.6"/>
+
+            <!-- neck -->
+            <path d="M108 106 C108 106, 108 122, 120 126 C132 122, 132 106, 132 106" fill="url(#g1)" stroke="#9fb6d9" stroke-width="1.2"/>
+
+            <!-- shoulders / upper torso (rounded trapezoid) -->
+            <path d="M75 126
+                     C82 150, 88 166, 96 184
+                     C104 200, 116 224, 120 224
+                     C124 224, 136 200, 144 184
+                     C152 166, 158 150, 165 126
+                     L165 136
+                     C158 170, 150 188, 142 202
+                     C132 220, 124 234, 120 234
+                     C116 234, 108 220, 98 202
+                     C90 188, 82 170, 75 136 Z"
+                  fill="url(#g1)" stroke="#9fb6d9" stroke-width="1.6" />
+
+            <!-- arm shadows (thin along sides) -->
+            <path d="M70 140 C62 180, 62 210, 74 248 C78 264, 88 284, 92 284" fill="none" stroke="#9fb6d9" stroke-width="2.6" opacity="0.12"/>
+            <path d="M170 140 C178 180, 178 210, 166 248 C162 264, 152 284, 148 284" fill="none" stroke="#9fb6d9" stroke-width="2.6" opacity="0.12"/>
+
+            <!-- mid torso / abdomen - smoother teardrop shape -->
+            <path d="M95 234
+                     C98 260, 104 300, 112 350
+                     C116 380, 118 410, 118 434
+                     C118 454, 122 508, 120 550
+                     C118 592, 114 650, 118 700
+                     C122 740, 122 740, 120 740
+                     C118 740, 118 740, 122 700
+                     C126 658, 124 616, 124 580
+                     C124 542, 118 506, 118 484
+                     C118 452, 120 434, 120 434
+                     C120 410, 122 380, 126 350
+                     C134 300, 140 260, 145 234
+                     C138 242, 128 250, 120 250
+                     C112 250, 102 242, 95 234 Z"
+                  fill="url(#g1)" stroke="#9fb6d9" stroke-width="1.4" opacity="0.98"/>
+
+            <!-- slender legs (long tapered forms) -->
+            <!-- left leg -->
+            <path d="M118 550
+                     C112 610, 108 660, 104 720
+                     C102 748, 96 768, 96 780
+                     C100 784, 110 784, 112 780
+                     C116 770, 122 720, 124 688
+                     C126 650, 122 604, 118 550 Z"
+                  fill="url(#g1)" stroke="#9fb6d9" stroke-width="1.2"/>
+
+            <!-- right leg (mirror) -->
+            <path d="M122 550
+                     C128 610, 132 660, 136 720
+                     C138 748, 144 768, 144 780
+                     C140 784, 130 784, 128 780
+                     C124 770, 118 720, 116 688
+                     C114 650, 118 604, 122 550 Z"
+                  fill="url(#g1)" stroke="#9fb6d9" stroke-width="1.2"/>
+
+            <!-- small round feet as in screenshot -->
+            <ellipse cx="108" cy="790" rx="20" ry="8" fill="#dfeeff" stroke="#9fb6d9" stroke-width="1"/>
+            <ellipse cx="132" cy="790" rx="20" ry="8" fill="#dfeeff" stroke="#9fb6d9" stroke-width="1"/>
+
+            <!-- soft highlight center -->
+            <path d="M116 140 C118 180, 120 220, 120 250 C120 296, 122 330, 124 370 C126 410, 126 450, 124 494 C122 540, 122 580, 124 620 C126 660, 124 700, 122 740" fill="none" stroke="#fff" stroke-width="6" opacity="0.06" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- empty grid columns left/right to preserve spacing (kept intentionally blank for the clean centered look) -->
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+</body>
+</html>

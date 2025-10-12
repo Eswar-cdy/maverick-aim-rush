@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ff6b35">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Maverick Aim Rush">
+    <title>Gamification - Maverick Aim Rush</title>
+    <link rel="stylesheet" href="https://unpkg.com/@unocss/reset/tailwind.css">
+    <link rel="stylesheet" href="/MAR/css/uno.css?v=2025-09-30">
+    <link rel="icon" type="image/png" href="/MAR/Images/favicon.png">
+    <link rel="apple-touch-icon" href="/MAR/Images/favicon.png">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        .level-up-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.4);
+            z-index: 1000;
+            animation: levelUpBounce 0.8s ease-out;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Enhanced Card Animations */
+        .stat-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .stat-card:hover::before {
+            left: 100%;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        /* Progress Bar Animations */
+        .progress-fill {
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-image: linear-gradient(
+                -45deg,
+                rgba(255, 255, 255, 0.2) 25%,
+                transparent 25%,
+                transparent 50%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0.2) 75%,
+                transparent 75%,
+                transparent
+            );
+            background-size: 30px 30px;
+            animation: progressStripes 1s linear infinite;
+        }
+        
+        @keyframes progressStripes {
+            0% { background-position: 0 0; }
+            100% { background-position: 30px 0; }
+        }
+        
+        @keyframes levelUpBounce {
+            0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            70% { transform: translate(-50%, -50%) scale(0.9); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        
+        .badge-item.earned {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .badge-item.available {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .badge-rarity.common { color: #6b7280; }
+        .badge-rarity.uncommon { color: #10b981; }
+        .badge-rarity.rare { color: #3b82f6; }
+        .badge-rarity.epic { color: #8b5cf6; }
+        .badge-rarity.legendary { color: #f59e0b; }
+        
+        .quest-item.completed {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .leaderboard-entry.top-three {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            color: white;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .notification.success { background: #10b981; }
+        .notification.error { background: #ef4444; }
+        .notification.info { background: #3b82f6; }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .progress-bar {
+            background: #e5e7eb;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            height: 0.5rem;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #ff6b35, #f7931e);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur shadow-sm">
+      <nav class="mx-auto max-w-6xl flex items-center justify-between px-4 py-3">
+        <a href="/MAR/index.html" class="flex items-center gap-2 font-display text-xl text-gray-900"><img src="/MAR/Images/LOGO.png" alt="" class="h-8 w-8"> Maverick Aim Rush</a>
+        <ul class="hidden md:flex items-center gap-6 text-gray-700">
+          <li><a href="/MAR/index.html" class="hover:text-orange-600">Dashboard</a></li>
+          <li><a href="/MAR/about.html" class="hover:text-orange-600">Workout Tracker</a></li>
+          <li><a href="/MAR/services.html" class="hover:text-orange-600">Nutrition Log</a></li>
+          <li><a href="/MAR/contact.html" class="hover:text-orange-600">Progress</a></li>
+          <li><a href="/MAR/social.html" class="hover:text-orange-600">Social</a></li>
+          <li><a href="/MAR/gamification.html" class="hover:text-orange-600 font-medium">Gamification</a></li>
+        </ul>
+        <div class="flex items-center gap-3">
+          <button id="units-toggle" class="hidden md:inline-flex items-center rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50"><span id="units-display">kg/km</span></button>
+          <button id="logout-btn" class="rounded-lg bg-orange-600 px-4 py-2 text-white hover:bg-orange-500">Logout</button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="min-h-screen bg-gray-50">
+        <div class="mx-auto max-w-7xl px-6 py-8">
+            <!-- Gamification Hero -->
+            <section class="mb-8">
+              <div class="rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 text-white p-8 shadow-md">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h1 class="text-3xl font-bold mb-2">Gamification Dashboard</h1>
+                    <p class="text-orange-100">Level up, earn badges, and compete with friends!</p>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <button id="refresh-gamification" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm">
+                      Refresh
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Level and XP Overview -->
+            <section class="mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Level Card -->
+                    <div class="bg-white rounded-xl p-6 shadow-sm border">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Level</h3>
+                            <span class="text-2xl">⭐</span>
+                        </div>
+                        <div class="text-3xl font-bold text-orange-600 mb-2" id="user-level">1</div>
+                        <div class="text-sm text-gray-500">Current Level</div>
+                        <div class="mt-4">
+                            <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                <span>Progress to Next Level</span>
+                                <span id="xp-to-next">1000</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="level-progress-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- XP Card -->
+                    <div class="bg-white rounded-xl p-6 shadow-sm border">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Experience Points</h3>
+                            <span class="text-2xl">💎</span>
+                        </div>
+                        <div class="text-3xl font-bold text-orange-600 mb-2" id="user-xp">0</div>
+                        <div class="text-sm text-gray-500">Total XP Earned</div>
+                        <div class="mt-4 text-sm text-gray-600">
+                            <div>Current Streak: <span class="font-semibold" id="current-streak">0</span> days</div>
+                            <div>Longest Streak: <span class="font-semibold" id="longest-streak">0</span> days</div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Card -->
+                    <div class="bg-white rounded-xl p-6 shadow-sm border">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Statistics</h3>
+                            <span class="text-2xl">📊</span>
+                        </div>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Workouts:</span>
+                                <span class="font-semibold" id="total-workouts">0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Challenges:</span>
+                                <span class="font-semibold" id="total-challenges">0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Achievements:</span>
+                                <span class="font-semibold" id="total-achievements">0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Badges:</span>
+                                <span class="font-semibold" id="earned-badges">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation Tabs -->
+            <section class="mb-6 flex w-full justify-center">
+              <div class="inline-flex rounded-xl border border-gray-200 bg-white p-1 shadow-sm">
+                <button class="gamification-tab rounded-lg px-4 py-2 text-sm font-medium text-gray-600 data-[active=true]:bg-orange-50 data-[active=true]:text-orange-700 data-[active=true]:shadow" data-section="quests">Daily Quests</button>
+                <button class="gamification-tab rounded-lg px-4 py-2 text-sm font-medium text-gray-600 data-[active=true]:bg-orange-50 data-[active=true]:text-orange-700 data-[active=true]:shadow" data-section="badges">Badges</button>
+                <button class="gamification-tab rounded-lg px-4 py-2 text-sm font-medium text-gray-600 data-[active=true]:bg-orange-50 data-[active=true]:text-orange-700 data-[active=true]:shadow" data-section="leaderboard">Leaderboard</button>
+                <button class="gamification-tab rounded-lg px-4 py-2 text-sm font-medium text-gray-600 data-[active=true]:bg-orange-50 data-[active=true]:text-orange-700 data-[active=true]:shadow" data-section="activities">Recent Activities</button>
+              </div>
+            </section>
+
+            <!-- Daily Quests Section -->
+            <section id="quests-section" class="gamification-section">
+                <div class="bg-white rounded-xl p-6 shadow-sm border">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-semibold text-gray-900">Daily Quests</h2>
+                        <div class="text-sm text-gray-500">
+                            <span id="quests-completed">0</span> / <span id="quests-total">0</span> completed
+                        </div>
+                    </div>
+                    <div id="daily-quests" class="space-y-4">
+                        <!-- Quest items will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Badges Section -->
+            <section id="badges-section" class="gamification-section hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Earned Badges -->
+                    <div class="bg-white rounded-xl p-6 shadow-sm border">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">🏆 Earned Badges</h3>
+                        <div id="earned-badges" class="space-y-3">
+                            <!-- Earned badges will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Available Badges -->
+                    <div class="bg-white rounded-xl p-6 shadow-sm border">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">🎯 Available Badges</h3>
+                        <div id="available-badges" class="space-y-3">
+                            <!-- Available badges will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Leaderboard Section -->
+            <section id="leaderboard-section" class="gamification-section hidden">
+                <div class="bg-white rounded-xl p-6 shadow-sm border">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-semibold text-gray-900">Leaderboard</h2>
+                        <div class="flex gap-2">
+                            <button class="leaderboard-tab active px-3 py-1 rounded-lg text-sm bg-orange-100 text-orange-700" data-type="xp">XP</button>
+                            <button class="leaderboard-tab px-3 py-1 rounded-lg text-sm bg-gray-100 text-gray-600" data-type="level">Level</button>
+                            <button class="leaderboard-tab px-3 py-1 rounded-lg text-sm bg-gray-100 text-gray-600" data-type="streak">Streak</button>
+                        </div>
+                    </div>
+                    <div id="leaderboard-list" class="space-y-3">
+                        <!-- Leaderboard entries will be populated by JavaScript -->
+                    </div>
+                    <div class="mt-6 p-4 bg-orange-50 rounded-lg">
+                        <div class="text-center">
+                            <span class="text-sm text-gray-600">Your Rank: </span>
+                            <span class="font-semibold text-orange-600" id="user-leaderboard-rank">#1</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Activities Section -->
+            <section id="activities-section" class="gamification-section hidden">
+                <div class="bg-white rounded-xl p-6 shadow-sm border">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6">Recent Activities</h2>
+                    <div id="recent-activities" class="space-y-4">
+                        <!-- Recent activities will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/api.js?v=4"></script>
+    <script src="js/gamification.js?v=1"></script>
+    <script>
+      // Tab switching for gamification sections
+      (function(){
+        function activate(key){
+          document.querySelectorAll('.gamification-tab').forEach(b=>b.dataset.active=(b.dataset.section===key));
+          const ids=['quests','badges','leaderboard','activities'];
+          ids.forEach(id=>{
+            const el=document.getElementById(id+'-section');
+            if (el) el.classList.toggle('hidden', id!==key);
+          });
+        }
+        document.querySelectorAll('.gamification-tab').forEach(b=>{
+          b.addEventListener('click', ()=>activate(b.dataset.section));
+        });
+        activate('quests'); // Default
+      })();
+    </script>
+</body>
+</html>

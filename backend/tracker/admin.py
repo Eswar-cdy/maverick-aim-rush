@@ -2,7 +2,10 @@
 from django.contrib import admin
 from .models import (
     Goal, BodyMeasurement, ExerciseCatalog, WorkoutSession, StrengthSet,
-    CardioEntry, NutritionLog, SleepLog, InjuryLog, Plan, PlannedExercise
+    CardioEntry, NutritionLog, SleepLog, InjuryLog, Plan, PlannedExercise,
+    MacroTarget, CalculatorResult, ProgressAnalytics, PersonalRecord,
+    WorkoutStreak, UserConnection, Challenge, ChallengeParticipation,
+    Leaderboard, LeaderboardEntry, Achievement, UserAchievement
 )
 
 # Register models for quick admin entry
@@ -17,3 +20,15 @@ admin.site.register(SleepLog)
 admin.site.register(InjuryLog)
 admin.site.register(Plan)
 admin.site.register(PlannedExercise)
+admin.site.register(MacroTarget)
+admin.site.register(CalculatorResult)
+admin.site.register(ProgressAnalytics)
+admin.site.register(PersonalRecord)
+admin.site.register(WorkoutStreak)
+admin.site.register(UserConnection)
+admin.site.register(Challenge)
+admin.site.register(ChallengeParticipation)
+admin.site.register(Leaderboard)
+admin.site.register(LeaderboardEntry)
+admin.site.register(Achievement)
+admin.site.register(UserAchievement)

@@ -10,12 +10,83 @@ class WorkoutTracker {
         
         this.currentPage = 1;
         this.currentCategory = null;
+        this.userProfile = null; // Store user profile for unit preferences
+        
+        // Phase 2: Real-time features
+        this.websocketClient = null;
+        this.currentSessionId = null;
+        this.realTimeUpdates = {
+            heartRate: null,
+            setCount: 0,
+            lastSetTime: null
+        };
 
         this.renderHistory();
         this.initializeEventListeners();
         this.loadExercises();
+        this.loadUserProfile();
         // Also try to load history from backend (if logged in)
         this.loadBackendHistory();
+    }
+
+    async loadUserProfile() {
+        try {
+            if (typeof fetchUserProfile === 'function') {
+                this.userProfile = await fetchUserProfile();
+                // Refresh workout form if it's currently displayed
+                this.refreshWorkoutForm();
+            }
+        } catch (error) {
+            console.warn('Could not load user profile:', error);
+            // Default to imperial if profile can't be loaded
+            this.userProfile = { unit_system: 'imperial' };
+        }
+    }
+
+    refreshWorkoutForm() {
+        // Update all weight input placeholders and values
+        const weightInputs = document.querySelectorAll('.set-weight');
+        weightInputs.forEach(input => {
+            const placeholder = input.getAttribute('placeholder');
+            if (placeholder && placeholder.includes('Weight')) {
+                input.setAttribute('placeholder', `Weight (${this.getWeightUnit()})`);
+            }
+        });
+    }
+
+    isImperial() {
+        return this.userProfile && this.userProfile.unit_system === 'imperial';
+    }
+
+    getWeightUnit() {
+        return this.isImperial() ? 'lb' : 'kg';
+    }
+
+    getDistanceUnit() {
+        return this.isImperial() ? 'mi' : 'km';
+    }
+
+    // Convert kg to lb for display
+    kgToLb(kg) {
+        return Math.round(kg * 2.20462 * 10) / 10; // Round to 1 decimal
+    }
+
+    // Convert lb to kg for storage
+    lbToKg(lb) {
+        return Math.round(lb / 2.20462 * 10) / 10; // Round to 1 decimal
+    }
+
+    // Convert weight for display based on user preference
+    formatWeight(weightKg) {
+        if (!weightKg) return '';
+        return this.isImperial() ? this.kgToLb(weightKg) : weightKg;
+    }
+
+    // Convert weight for storage (always store in kg)
+    parseWeight(weightStr) {
+        const weight = parseFloat(weightStr);
+        if (!weight) return null;
+        return this.isImperial() ? this.lbToKg(weight) : weight;
     }
 
     notify(message) {
@@ -44,7 +115,15 @@ class WorkoutTracker {
     updateSet(exerciseIndex, setIndex, field, value) {
         const exercise = this.currentWorkout.exercises[exerciseIndex];
         const set = exercise.sets[setIndex];
-        set[field] = value ? Number(value) : '';
+        
+        if (field === 'weight') {
+            // Convert weight to kg for storage
+            const weightKg = this.parseWeight(value);
+            set[field] = weightKg || '';
+        } else {
+            set[field] = value ? Number(value) : '';
+        }
+        
         this.updateActiveWorkout();
         if (this.sessionId && field === 'weight' && set.reps && set.weight && exercise.id) {
             const setNumber = setIndex + 1;
@@ -53,20 +132,50 @@ class WorkoutTracker {
     }
 
     initializeEventListeners() {
+        console.log('Initializing workout tracker event listeners...');
+        
         const startBtn = document.getElementById('start-workout-btn');
         const endBtn = document.getElementById('end-workout-btn');
-        if (startBtn) startBtn.addEventListener('click', () => { this.startWorkout(); this.showActiveWorkout(); if (startBtn) startBtn.style.display='none'; if (endBtn) endBtn.style.display='inline-block'; });
-        if (endBtn) endBtn.addEventListener('click', () => this.endWorkout());
+        
+        if (startBtn) {
+            console.log('Start workout button found, adding event listener');
+            startBtn.addEventListener('click', () => { 
+                console.log('Start workout clicked');
+                this.startWorkout(); 
+                this.showActiveWorkout(); 
+                if (startBtn) startBtn.style.display='none'; 
+                if (endBtn) endBtn.style.display='inline-block'; 
+            });
+        } else {
+            // Button may be hidden in AI flow; not an error
+            console.debug('Start workout button not found (AI flow may manage start)');
+        }
+        
+        if (endBtn) {
+            console.log('End workout button found, adding event listener');
+            endBtn.addEventListener('click', () => {
+                console.log('End workout clicked');
+                this.endWorkout();
+            });
+        } else {
+            console.warn('End workout button not found');
+        }
 
         // Ensure View Exercises buttons work even if inline onclick is ignored
-        document.querySelectorAll('.exercise-category__button').forEach(btn => {
+        const categoryButtons = document.querySelectorAll('.exercise-category__button');
+        console.log(`Found ${categoryButtons.length} exercise category buttons`);
+        
+        categoryButtons.forEach((btn, index) => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 const card = btn.closest('.exercise-category');
                 const category = card ? card.getAttribute('data-category') : null;
+                console.log(`Category button ${index} clicked, category: ${category}`);
                 if (category) this.showExercises(category);
             });
         });
+        
+        console.log('Workout tracker event listeners initialized');
     }
 
     loadLocal(key) {
@@ -77,6 +186,8 @@ class WorkoutTracker {
     }
 
     async showExercises(category) {
+        console.log(`Showing exercises for category: ${category}`);
+        
         // If category changes, reset filters and page
         if (this.currentCategory !== category) {
             this.currentPage = 1;
@@ -88,6 +199,14 @@ class WorkoutTracker {
         const exerciseGrid = document.getElementById('exercise-grid');
         const exerciseListTitle = document.getElementById('exercise-list-title');
         const categoriesSection = document.querySelector('.exercise-categories');
+        
+        console.log('Elements found:', {
+            exerciseList: !!exerciseList,
+            exerciseGrid: !!exerciseGrid,
+            exerciseListTitle: !!exerciseListTitle,
+            categoriesSection: !!categoriesSection
+        });
+        
         if (categoriesSection) categoriesSection.style.display = 'none';
         if (exerciseList) exerciseList.style.display = 'block';
         if (exerciseListTitle) exerciseListTitle.textContent = `${category.charAt(0).toUpperCase() + category.slice(1)} Exercises`;
@@ -100,7 +219,10 @@ class WorkoutTracker {
         try {
             const params = this.collectFilters();
             params.category = key;
+            console.log('Fetching exercises with params:', params);
+            
             const data = await fetchExercises(params);
+            console.log('Exercises fetched successfully:', data);
             
             // data is now the full paginated response object
             categoryExercises = data.results || [];
@@ -110,12 +232,15 @@ class WorkoutTracker {
             if (data && data.facets) {
                 this.renderFacets(data.facets);
             }
-        } catch (_) {
+        } catch (error) {
+            console.error('Failed to fetch exercises:', error);
             // fallback to any cached list
             if (!this.allExercises || this.allExercises.length === 0) {
+                console.log('Loading exercises from cache...');
                 await this.loadExercises();
             }
             categoryExercises = this.exercisesByCategory[key] || [];
+            console.log('Using cached exercises:', categoryExercises.length);
         }
         if (exerciseGrid) exerciseGrid.innerHTML = categoryExercises.map(exercise => `
             <div class="exercise-item" data-exercise="${exercise.name}">
@@ -315,6 +440,152 @@ class WorkoutTracker {
 
     showActiveWorkout() { const el = document.getElementById('active-workout'); if (el) el.style.display='block'; }
 
+    addExerciseToWorkout(exercise) {
+        console.log('Adding exercise to workout:', exercise);
+        if (!this.currentWorkout) {
+            this.currentWorkout = { startTime: null, exercises: [], totalCalories: 0, duration: 0 };
+        }
+        
+        // Check if exercise already exists in current workout
+        const existingIndex = this.currentWorkout.exercises.findIndex(e => e.id === exercise.id);
+        if (existingIndex === -1) {
+            // Add new exercise to workout
+            const workoutExercise = {
+                id: exercise.id,
+                name: exercise.name,
+                category: exercise.category,
+                muscles: exercise.muscles,
+                sets: [],
+                startTime: new Date().toISOString()
+            };
+            this.currentWorkout.exercises.push(workoutExercise);
+            this.updateActiveWorkout();
+            console.log('Exercise added to workout:', workoutExercise);
+        } else {
+            console.log('Exercise already in workout:', exercise.name);
+        }
+    }
+
+    // Phase 2: Real-time WebSocket methods
+    async connectWebSocket(sessionId) {
+        if (!window.workoutWebSocket) {
+            console.error('WebSocket client not available');
+            return false;
+        }
+
+        this.currentSessionId = sessionId;
+        this.websocketClient = window.workoutWebSocket;
+
+        // Set up event handlers
+        this.websocketClient.onSetUpdate((setData) => {
+            this.handleRealTimeSetUpdate(setData);
+        });
+
+        this.websocketClient.onHeartRateUpdate((hrData) => {
+            this.handleRealTimeHeartRate(hrData);
+        });
+
+        this.websocketClient.onWorkoutPaused((data) => {
+            this.handleWorkoutPaused(data);
+        });
+
+        this.websocketClient.onWorkoutResumed((data) => {
+            this.handleWorkoutResumed(data);
+        });
+
+        this.websocketClient.onError((error) => {
+            console.error('WebSocket error:', error);
+            this.notify('Connection lost. Working offline.');
+        });
+
+        // Connect to WebSocket
+        const connected = this.websocketClient.connect(sessionId);
+        if (connected) {
+            this.notify('Real-time updates enabled');
+            return true;
+        } else {
+            this.notify('Failed to connect to real-time updates');
+            return false;
+        }
+    }
+
+    disconnectWebSocket() {
+        if (this.websocketClient) {
+            this.websocketClient.disconnect();
+            this.websocketClient = null;
+            this.currentSessionId = null;
+            this.notify('Real-time updates disabled');
+        }
+    }
+
+    handleRealTimeSetUpdate(setData) {
+        // Update real-time metrics
+        this.realTimeUpdates.setCount++;
+        this.realTimeUpdates.lastSetTime = new Date();
+        
+        // Update UI if workout is active
+        this.updateRealTimeMetrics();
+        
+        // Show notification
+        this.notify(`Set completed: ${setData.exercise_name} - ${setData.weight_kg}kg x ${setData.repetitions}`);
+    }
+
+    handleRealTimeHeartRate(hrData) {
+        this.realTimeUpdates.heartRate = hrData.bpm;
+        this.updateRealTimeMetrics();
+    }
+
+    handleWorkoutPaused(data) {
+        this.notify('Workout paused');
+        this.updateWorkoutStatus('paused');
+    }
+
+    handleWorkoutResumed(data) {
+        this.notify('Workout resumed');
+        this.updateWorkoutStatus('active');
+    }
+
+    updateRealTimeMetrics() {
+        // Update real-time display elements
+        const hrElement = document.getElementById('realtime-heart-rate');
+        if (hrElement && this.realTimeUpdates.heartRate) {
+            hrElement.textContent = `${this.realTimeUpdates.heartRate} bpm`;
+        }
+
+        const setCountElement = document.getElementById('realtime-set-count');
+        if (setCountElement) {
+            setCountElement.textContent = `${this.realTimeUpdates.setCount} sets`;
+        }
+
+        const lastSetElement = document.getElementById('realtime-last-set');
+        if (lastSetElement && this.realTimeUpdates.lastSetTime) {
+            const timeAgo = Math.floor((Date.now() - this.realTimeUpdates.lastSetTime.getTime()) / 1000);
+            lastSetElement.textContent = `${timeAgo}s ago`;
+        }
+    }
+
+    updateWorkoutStatus(status) {
+        const statusElement = document.getElementById('workout-status');
+        if (statusElement) {
+            statusElement.textContent = status.toUpperCase();
+            statusElement.className = `workout-status ${status}`;
+        }
+    }
+
+    sendSetCompleted(setData) {
+        if (this.websocketClient && this.websocketClient.isConnected()) {
+            return this.websocketClient.sendSetCompleted(setData);
+        }
+        return false;
+    }
+
+    sendHeartRate(heartRateData) {
+        if (this.websocketClient && this.websocketClient.isConnected()) {
+            return this.websocketClient.sendHeartRate(heartRateData);
+        }
+        return false;
+    }
+
     updateActiveWorkout() {
         const activeExercises = document.getElementById('active-exercises');
         if (!activeExercises) return;
@@ -331,7 +602,7 @@ class WorkoutTracker {
                             <div class="set-item">
                                 <span class=\"set-number\">Set ${setIndex + 1}:</span>
                                 <input type=\"number\" class=\"set-reps\" placeholder=\"Reps\" value=\"${set.reps || ''}\" onchange=\"workoutTracker.updateSet(${index}, ${setIndex}, 'reps', this.value)\">
-                                <input type=\"number\" class=\"set-weight\" placeholder=\"Weight (kg)\" value=\"${set.weight || ''}\" onchange=\"workoutTracker.updateSet(${index}, ${setIndex}, 'weight', this.value)\">
+                                <input type=\"number\" class=\"set-weight\" placeholder=\"Weight (${this.getWeightUnit()})\" value=\"${this.formatWeight(set.weight)}\" onchange=\"workoutTracker.updateSet(${index}, ${setIndex}, 'weight', this.value)\">
                                 <button class="set-remove" onclick="workoutTracker.removeSet(${index}, ${setIndex})">×</button>
                             </div>
                         `).join('')}
@@ -364,6 +635,7 @@ class WorkoutTracker {
     }
 
     endWorkout() {
+        console.log('Ending workout...');
         this.stopTimer();
         const duration = this.currentWorkout.duration || 0;
         const summary = {
@@ -371,16 +643,41 @@ class WorkoutTracker {
             duration,
             exercises: this.currentWorkout.exercises.map(e => ({ name: e.name, sets: e.sets, muscles: e.muscles, category: e.category, performedAt: e.startTime }))
         };
-        // Persist duration to backend session if available (minutes rounded)
+        
+        // Persist end time to backend session if available
         if (this.sessionId) {
-            const minutes = Math.round(duration / 60);
-            updateSession(this.sessionId, { duration_minutes: minutes }).catch(()=>{});
+            const now = new Date().toISOString();
+            console.log('Updating session:', this.sessionId, { end_time: now });
+            updateSession(this.sessionId, { 
+                end_time: now
+            }).then(() => {
+                console.log('Session updated successfully');
+            }).catch((error) => {
+                console.error('Failed to update session:', error);
+            });
+        } else {
+            console.log('No session ID available');
         }
+        
         this.workoutHistory.unshift(summary);
         this.saveLocal('workoutHistory', this.workoutHistory);
         this.renderHistory();
         this.currentWorkout = { startTime: null, exercises: [], totalCalories: 0, duration: 0 };
-        const el = document.getElementById('active-workout'); if (el) el.style.display='none';
+        
+        // Hide active workout section
+        const el = document.getElementById('active-workout'); 
+        if (el) {
+            el.style.display='none';
+            console.log('Active workout section hidden');
+        }
+        
+        // Show start button and hide end button
+        const startBtn = document.getElementById('start-workout-btn');
+        const endBtn = document.getElementById('end-workout-btn');
+        if (startBtn) startBtn.style.display = 'inline-block';
+        if (endBtn) endBtn.style.display = 'none';
+        
+        console.log('Workout ended successfully');
     }
 
     updateOverview() {
@@ -402,7 +699,7 @@ class WorkoutTracker {
         }
         const fmtSet = (s, idx) => {
             const r = s.reps ? `${s.reps} reps` : '';
-            const w = s.weight ? ` @ ${s.weight} kg` : '';
+            const w = s.weight ? ` @ ${this.formatWeight(s.weight)} ${this.getWeightUnit()}` : '';
             return `<span class=\"history-set\">Set ${idx+1}: ${r}${w}</span>`;
         };
         const fmtExercise = (ex) => {
@@ -432,12 +729,17 @@ class WorkoutTracker {
             (this.allExercises || []).forEach(ex => idToEx.set(String(ex.id), ex));
 
             const backendHistory = sessions
-                .sort((a,b) => (a.date < b.date ? 1 : -1))
+                .sort((a,b) => {
+                    const as = a.start_time ? new Date(a.start_time).getTime() : 0;
+                    const bs = b.start_time ? new Date(b.start_time).getTime() : 0;
+                    return bs - as; // newest first
+                })
                 .slice(0,5)
                 .map(s => {
                     // Group sets by exercise
-                    const setsByEx = (s.strength_sets || []).reduce((acc, ss) => {
-                        const exId = String(ss.exercise_id);
+                    const sets = (s.strength_sets || []);
+                    const setsByEx = sets.reduce((acc, ss) => {
+                        const exId = String(ss.exercise_id || ss.exercise);
                         if (!acc[exId]) acc[exId] = [];
                         acc[exId].push({ reps: ss.reps, weight: ss.weight_kg });
                         return acc;
@@ -450,9 +752,17 @@ class WorkoutTracker {
                             sets: setsByEx[exId]
                         };
                     });
+                    const startIso = s.start_time;
+                    const endIso = s.end_time;
+                    let durationSec = 0;
+                    try {
+                        if (startIso && endIso) {
+                            durationSec = Math.max(0, Math.floor((new Date(endIso) - new Date(startIso)) / 1000));
+                        }
+                    } catch(_) {}
                     return {
-                        date: s.date,
-                        duration: (s.duration_minutes || 0) * 60,
+                        date: startIso ? startIso.slice(0,10) : '—',
+                        duration: durationSec,
                         exercises
                     };
                 });
@@ -462,7 +772,7 @@ class WorkoutTracker {
             container.innerHTML = backendHistory.map(w => {
                 const mins = Math.max(0, Math.round((w.duration||0)/60));
                 const body = (w.exercises||[]).map(ex => {
-                    const setsHtml = (ex.sets||[]).map((s,i)=>`<span class=\"history-set\">Set ${i+1}: ${s.reps||''} reps${s.weight?` @ ${s.weight} kg`:''}</span>`).join(' · ');
+                    const setsHtml = (ex.sets||[]).map((s,i)=>`<span class=\"history-set\">Set ${i+1}: ${s.reps||''} reps${s.weight?` @ ${this.formatWeight(s.weight)} ${this.getWeightUnit()}`:''}</span>`).join(' · ');
                     return `<div class=\"history-exercise\"><div class=\"history-exercise__name\"><strong>${ex.name}</strong></div><div class=\"history-exercise__sets\">${setsHtml}</div></div>`;
                 }).join('');
                 return `<div class=\"history-item\"><div class=\"history-item__header\"><strong>${w.date}</strong> — ${mins} min · ${w.exercises.length} exercises</div><div class=\"history-item__body\">${body}</div></div>`;

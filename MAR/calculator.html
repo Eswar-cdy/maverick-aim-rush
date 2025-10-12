@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ff6b35">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Maverick Aim Rush">
+    <title>Fitness Calculator - Maverick Aim Rush</title>
+    <link rel="stylesheet" href="css/reset.css?v=3">
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/favicon.png">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <!-- Header (unified) -->
+    <header class="header" id="main-header">
+      <div class="header__container">
+        <a href="index.html" class="header__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.75rem;vertical-align:middle;" /></a>
+        <div class="header__navigation">
+          <div class="header__menu menu">
+            <nav class="menu__body">
+              <ul class="menu__list">
+                <li class="menu__item"><a href="index.html" class="menu__link">Dashboard</a></li>
+                <li class="menu__item"><a href="about.html" class="menu__link">Workout Tracker</a></li>
+                <li class="menu__item"><a href="services.html" class="menu__link">Nutrition Log</a></li>
+                <li class="menu__item"><a href="contact.html" class="menu__link">Progress</a></li>
+                <li class="menu__item"><a href="calculator.html" class="menu__link">Calculator</a></li>
+                <li class="menu__item"><a href="recommendations.html" class="menu__link">AI Recommendations</a></li>
+                <li class="menu__item"><a href="social.html" class="menu__link">Social</a></li>
+              </ul>
+              <a href="about.html" class="actions-header__button">Log Workout</a>
+            </nav>
+          </div>
+          <div class="header__actions actions-header">
+            <div id="units-toggle" style="display: none;">
+              <button id="toggle-units" class="actions-header__button actions-header__button_units">
+                <span id="units-display">lb/mi</span>
+              </button>
+            </div>
+            <div id="user-status" style="display: none;">
+              <span id="welcome-message"></span>
+              <button id="notification-settings-btn" class="actions-header__button actions-header__button_notifications" title="Notification Settings">🔔</button>
+              <button id="logout-button" class="actions-header__button actions-header__button_logout">Logout</button>
+            </div>
+            <button type="button" class="menu__icon icon-menu"><span></span></button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main page-offset" id="main-content">
+        <div class="container">
+            <!-- Calculator Hero Section -->
+            <section class="calculator-hero">
+                <div class="calculator-hero__content">
+                    <h1 class="calculator-hero__title">Fitness Calculator</h1>
+                    <p class="calculator-hero__subtitle">Calculate your BMI, BMR, TDEE, and personalized macro targets with precision</p>
+                </div>
+            </section>
+
+            <!-- Calculator Form -->
+            <section class="calculator-section">
+                <div class="calculator-form">
+                    <div class="calculator-form__header">
+                        <h2 class="calculator-form__title">Calculate Your Metrics</h2>
+                        <p class="calculator-form__subtitle">Enter your details to get personalized fitness calculations</p>
+                    </div>
+                    
+                    <div class="calculator-form__body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="goal-type" class="form-label">Goal Type</label>
+                                <div class="input-wrapper">
+                                    <select id="goal-type" class="form-select">
+                                        <option value="maintenance">Maintenance</option>
+                                        <option value="weight_loss">Weight Loss</option>
+                                        <option value="muscle_gain">Muscle Gain</option>
+                                        <option value="performance">Performance</option>
+                                    </select>
+                                    <div class="input-icon">🎯</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button id="calculate-btn" class="calculator-form__btn">
+                                    <span>Calculate</span>
+                                    <div class="button-loader" style="display: none;"></div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section id="results-section" class="results-section" style="display: none;">
+                <div class="results-header">
+                    <h2 class="results-title">Your Fitness Metrics</h2>
+                    <p class="results-subtitle">Personalized calculations based on your profile</p>
+                </div>
+                
+                <div class="results-grid">
+                    <!-- BMI Card -->
+                    <div class="result-card result-card--primary">
+                        <div class="result-card__header">
+                            <div class="result-card__icon-wrapper">
+                                <span class="result-card__icon">📊</span>
+                            </div>
+                            <h3 class="result-card__title">Body Mass Index</h3>
+                        </div>
+                        <div class="result-card__content">
+                            <div class="result-card__value" id="bmi-value">--</div>
+                            <div class="result-card__category" id="bmi-category">--</div>
+                            <div class="result-card__details">
+                                <div class="result-card__detail">
+                                    <span class="result-card__detail-label">Weight:</span>
+                                    <span class="result-card__detail-value" id="bmi-weight">--</span>
+                                </div>
+                                <div class="result-card__detail">
+                                    <span class="result-card__detail-label">Height:</span>
+                                    <span class="result-card__detail-value" id="bmi-height">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BMR Card -->
+                    <div class="result-card">
+                        <div class="result-card__header">
+                            <h3 class="result-card__title">BMR</h3>
+                            <span class="result-card__icon">🔥</span>
+                        </div>
+                        <div class="result-card__content">
+                            <div class="result-card__value" id="bmr-value">--</div>
+                            <div class="result-card__subtitle">Calories/day at rest</div>
+                            <div class="result-card__details">
+                                <div class="result-card__detail">
+                                    <span class="result-card__detail-label">Age:</span>
+                                    <span class="result-card__detail-value" id="bmr-age">--</span>
+                                </div>
+                                <div class="result-card__detail">
+                                    <span class="result-card__detail-label">Gender:</span>
+                                    <span class="result-card__detail-value" id="bmr-gender">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TDEE Card -->
+                    <div class="result-card">
+                        <div class="result-card__header">
+                            <h3 class="result-card__title">TDEE</h3>
+                            <span class="result-card__icon">⚡</span>
+                        </div>
+                        <div class="result-card__content">
+                            <div class="result-card__value" id="tdee-value">--</div>
+                            <div class="result-card__subtitle">Total daily calories</div>
+                            <div class="result-card__details">
+                                <div class="result-card__detail">
+                                    <span class="result-card__detail-label">Activity:</span>
+                                    <span class="result-card__detail-value" id="tdee-activity">--</span>
+                                </div>
+                                <div class="result-card__detail">
+                                    <span class="result-card__detail-label">Multiplier:</span>
+                                    <span class="result-card__detail-value" id="tdee-multiplier">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Macro Targets Card -->
+                    <div class="result-card result-card--wide">
+                        <div class="result-card__header">
+                            <h3 class="result-card__title">Macro Targets</h3>
+                            <span class="result-card__icon">🎯</span>
+                        </div>
+                        <div class="result-card__content">
+                            <div class="macros-grid">
+                                <div class="macro-item">
+                                    <div class="macro-item__label">Calories</div>
+                                    <div class="macro-item__value" id="macro-calories">--</div>
+                                </div>
+                                <div class="macro-item">
+                                    <div class="macro-item__label">Protein</div>
+                                    <div class="macro-item__value" id="macro-protein">--</div>
+                                    <div class="macro-item__unit">g</div>
+                                </div>
+                                <div class="macro-item">
+                                    <div class="macro-item__label">Carbs</div>
+                                    <div class="macro-item__value" id="macro-carbs">--</div>
+                                    <div class="macro-item__unit">g</div>
+                                </div>
+                                <div class="macro-item">
+                                    <div class="macro-item__label">Fat</div>
+                                    <div class="macro-item__value" id="macro-fat">--</div>
+                                    <div class="macro-item__unit">g</div>
+                                </div>
+                            </div>
+                            <div class="result-card__details">
+                                <div class="result-card__detail">
+                                    <span class="result-card__detail-label">Goal:</span>
+                                    <span class="result-card__detail-value" id="macro-goal">--</span>
+                                </div>
+                                <div class="result-card__detail">
+                                    <span class="result-card__detail-label">Protein per kg:</span>
+                                    <span class="result-card__detail-value" id="macro-protein-per-kg">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="results-actions">
+                    <button id="save-macro-targets-btn" class="results-actions__btn results-actions__btn--primary">
+                        Save Macro Targets
+                    </button>
+                    <button id="view-history-btn" class="results-actions__btn results-actions__btn--secondary">
+                        View History
+                    </button>
+                </div>
+            </section>
+
+            <!-- History Section -->
+            <section id="history-section" class="history-section" style="display: none;">
+                <div class="history-header">
+                    <h2 class="history-header__title">Calculation History</h2>
+                    <button id="close-history-btn" class="history-header__close">×</button>
+                </div>
+                <div id="history-content" class="history-content">
+                    <!-- History items will be loaded here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/api.js?v=3"></script>
+    <script src="js/calculator.js?v=3"></script>
+    <script src="js/mobile.js?v=5"></script>
+    <script src="js/notifications.js?v=5"></script>
+    <script src="js/notification-ui.js?v=5"></script>
+    <script src="js/smart-notifications.js?v=5"></script>
+</body>
+</html>

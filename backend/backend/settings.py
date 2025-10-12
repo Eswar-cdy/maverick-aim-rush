@@ -24,7 +24,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-default-secret-key-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
 
 # Application definition
@@ -42,9 +42,11 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'django_filters',
+    'channels',  # Phase 2: WebSocket support
 
     # Local apps
     'tracker',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -52,7 +54,8 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',  # temporarily disabled for development
+    # 'tracker.csrf_jwt.CSRFSimpleJWTGuard',  # JWT CSRF protection - temporarily disabled
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -114,7 +117,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# Default server timezone; per-user timezone can be stored in UserProfile
+TIME_ZONE = 'America/New_York'
 
 USE_I18N = True
 
@@ -143,10 +147,20 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 24,
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '200/min',  # global default
+        'onboarding': '10/min',
+    },
 }
 
-# CORS settings (for development)
-CORS_ALLOW_ALL_ORIGINS = True # For development only. In production, use CORS_ALLOWED_ORIGINS.
+# CORS settings
+if os.getenv('CORS_ALLOW_ALL', 'True') == 'True':
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://127.0.0.1:8001,http://localhost:8001').split(',')
 
 
 # Simple JWT settings
@@ -155,4 +169,73 @@ from datetime import timedelta
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+# Media files (for image uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Phase 2: Django Channels configuration
+ASGI_APPLICATION = 'backend.asgi.application'
+
+# Redis configuration for Channels
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
+# WebSocket settings
+WS_ALLOWED_ORIGINS = [
+    "http://localhost:8001",
+    "http://127.0.0.1:8001",
+]
+
+# Phase 2: Production Hardening - Feature Flags
+MAR_FLAGS = {
+    "aggregates_enabled": True,       # turn off to force legacy raw queries
+    "ws_reconciliation": True,        # disable to fall back to naive WS
+    "offline_queue_enabled": True,    # disable to POST directly
+    "live_minute_buckets": True,      # enable live minute aggregation
+    "csrf_protection": False,         # temporarily disable CSRF for development
+    "idempotency_keys": True,         # enable idempotency for writes
+    "onboarding_enabled": True,       # gate account-level onboarding
+}
+
+# Enhanced JWT settings for production
+SIMPLE_JWT.update({
+    'SIGNING_KEY': SECRET_KEY,
+    'ALGORITHM': 'HS256',
+})
+
+# Security settings for production
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_HTTPONLY = True
+
+# Enhanced REST Framework settings
+REST_FRAMEWORK.update({
+    'EXCEPTION_HANDLER': 'tracker.exceptions.exception_handler',
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ],
+})
+
+# Cache configuration for idempotency
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'TIMEOUT': 300,
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000,
+        }
+    }
 }

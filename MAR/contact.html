@@ -5,181 +5,903 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <!-- Head: CSS + fonts + favicon -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Fredoka:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="icon" href="/MAR/Images/favicon.png">
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="css/tokens.css?v=2" />
+  <link rel="stylesheet" href="css/components.css?v=4" />
+  <link rel="stylesheet" href="css/layout.css?v=4" />
+  <link rel="stylesheet" href="css/style.css?v=4" />
+  
+  <!-- UnoCSS production build for utilities -->
+  <link rel="stylesheet" href="css/uno.css?v=4" />
+  
   <title>Maverick Aim Rush - Progress Tracking</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <meta name="description" content="Track body measurements, weight, and progress photos over time." />
+  <link rel="canonical" href="http://localhost:8001/contact.html" />
+  <meta property="og:title" content="Progress Tracking | Maverick Aim Rush" />
+  <meta property="og:description" content="Log measurements, set goals, and visualize changes with comparisons." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="http://localhost:8001/contact.html" />
+  <meta property="og:image" content="http://localhost:8001/images/LOGO.png" />
+  <meta name="twitter:card" content="summary_large_image" />
 </head>
 
-<body>
-  <div class="wrapper">
-    <header class="header">
-      <div class="header__container">
-        <a href="index.html" class="header__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.75rem;vertical-align:middle;" /></a>
-        <div class="header__navigation">
-          <div class="header__menu menu">
-            <nav class="menu__body">
-              <ul class="menu__list">
-                <li class="menu__item"><a href="index.html" class="menu__link">Dashboard</a></li>
-                <li class="menu__item"><a href="about.html" class="menu__link">Workout Tracker</a></li>
-                <li class="menu__item"><a href="services.html" class="menu__link">Nutrition Log</a></li>
-                <li class="menu__item"><a href="contact.html" class="menu__link">Progress</a></li>
+<body class="app-shell">
+  <!-- Accessible skip link -->
+  <a href="#main-content" class="visually-hidden-focusable">Skip to content</a>
+
+  <!-- Top bar -->
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur shadow-sm">
+    <nav class="mx-auto max-w-6xl flex items-center justify-between px-4 py-3">
+      <a href="/MAR/index.html" class="flex items-center gap-2 font-display text-xl text-gray-900">
+        <img src="/MAR/Images/LOGO.png" alt="" class="h-8 w-8"> Maverick Aim Rush
+      </a>
+      <ul class="hidden md:flex items-center gap-6 text-gray-700">
+        <li><a href="/MAR/index.html" class="hover:text-orange-600">Dashboard</a></li>
+        <li><a href="/MAR/about.html" class="hover:text-orange-600">Workout Tracker</a></li>
+        <li><a href="/MAR/services.html" class="hover:text-orange-600">Nutrition Log</a></li>
+        <li><a href="/MAR/contact.html" class="hover:text-orange-600 font-medium">Progress</a></li>
+        <li><a href="/MAR/social.html" class="hover:text-orange-600">Social</a></li>
               </ul>
-              <a href="about.html" class="actions-header__button">Log Workout</a>
-            </nav>
-          </div>
-          <div class="header__actions actions-header">
-            <button type="button" class="menu__icon icon-menu"><span></span></button>
-          </div>
+      <div class="flex items-center gap-3">
+        <button id="units-toggle" class="hidden md:inline-flex items-center rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50">
+          <span id="units-display">lb/mi</span>
+        </button>
+        <div id="user-status" class="hidden flex items-center gap-2">
+          <span id="welcome-message" class="text-sm text-gray-600"></span>
+          <button id="notification-settings-btn" class="rounded-lg border p-2 hover:bg-gray-50" title="Notification Settings">🔔</button>
+          <button id="logout-button" class="rounded-lg bg-orange-600 px-4 py-2 text-white hover:bg-orange-500">Logout</button>
         </div>
+        <button id="mobile-menu-toggle" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border hover:bg-gray-50">≡</button>
       </div>
+    </nav>
     </header>
-    <main class="page">
-      <section class="page__main main main_contact main_pages">
-        <div class="main__container main__container_pages">
-          <h1 class="main__title">Progress Tracking</h1>
-          <div class="main__text main__text_pages">
-            Monitor your body measurements, track weight changes, and visualize your fitness transformation over time.
-          </div>
-        </div>
+
+  <!-- Removed secondary side nav to avoid duplicate headers / routing issues -->
+
+  <!-- Main content -->
+  <main class="min-h-screen bg-gray-50">
+    <div class="mx-auto max-w-7xl px-6 py-8" id="main-content">
+      <!-- Hero Section -->
+      <section class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Your Progress</h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Visualize your journey, celebrate milestones, and stay motivated.
+        </p>
       </section>
-      <section class="page__contact contact">
-        <div class="contact__container">
-          <div class="contact__contacts">
-            <h2 class="contact__title">Your Progress Summary</h2>
-            <div class="contact__connect connect-contact">
-              <div class="connect-contact__item">
-                <div class="connect-contact__icon"><img src="images/contact/phone.svg" alt="Sessions" /></div>
-                <div class="connect-contact__content">
-                  <h3 class="connect-contant__type">Sessions This Week</h3>
-                  <div class="connect-contact__label" id="kpi-sessions-week">—</div>
+
+      <section class="bg-white rounded-xl shadow-sm border p-8 mb-8">
+        <div class="max-w-6xl mx-auto">
+          <!-- Tab Navigation -->
+          <div class="progress-tabs" role="tablist" aria-label="Progress tracking sections">
+            <button class="progress-tab px-6 py-3 font-medium text-gray-600 hover:text-orange-600 border-b-2 border-transparent hover:border-orange-600 transition-colors active" 
+                    role="tab" 
+                    aria-selected="true" 
+                    aria-controls="overview" 
+                    data-tab="overview"
+                    tabindex="0">Overview</button>
+            <button class="progress-tab px-6 py-3 font-medium text-gray-600 hover:text-orange-600 border-b-2 border-transparent hover:border-orange-600 transition-colors" 
+                    role="tab" 
+                    aria-selected="false" 
+                    aria-controls="body-stats" 
+                    data-tab="body-stats"
+                    tabindex="-1">Body Stats</button>
+            <button class="progress-tab px-6 py-3 font-medium text-gray-600 hover:text-orange-600 border-b-2 border-transparent hover:border-orange-600 transition-colors" 
+                    role="tab" 
+                    aria-selected="false" 
+                    aria-controls="performance" 
+                    data-tab="performance"
+                    tabindex="-1">Performance</button>
+            <button class="progress-tab px-6 py-3 font-medium text-gray-600 hover:text-orange-600 border-b-2 border-transparent hover:border-orange-600 transition-colors" 
+                    role="tab" 
+                    aria-selected="false" 
+                    aria-controls="photos" 
+                    data-tab="photos"
+                    tabindex="-1">Photo Timeline</button>
+          </div>
+
+          <!-- Tab Content -->
+          <div class="progress-content">
+            <!-- Overview Tab -->
+            <div class="progress-tab-pane active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+              <div class="progress-grid">
+                <div class="progress-card progress-card--large">
+                  <div class="progress-card__header">
+                    <h3 class="progress-card__title">Weight & Body Fat</h3>
+                    <div class="progress-card__actions">
+                      <select id="overview-chart-filter" class="progress-filter">
+                        <option value="30">Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                        <option value="all">All Time</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="progress-card__content">
+                    <canvas id="overview-chart"></canvas>
+                  </div>
                 </div>
-              </div>
-              <div class="connect-contact__item">
-                <div class="connect-contact__icon"><img src="images/contact/email.svg" alt="Volume" /></div>
-                <div class="connect-contact__content">
-                  <h3 class="connect-contant__type">Total Volume (Last 7 Days)</h3>
-                  <div class="connect-contact__label" id="kpi-volume-7d">—</div>
+                <div class="progress-card">
+                  <div class="progress-card__header">
+                    <h3 class="progress-card__title">Key Milestones</h3>
+                  </div>
+                  <div class="progress-card__content" id="milestones-list">
+                    <!-- Milestones will be loaded here -->
+                  </div>
                 </div>
-              </div>
-              <div class="connect-contact__item">
-                <div class="connect-contact__icon"><img src="images/contact/address.svg" alt="Top PR" /></div>
-                <div class="connect-contact__content">
-                  <h3 class="connect-contant__type">Top Personal Record</h3>
-                  <div class="connect-contact__label" id="kpi-top-pr">—</div>
+                <div class="progress-card">
+                  <div class="progress-card__header">
+                    <h3 class="progress-card__title">Personal Records</h3>
+                  </div>
+                  <div class="progress-card__content" id="prs-list">
+                    <!-- PRs will be loaded here -->
+                  </div>
+                </div>
+                <div class="progress-card">
+                  <div class="progress-card__header">
+                    <h3 class="progress-card__title">Recommendations</h3>
+                  </div>
+                  <div class="progress-card__content" id="reco-list">
+                    <!-- Recommendations will be loaded here -->
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="contact__links">
-              <a href="#" class="contact__link"><img src="images/contact/fb.svg" alt="Share" /></a>
-              <a href="#" class="contact__link"><img src="images/contact/tw.svg" alt="Share" /></a>
-              <a href="#" class="contact__link"><img src="images/contact/ig.svg" alt="Share" /></a>
-              <a href="#" class="contact__link"><img src="images/contact/youtube.svg" alt="Share" /></a>
-              <a href="#" class="contact__link"><img src="images/contact/in.svg" alt="Share" /></a>
-            </div>
-          </div>
-          <div class="contact__info">
-            <h2 class="contact__title">Goals & Insights</h2>
-            <div class="contact__text">
-              <p id="insight-trend">Keep logging workouts to see trends here.</p>
-              <p id="insight-best">Your best lift will appear here after a few sessions.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="page__map map">
-        <div class="progress-lists" style="max-width:72rem;margin:0 auto;padding:1rem;display:grid;gap:2rem;grid-template-columns:1fr;">
-          <div class="progress-controls" style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
-            <button id="range-7" class="button" style="padding:.4rem .8rem;">Last 7 days</button>
-            <button id="range-30" class="button" style="padding:.4rem .8rem;">Last 30 days</button>
-            <button id="range-90" class="button" style="padding:.4rem .8rem;">Last 90 days</button>
-            <button id="range-all" class="button" style="padding:.4rem .8rem;">All</button>
-            <div style="flex:1"></div>
-            <button id="export-csv" class="button" style="background:#10b981;padding:.4rem .8rem;">Export CSV</button>
-          </div>
-          <div>
-            <h3 class="title" style="font-size:1.6rem;">Recent Sessions</h3>
-            <div id="list-sessions" class="list-card"></div>
-          </div>
-          <div>
-            <h3 class="title" style="font-size:1.6rem;">Personal Records</h3>
-            <div id="list-prs" class="list-card"></div>
-          </div>
-          <div>
-            <h3 class="title" style="font-size:1.6rem;">Volume Trend</h3>
-            <div id="list-volume" class="list-card"></div>
-          </div>
-          <div>
-            <h3 class="title" style="font-size:1.6rem;">Log Body Measurements</h3>
-            <form id="form-measurement" style="display:grid;gap:.5rem;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));align-items:end;">
-              <div><label>Date<br><input type="date" id="m-date"></label></div>
-              <div><label>Weight (kg)<br><input type="number" step="0.1" id="m-weight"></label></div>
-              <div><label>Body Fat (%)<br><input type="number" step="0.1" id="m-bf"></label></div>
-              <div><label>Height (cm)<br><input type="number" step="0.1" id="m-height"></label></div>
-              <div><label>Neck (cm)<br><input type="number" step="0.1" id="m-neck"></label></div>
-              <div><label>Chest (cm)<br><input type="number" step="0.1" id="m-chest"></label></div>
-              <div><label>Shoulder (cm)<br><input type="number" step="0.1" id="m-shoulder"></label></div>
-              <div><label>L Bicep (cm)<br><input type="number" step="0.1" id="m-lb"></label></div>
-              <div><label>R Bicep (cm)<br><input type="number" step="0.1" id="m-rb"></label></div>
-              <div><label>L Forearm (cm)<br><input type="number" step="0.1" id="m-lf"></label></div>
-              <div><label>R Forearm (cm)<br><input type="number" step="0.1" id="m-rf"></label></div>
-              <div><label>Waist (cm)<br><input type="number" step="0.1" id="m-waist"></label></div>
-              <div><label>Hips (cm)<br><input type="number" step="0.1" id="m-hips"></label></div>
-              <div><label>L Thigh (cm)<br><input type="number" step="0.1" id="m-lt"></label></div>
-              <div><label>R Thigh (cm)<br><input type="number" step="0.1" id="m-rt"></label></div>
-              <div><label>L Calf (cm)<br><input type="number" step="0.1" id="m-lc"></label></div>
-              <div><label>R Calf (cm)<br><input type="number" step="0.1" id="m-rc"></label></div>
-              <div><label>Skinfold Sum (mm)<br><input type="number" step="0.1" id="m-skin"></label></div>
-              <div style="grid-column:1/-1;display:flex;gap:.5rem;align-items:center;">
-                <input type="url" id="m-photo" placeholder="Photo URL (optional)" style="flex:1;">
-                <button id="m-save" type="button" class="button">Save Measurement</button>
+
+            <!-- Body Stats Tab -->
+            <div class="progress-tab-pane" id="body-stats" role="tabpanel" aria-labelledby="body-stats-tab">
+              <div class="progress-card">
+                <div class="progress-card__header">
+                  <h3 class="progress-card__title">Log Your Measurements</h3>
+                  <div class="progress-card__actions">
+                    <div class="unit-toggle">
+                      <span>Weight:</span>
+                      <button type="button" class="unit-btn active" data-type="weight" data-unit="kg">kg</button>
+                      <button type="button" class="unit-btn" data-type="weight" data-unit="lb">lb</button>
+                    </div>
+                    <div class="unit-toggle">
+                      <span>Length:</span>
+                      <button type="button" class="unit-btn active" data-type="length" data-unit="cm">cm</button>
+                      <button type="button" class="unit-btn" data-type="length" data-unit="in">in</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="progress-card__content">
+                  <div class="progress-grid">
+                    <div>
+                      <form id="form-measurement" class="progress-form">
+                        <div><label>Date<br><input type="date" id="m-date"></label></div>
+                        <div><label>Weight (<span class="label-weight-unit">kg</span>)<br><input type="number" step="0.1" min="0" placeholder="e.g., 74.5" id="m-weight"></label></div>
+                        <div><label>Body Fat (%)<br><input type="number" step="0.1" min="0" max="100" placeholder="e.g., 18.2" id="m-bf"></label></div>
+                        <div><label>Height (<span class="label-length-unit">cm</span>)<br><input type="number" step="0.1" min="0" placeholder="e.g., 175" id="m-height"></label></div>
+                        <div><label>Neck (<span class="label-length-unit">cm</span>)<br><input type="number" step="0.1" min="0" id="m-neck" class="measurement-input" data-region="neck"></label></div>
+                        <div><label>Chest (<span class="label-length-unit">cm</span>)<br><input type="number" step="0.1" min="0" id="m-chest" class="measurement-input" data-region="chest"></label></div>
+                        <div><label>Shoulder (<span class="label-length-unit">cm</span>)<br><input type="number" step="0.1" min="0" id="m-shoulder" class="measurement-input" data-region="shoulder"></label></div>
+                        <div><label>L Bicep (<span class="label-length-unit">cm</span>)<br><input type="number" step="0.1" min="0" id="m-lb" class="measurement-input" data-region="l_bicep"></label></div>
+                        <div><label>R Bicep (<span class="label-length-unit">cm</span>)<br><input type="number" step="0.1" min="0" id="m-rb" class="measurement-input" data-region="r_bicep"></label></div>
+                        <div><label>L Forearm (<span class="label-length-unit">cm</span>)<br><input type="number" step="0.1" min="0" id="m-lf" class="measurement-input" data-region="l_forearm"></label></div>
+                        <div><label>R Forearm (<span class="label-length-unit">cm</span>)<br><input type="number" step="0.1" min="0" id="m-rf" class="measurement-input" data-region="r_forearm"></label></div>
+                        <div><label>Waist (<span class="label-length-unit">cm</span>)<br><input type="number" step="0.1" min="0" id="m-waist" class="measurement-input" data-region="waist"></label></div>
+                        <div><label>Hips (<span class="label-length-unit">cm</span>)<br><input type="number" step="0.1" min="0" id="m-hips" class="measurement-input" data-region="hips"></label></div>
+                        <div><label>L Thigh (<span class="label-length-unit">cm</span>)<br><input type="number" step="0.1" min="0" id="m-lt" class="measurement-input" data-region="l_thigh"></label></div>
+                        <div><label>R Thigh (<span class="label-length-unit">cm</span>)<br><input type="number" step="0.1" min="0" id="m-rt" class="measurement-input" data-region="r_thigh"></label></div>
+                        <div><label>L Calf (<span class="label-length-unit">cm</span>)<br><input type="number" step="0.1" min="0" id="m-lc" class="measurement-input" data-region="l_calf"></label></div>
+                        <div><label>R Calf (<span class="label-length-unit">cm</span>)<br><input type="number" step="0.1" min="0" id="m-rc" class="measurement-input" data-region="r_calf"></label></div>
+                        <div><label>Skinfold Sum (mm)<br><input type="number" step="0.1" min="0" id="m-skin"></label></div>
+                        <div style="grid-column:1/-1;display:flex;gap:.5rem;align-items:center;">
+                            <input type="url" id="m-photo" placeholder="Photo URL (optional)" style="flex:1;">
+                            <button id="m-save" type="button" class="button">Save Measurement</button>
+                        </div>
+                      </form>
+                    </div>
+                    <div>
+                      <!-- Enhanced Body Map -->
+          <div class="bg-white rounded-2xl shadow-lg border border-slate-200/70 p-6">
+                        <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+                          <div>
+                            <h3 class="text-lg font-semibold text-slate-900">Body Measurement Map</h3>
+                            <p class="text-sm text-slate-500">Blueprint-style guide; click a region or field to sync.</p>
+                          </div>
+                          <div class="flex flex-col items-end gap-2">
+                            <div class="flex items-center gap-2">
+                              <button type="button" id="thumb-front" class="bodymap__thumb" data-view="front" data-active="true" aria-pressed="true" aria-label="Front view preview">
+                                <svg viewBox="0 0 36 80" aria-hidden="true" focusable="false">
+                                  <path d="M18 5c-4 0-9 5-9 11v6c0 6-2 12-4 17-2 6-3 12-3 19v8c0 4 2 6 6 6h20c4 0 6-2 6-6v-8c0-7-1-13-3-19-2-5-4-11-4-17v-6c0-6-5-11-9-11z" fill="#dbeafe" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M12 38v14m12-14v14M14 63v12m8-12v12" stroke="#2563eb" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" opacity=".6"/>
+                                </svg>
+                              </button>
+                              <button type="button" id="thumb-back" class="bodymap__thumb" data-view="back" data-active="false" aria-pressed="false" aria-label="Back view preview">
+                                <svg viewBox="0 0 36 80" aria-hidden="true" focusable="false">
+                                  <path d="M18 5c-4 0-9 5-9 11v6c0 6-2 12-4 17-2 6-3 12-3 19v8c0 4 2 6 6 6h20c4 0 6-2 6-6v-8c0-7-1-13-3-19-2-5-4-11-4-17v-6c0-6-5-11-9-11z" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M12 22l6 8 6-8m-12 28h12m-10 11h8" stroke="#1d4ed8" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" opacity=".6"/>
+                                </svg>
+                              </button>
+                            </div>
+                            <div class="flex bg-slate-100 rounded-lg p-1 shadow-inner">
+                              <button id="view-front" class="px-3 py-1 text-sm font-medium rounded-md bg-white text-slate-900 shadow-sm transition-all duration-200" data-view="front">
+                                Front
+                              </button>
+                              <button id="view-back" class="px-3 py-1 text-sm font-medium rounded-md text-slate-500 hover:text-slate-900 transition-all duration-200" data-view="back">
+                                Back
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <figure class="bodymap" id="body-map" aria-label="Interactive body measurement map">
+                          <figcaption class="text-sm text-slate-600 mb-4 text-center">
+                            💡 Hover or tap any area to highlight; values update live as you type.
+                          </figcaption>
+                          
+                          <!-- Front View SVG - Anatomically Correct Blueprint -->
+                          <svg id="body-front" class="bodymap__svg w-full h-auto max-w-md mx-auto" viewBox="0 0 360 640" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="bodymapTitle bodymapDesc">
+                            <title id="bodymapTitle">Front view body silhouette for measurements</title>
+                            <desc id="bodymapDesc">Clickable blueprint showing front measurement zones with proper anatomical proportions.</desc>
+                            <defs>
+                              <linearGradient id="bmAccent" x1="0" x2="1">
+                                <stop offset="0" stop-color="#fb923c"/>
+                                <stop offset="1" stop-color="#f97316"/>
+                              </linearGradient>
+                              <filter id="bmGlow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="rgba(251,146,60,0.55)"/>
+                              </filter>
+                              <style>
+                                .bm-silhouette{fill:#dbeafe;stroke:#2563eb;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
+                                .bm-silhouette--limb{fill:#dbeafe;stroke:#2563eb;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+                                .bm-guide{stroke:rgba(59,130,246,0.4);stroke-width:1.5;stroke-linecap:round;stroke-dasharray:8 4;}
+                                .bm-joint{fill:rgba(191,219,254,0.7);stroke:#3b82f6;stroke-width:2;}
+                                .bm-region{fill:rgba(59,130,246,0);stroke:transparent;cursor:pointer;transition:fill .2s ease,stroke .2s ease;}
+                                .bm-region:hover,.bm-region:focus-visible{outline:none;fill:rgba(59,130,246,0.15);stroke:rgba(59,130,246,0.5);}
+                                .bm-region.is-active{fill:url(#bmAccent);stroke:#fb923c;filter:url(#bmGlow);}
+                                .bm-label{font:600 12px/1.2 'Inter',system-ui,sans-serif;fill:#1e3a8a;}
+                                .bm-label-sub{font:500 11px/1.2 'Inter',system-ui,sans-serif;fill:#475569;}
+                                .measurement-band{stroke:#f59e0b;stroke-width:2;opacity:0.6;stroke-dasharray:8 4;}
+                                .measurement-band.active{stroke-width:3;opacity:1;animation:pulse 1.5s ease-in-out infinite;}
+                                @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+                              </style>
+                            </defs>
+
+                            <!-- Height guide line -->
+                            <line class="bm-guide" x1="320" y1="30" x2="320" y2="610"/>
+
+                            <!-- Main body silhouette with proper 7.5-head proportions -->
+                            <!-- Head (1 unit) -->
+                            <circle class="bm-silhouette" cx="180" cy="70" r="28"/>
+                            
+                            <!-- Neck (0.5 unit) - proper width -->
+                            <rect class="bm-silhouette" x="160" y="98" width="40" height="20" rx="8"/>
+                            
+                            <!-- Torso with proper tapering -->
+                            <!-- Shoulders (2.2 heads wide) -->
+                            <path class="bm-silhouette" d="M120 118 Q180 108 240 118 C260 130 280 150 285 170 C295 200 295 240 295 280 C295 340 280 380 260 400 C240 420 220 450 220 480 L140 480 C140 450 120 420 100 400 C80 380 65 340 65 280 C65 240 65 200 75 170 C80 150 100 130 120 118 Z"/>
+                            
+                            <!-- Legs with proper separation -->
+                            <path class="bm-silhouette" d="M140 480 L140 580 Q140 610 180 610 Q220 610 220 580 L220 480"/>
+                            
+                            <!-- Arms with natural hang (10-15 degrees from body) -->
+                            <!-- Left arm -->
+                            <path class="bm-silhouette--limb" d="M120 140 Q100 170 95 210 L90 250 L95 290 L105 330 L120 370 L140 410"/>
+                            <!-- Right arm -->
+                            <path class="bm-silhouette--limb" d="M240 140 Q260 170 265 210 L270 250 L265 290 L255 330 L240 370 L220 410"/>
+                            
+                            <!-- Legs with proper tapering -->
+                            <!-- Left leg -->
+                            <path class="bm-silhouette--limb" d="M140 480 L135 520 L130 560 L125 600 L120 640"/>
+                            <!-- Right leg -->
+                            <path class="bm-silhouette--limb" d="M220 480 L225 520 L230 560 L235 600 L240 640"/>
+                            
+                            <!-- Feet -->
+                            <ellipse class="bm-silhouette" cx="120" cy="650" rx="15" ry="8"/>
+                            <ellipse class="bm-silhouette" cx="240" cy="650" rx="15" ry="8"/>
+
+                            <!-- Joint circles for articulation points -->
+                            <circle class="bm-joint" cx="95" cy="250" r="8"/>  <!-- Left elbow -->
+                            <circle class="bm-joint" cx="265" cy="250" r="8"/> <!-- Right elbow -->
+                            <circle class="bm-joint" cx="120" cy="370" r="6"/> <!-- Left wrist -->
+                            <circle class="bm-joint" cx="240" cy="370" r="6"/> <!-- Right wrist -->
+                            <circle class="bm-joint" cx="180" cy="480" r="10"/> <!-- Hip center -->
+                            <circle class="bm-joint" cx="130" cy="560" r="8"/> <!-- Left knee -->
+                            <circle class="bm-joint" cx="230" cy="560" r="8"/> <!-- Right knee -->
+                            <circle class="bm-joint" cx="120" cy="640" r="6"/> <!-- Left ankle -->
+                            <circle class="bm-joint" cx="240" cy="640" r="6"/> <!-- Right ankle -->
+
+                            <!-- Measurement bands at correct anatomical positions -->
+                            <line class="measurement-band" x1="160" y1="108" x2="200" y2="108"/> <!-- Neck -->
+                            <line class="measurement-band" x1="120" y1="128" x2="240" y2="128"/> <!-- Shoulders -->
+                            <line class="measurement-band" x1="100" y1="200" x2="260" y2="200"/> <!-- Chest -->
+                            <line class="measurement-band" x1="120" y1="280" x2="240" y2="280"/> <!-- Waist -->
+                            <line class="measurement-band" x1="130" y1="340" x2="230" y2="340"/> <!-- Hips -->
+                            <line class="measurement-band" x1="95" y1="200" x2="95" y2="250"/> <!-- Left bicep -->
+                            <line class="measurement-band" x1="265" y1="200" x2="265" y2="250"/> <!-- Right bicep -->
+                            <line class="measurement-band" x1="120" y1="310" x2="120" y2="370"/> <!-- Left forearm -->
+                            <line class="measurement-band" x1="240" y1="310" x2="240" y2="370"/> <!-- Right forearm -->
+                            <line class="measurement-band" x1="130" y1="500" x2="130" y2="560"/> <!-- Left thigh -->
+                            <line class="measurement-band" x1="230" y1="500" x2="230" y2="560"/> <!-- Right thigh -->
+                            <line class="measurement-band" x1="120" y1="600" x2="120" y2="640"/> <!-- Left calf -->
+                            <line class="measurement-band" x1="240" y1="600" x2="240" y2="640"/> <!-- Right calf -->
+
+                            <!-- Interactive regions with proper anatomical mapping -->
+                            <path id="neck" data-region="neck" class="bm-region" role="button" tabindex="0" aria-label="Neck measurement" d="M160 98 L200 98 L200 118 L160 118 Z"/>
+                            <path id="shoulder" data-region="shoulder" class="bm-region" role="button" tabindex="0" aria-label="Shoulder measurement" d="M120 118 L240 118 L240 138 L120 138 Z"/>
+                            <path id="chest" data-region="chest" class="bm-region" role="button" tabindex="0" aria-label="Chest measurement" d="M100 180 L260 180 L260 220 L100 220 Z"/>
+                            <path id="waist" data-region="waist" class="bm-region" role="button" tabindex="0" aria-label="Waist measurement" d="M120 260 L240 260 L240 300 L120 300 Z"/>
+                            <path id="hips" data-region="hips" class="bm-region" role="button" tabindex="0" aria-label="Hips measurement" d="M130 320 L230 320 L230 360 L130 360 Z"/>
+                            <path id="l_bicep" data-region="l_bicep" class="bm-region" role="button" tabindex="0" aria-label="Left bicep measurement" d="M90 180 L110 180 L110 250 L90 250 Z"/>
+                            <path id="r_bicep" data-region="r_bicep" class="bm-region" role="button" tabindex="0" aria-label="Right bicep measurement" d="M250 180 L270 180 L270 250 L250 250 Z"/>
+                            <path id="l_forearm" data-region="l_forearm" class="bm-region" role="button" tabindex="0" aria-label="Left forearm measurement" d="M110 300 L130 300 L130 370 L110 370 Z"/>
+                            <path id="r_forearm" data-region="r_forearm" class="bm-region" role="button" tabindex="0" aria-label="Right forearm measurement" d="M230 300 L250 300 L250 370 L230 370 Z"/>
+                            <path id="l_thigh" data-region="l_thigh" class="bm-region" role="button" tabindex="0" aria-label="Left thigh measurement" d="M140 480 L160 480 L160 560 L140 560 Z"/>
+                            <path id="r_thigh" data-region="r_thigh" class="bm-region" role="button" tabindex="0" aria-label="Right thigh measurement" d="M200 480 L220 480 L220 560 L200 560 Z"/>
+                            <path id="l_calf" data-region="l_calf" class="bm-region" role="button" tabindex="0" aria-label="Left calf measurement" d="M120 580 L140 580 L140 640 L120 640 Z"/>
+                            <path id="r_calf" data-region="r_calf" class="bm-region" role="button" tabindex="0" aria-label="Right calf measurement" d="M220 580 L240 580 L240 640 L220 640 Z"/>
+
+                            <!-- Labels with proper positioning -->
+                            <text class="bm-label" x="20" y="115" data-badge="neck-value">Neck - cm</text>
+                            <text class="bm-label" x="20" y="135" data-badge="shoulder-value">Shoulder - cm</text>
+                            <text class="bm-label" x="20" y="205" data-badge="chest-value">Chest - cm</text>
+                            <text class="bm-label" x="20" y="285" data-badge="waist-value">Waist - cm</text>
+                            <text class="bm-label" x="20" y="345" data-badge="hips-value">Hips - cm</text>
+                            <text class="bm-label" x="20" y="220" data-badge="l_bicep-value">Left Bicep - cm</text>
+                            <text class="bm-label" x="20" y="240" data-badge="r_bicep-value">Right Bicep - cm</text>
+                            <text class="bm-label" x="20" y="340" data-badge="l_forearm-value">Left Forearm - cm</text>
+                            <text class="bm-label" x="20" y="360" data-badge="r_forearm-value">Right Forearm - cm</text>
+                            <text class="bm-label" x="20" y="520" data-badge="l_thigh-value">Left Thigh - cm</text>
+                            <text class="bm-label" x="20" y="540" data-badge="r_thigh-value">Right Thigh - cm</text>
+                            <text class="bm-label" x="20" y="620" data-badge="l_calf-value">Left Calf - cm</text>
+                            <text class="bm-label" x="20" y="640" data-badge="r_calf-value">Right Calf - cm</text>
+                          </svg>
+                          
+                          <!-- Back View SVG (initially hidden) -->
+                          <svg id="body-back" class="bodymap__svg w-full h-auto max-w-md mx-auto hidden" viewBox="0 0 260 640" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="bodymapTitleBack">
+                            <title id="bodymapTitleBack">Back view body silhouette for measurements</title>
+                            <desc>Clickable blueprint showing back measurement zones.</desc>
+                            <defs>
+                              <linearGradient id="bmAccentBack" x1="0" x2="1">
+                                <stop offset="0" stop-color="#fb923c"/>
+                                <stop offset="1" stop-color="#f97316"/>
+                              </linearGradient>
+                              <filter id="bmGlowBack" x="-50%" y="-50%" width="200%" height="200%">
+                                <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="rgba(251,146,60,0.55)"/>
+                              </filter>
+                              <style>
+                                .bm-silhouette-back{fill:#dbeafe;stroke:#1d4ed8;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;}
+                                .bm-silhouette-back--limb{fill:#dbeafe;stroke:#1d4ed8;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+                                .bm-guide-back{stroke:rgba(37,99,235,0.35);stroke-width:1.4;stroke-linecap:round;stroke-dasharray:10 10;}
+                                .bm-joint-back{fill:rgba(191,219,254,0.6);stroke:#1d4ed8;stroke-width:1.4;}
+                                .bm-region{fill:rgba(59,130,246,0);stroke:transparent;cursor:pointer;transition:fill .2s ease,stroke .2s ease;}
+                                .bm-region:hover,.bm-region:focus-visible{outline:none;fill:rgba(59,130,246,0.14);stroke:rgba(59,130,246,0.4);}
+                                .bm-region.is-active{fill:url(#bmAccentBack);stroke:#fb923c;filter:url(#bmGlowBack);}
+                                .bm-label{font:600 12px/1.2 'Inter',system-ui,sans-serif;fill:#1e3a8a;}
+                                .bm-label-sub{font:500 11px/1.2 'Inter',system-ui,sans-serif;fill:#475569;}
+                              </style>
+                            </defs>
+
+                            <ellipse class="bm-silhouette-back" cx="130" cy="70" rx="30" ry="38"/>
+                            <path class="bm-silhouette-back" d="M96 136 Q130 152 164 136 C184 150 196 170 202 194 C210 226 210 268 210 320 C210 376 196 408 182 432 C172 450 164 472 164 500 L96 500 C96 472 88 450 78 432 C64 408 50 376 50 320 C50 268 50 226 58 194 C64 170 76 150 96 136 Z"/>
+                            <path class="bm-silhouette-back" d="M96 500 L96 566 Q96 602 130 602 Q164 602 164 566 L164 500"/>
+                            <path class="bm-silhouette-back--limb" d="M50 206 Q36 238 32 276 L30 318 L32 354 L38 388 L48 416 L58 438"/>
+                            <path class="bm-silhouette-back--limb" d="M210 206 Q224 238 228 276 L230 318 L228 354 L222 388 L212 416 L202 438"/>
+                            <path class="bm-silhouette-back--limb" d="M98 602 L96 666 L94 734 L92 806 L90 868 Q88 900 88 914 L122 914 L126 868 L132 734 L136 666 L138 602"/>
+                            <path class="bm-silhouette-back--limb" d="M162 602 L164 666 L166 734 L168 806 L170 868 Q172 900 172 914 L138 914 L134 868 L128 734 L124 666 L122 602"/>
+
+                            <line class="bm-guide-back" x1="130" y1="32" x2="130" y2="914"/>
+                            <line class="bm-guide-back" x1="88" y1="176" x2="172" y2="176"/>
+                            <line class="bm-guide-back" x1="82" y1="236" x2="178" y2="236"/>
+                            <line class="bm-guide-back" x1="86" y1="292" x2="174" y2="292"/>
+                            <line class="bm-guide-back" x1="96" y1="372" x2="164" y2="372"/>
+                            <line class="bm-guide-back" x1="102" y1="452" x2="158" y2="452"/>
+                            <circle class="bm-joint-back" cx="46" cy="342" r="12"/>
+                            <circle class="bm-joint-back" cx="214" cy="342" r="12"/>
+                            <circle class="bm-joint-back" cx="102" cy="560" r="10"/>
+                            <circle class="bm-joint-back" cx="158" cy="560" r="10"/>
+                            <circle class="bm-joint-back" cx="94" cy="732" r="14"/>
+                            <circle class="bm-joint-back" cx="166" cy="732" r="14"/>
+                            <circle class="bm-joint-back" cx="88" cy="892" r="12"/>
+                            <circle class="bm-joint-back" cx="172" cy="892" r="12"/>
+
+                            <path id="neck-back" data-region="neck" class="bm-region" role="button" tabindex="0" aria-label="Back neck measurement" d="M104 134 L156 134 L162 156 L98 156 Z"/>
+                            <path id="shoulder-back" data-region="shoulder" class="bm-region" role="button" tabindex="0" aria-label="Back shoulder measurement" d="M78 156 L182 156 L174 184 L86 184 Z"/>
+                            <path id="chest-back" data-region="chest" class="bm-region" role="button" tabindex="0" aria-label="Upper back measurement" d="M76 186 L184 186 L176 220 L84 220 Z"/>
+                            <path id="waist-back" data-region="waist" class="bm-region" role="button" tabindex="0" aria-label="Back waist measurement" d="M86 228 L174 228 L168 260 L92 260 Z"/>
+                            <path id="hips-back" data-region="hips" class="bm-region" role="button" tabindex="0" aria-label="Glute measurement" d="M92 268 L168 268 L160 312 L100 312 Z"/>
+
+                            <text class="bm-label" x="20" y="164">Upper Back</text>
+                            <text class="bm-label-sub" x="20" y="178" data-badge="shoulder">— cm</text>
+                            <text class="bm-label" x="20" y="214">Mid Back</text>
+                            <text class="bm-label-sub" x="20" y="228" data-badge="chest">— cm</text>
+                            <text class="bm-label" x="20" y="268">Back Waist</text>
+                            <text class="bm-label-sub" x="20" y="282" data-badge="waist">— cm</text>
+                            <text class="bm-label" x="20" y="316">Glutes</text>
+                            <text class="bm-label-sub" x="20" y="330" data-badge="hips">— cm</text>
+                            <text class="bm-label" text-anchor="end" x="240" y="180">Trap</text>
+                            <text class="bm-label-sub" text-anchor="end" x="240" y="194" data-badge="neck">— cm</text>
+                          </svg>
+                        </figure>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <div class="progress-card">
+                <div class="progress-card__header bg-gray-900 text-white rounded-t-xl px-4 py-3">
+                  <h3 class="progress-card__title">Live Insights</h3>
+                </div>
+                <div class="progress-card__content bg-white text-gray-900" id="live-insights">
+                  <div id="live-bmi">BMI: —</div>
+                  <div id="live-delta">7‑day weight change: —</div>
+                  <div id="live-status">Status: —</div>
+                </div>
               </div>
-            </form>
-            <div id="list-measurements" class="list-card" style="margin-top:1rem;"></div>
+              <div class="progress-card">
+                <div class="progress-card__header bg-gray-900 text-white rounded-t-xl px-4 py-3">
+                  <h3 class="progress-card__title">Measurement History</h3>
+                </div>
+                <div class="progress-card__content bg-white text-gray-900" id="list-measurements">
+                  <!-- Measurement list will be loaded here -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Performance Tab -->
+            <div class="progress-tab-pane" id="performance" role="tabpanel" aria-labelledby="performance-tab">
+              <div class="progress-card">
+                <div class="progress-card__header">
+                  <h3 class="progress-card__title">Goals & Progress</h3>
+                </div>
+                <div class="progress-card__content" id="goals-rings">
+                  <!-- Goal rings will render here -->
           </div>
-          <div>
-            <h3 class="title" style="font-size:1.6rem;">Goals</h3>
-            <form id="form-goal" style="display:grid;gap:.5rem;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));align-items:end;">
-              <div><label>Type<br>
-                <select id="g-type">
-                  <option value="weight_loss">Weight Loss</option>
-                  <option value="muscle_gain">Muscle Gain</option>
-                  <option value="performance">Performance</option>
-                </select>
-              </label></div>
-              <div><label>Metric<br>
-                <select id="g-metric">
-                  <option value="weight_kg">Body Weight (kg)</option>
-                  <option value="body_fat">Body Fat (%)</option>
-                  <option value="lift_kg">Lift (kg)</option>
-                </select>
-              </label></div>
-              <div id="g-ex-wrap"><label>Exercise (if Lift)<br>
-                <input list="ex-options" id="g-ex-name" placeholder="Start typing exercise name">
-                <datalist id="ex-options"></datalist>
-                <input type="hidden" id="g-ex">
-              </label></div>
-              <div><label>Target<br><input type="number" step="0.1" id="g-target"></label></div>
-              <div><label>Notes<br><input type="text" id="g-notes"></label></div>
-              <div><label>Start<br><input type="date" id="g-start"></label></div>
-              <div><label>End<br><input type="date" id="g-end"></label></div>
-              <div style="grid-column:1/-1"><button id="g-save" type="button" class="button">Save Goal</button></div>
-            </form>
-            <div id="list-goals" class="list-card" style="margin-top:1rem;"></div>
+        </div>
+              <div class="progress-card">
+                <div class="progress-card__header">
+                  <h3 class="progress-card__title">Top PRs</h3>
+                </div>
+                <div class="progress-card__content" id="prs-list-adv">
+                  <!-- PRs will render here -->
+                </div>
+              </div>
+              <div class="progress-card">
+                  <div class="progress-card__header">
+                    <h3 class="progress-card__title">Set a New Goal</h3>
+                  </div>
+                  <div class="progress-card__content">
+                    <form id="form-goal" class="progress-form">
+                      <div><label>Type<br>
+                        <select id="g-type">
+                          <option value="weight_loss">Weight Loss</option>
+                          <option value="muscle_gain">Muscle Gain</option>
+                          <option value="performance">Performance</option>
+                        </select>
+                      </label></div>
+                      <div><label>Metric<br>
+                        <select id="g-metric">
+                          <option value="weight_kg">Body Weight (kg)</option>
+                          <option value="body_fat">Body Fat (%)</option>
+                          <option value="lift_kg">Lift (kg)</option>
+                        </select>
+                      </label></div>
+                      <div id="g-ex-wrap"><label>Exercise (if Lift)<br>
+                        <input list="ex-options" id="g-ex-name" placeholder="Start typing exercise name">
+                        <datalist id="ex-options"></datalist>
+                        <input type="hidden" id="g-ex">
+                      </label></div>
+                      <div><label>Target<br><input type="number" step="0.1" id="g-target"></label></div>
+                      <div><label>Notes<br><input type="text" id="g-notes"></label></div>
+                      <div><label>Start<br><input type="date" id="g-start"></label></div>
+                      <div><label>End<br><input type="date" id="g-end"></label></div>
+                      <div style="grid-column:1/-1"><button id="g-save" type="button" class="button">Save Goal</button></div>
+                    </form>
+                  </div>
+                </div>
+            </div>
+
+            <!-- Photo Timeline Tab -->
+            <div class="progress-tab-pane" id="photos" role="tabpanel" aria-labelledby="photos-tab">
+                <div class="progress-card">
+                    <div class="progress-card__header" style="align-items:center;gap:.75rem;">
+                      <h3 class="progress-card__title">Your Transformation</h3>
+                      <div style="margin-left:auto;display:flex;gap:.5rem;align-items:center;">
+                        <select id="photo-month-filter" class="progress-filter"><option value="all">All Months</option></select>
+                        <button id="add-photo-btn" class="button">Add Photo</button>
+                      </div>
+                    </div>
+                    <div class="progress-card__content">
+                      <input id="photo-upload-input" type="file" accept="image/*" multiple hidden>
+                      <div id="photo-dropzone" class="photo-dropzone" aria-label="Upload photos by clicking or dragging here">
+                        <div class="photo-dropzone__inner">
+                          <div class="photo-dropzone__icon">📸</div>
+                          <div class="photo-dropzone__text">Drop photos here or click Add Photo</div>
+                          <div id="photo-upload-progress" class="photo-progress" style="display:none;"><div></div></div>
+                        </div>
+                      </div>
+                      <div id="photo-timeline-gallery" class="gallery-grid" aria-live="polite"></div>
+                    </div>
+                  </div>
+                  <div class="progress-card">
+                    <div class="progress-card__header">
+                      <h3 class="progress-card__title">Before & After</h3>
+                    </div>
+                    <div class="progress-card__content">
+                      <div id="ba-wrap" class="ba-wrap">
+                        <div class="ba-viewport">
+                          <img id="ba-after" alt="After" class="ba-img" />
+                          <img id="ba-before" alt="Before" class="ba-img ba-overlay" />
+                          <input id="ba-slider" class="ba-slider" type="range" min="0" max="100" value="50" aria-label="Before After Slider" />
+                        </div>
+                        <div class="ba-caption"><span>Before</span><span>After</span></div>
+                      </div>
+            </div>
+          </div>
+            </div>
           </div>
         </div>
       </section>
+      <!-- END existing content -->
+    </div>
     </main>
-    <footer class="footer">
-      <div class="footer__container">
-        <a href="contact.html" class="footer__policy">Privacy Policy – Terms & Conditions</a>
-        <a href="index.html" class="footer__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.2rem;vertical-align:middle;" /></a>
-        <div class="footer__copyright">Copyright © 2025 Maverick Aim Rush – All Rights Reserved</div>
-      </div>
-    </footer>
-  </div>
+
+  <!-- Optional toast container -->
+  <div id="toast" class="toast" hidden></div>
+
+  <script>
+    // Highlight active nav link
+    (function () {
+      var p = location.pathname.replace(/\/+$/, '');
+      document.querySelectorAll('.sidebar__link').forEach(a=>{
+        if (p.endsWith(a.dataset.path)) a.classList.add('sidebar__link--active');
+      });
+    }());
+  </script>
   <script src="js/script.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/progress.js"></script>
+  <script src="js/api.js?v=10"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Accessible tabs (click + keyboard + deep-link ?tab=...) -->
+  <script>
+    (function () {
+      const list = document.querySelector('.progress-tabs[role="tablist"]');
+      if (!list) return;
+      const tabs = Array.from(list.querySelectorAll('[role="tab"]'));
+      const panes = tabs.map(t => document.getElementById(t.getAttribute('aria-controls')));
+
+      function activate(i, focus = true) {
+        tabs.forEach((t, idx) => {
+          const sel = idx === i;
+          t.setAttribute('aria-selected', sel);
+          t.tabIndex = sel ? 0 : -1;
+          panes[idx]?.classList.toggle('active', sel);
+        });
+        const name = tabs[i]?.dataset.tab || '';
+        if (name) history.replaceState(null, '', `?tab=${name}`);
+        if (focus) tabs[i].focus();
+        // Dispatch event for lazy loading
+        document.dispatchEvent(new CustomEvent('progress:tab-activated', { detail: { index: i, name } }));
+      }
+
+      list.addEventListener('click', e => {
+        const btn = e.target.closest('[role="tab"]');
+        if (!btn) return;
+        const i = tabs.indexOf(btn);
+        if (i >= 0) activate(i);
+      });
+
+      list.addEventListener('keydown', e => {
+        const cur = tabs.findIndex(t => t.getAttribute('aria-selected') === 'true');
+        if (e.key === 'ArrowRight') { e.preventDefault(); activate((cur + 1) % tabs.length); }
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); activate((cur - 1 + tabs.length) % tabs.length); }
+        if (e.key === 'Home')       { e.preventDefault(); activate(0); }
+        if (e.key === 'End')        { e.preventDefault(); activate(tabs.length - 1); }
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(cur, false); }
+      });
+
+      // Deep-link support (?tab=overview|body-stats|performance|photos)
+      const qs = new URLSearchParams(location.search).get('tab');
+      const idx = Math.max(0, tabs.findIndex(t => t.dataset.tab === qs));
+      activate(idx, false);
+    }());
+  </script>
+  
+  <script src="js/progress.js?v=10"></script>
+  
+  <!-- Before/After Photo Slider -->
+  <script>
+    (function() {
+      // Initialize before/after sliders
+      function initBeforeAfterSliders() {
+        document.querySelectorAll('.ba-wrap').forEach(wrap => {
+          const slider = wrap.querySelector('.ba-slider');
+          const afterImg = wrap.querySelector('.ba-overlay');
+          if (!slider || !afterImg) return;
+
+          let isDragging = false;
+          let startX = 0;
+          let startClip = 50;
+
+          function updateSlider(x) {
+            const rect = wrap.getBoundingClientRect();
+            const percent = Math.max(0, Math.min(100, ((x - rect.left) / rect.width) * 100));
+            afterImg.style.clipPath = `inset(0 ${100 - percent}% 0 0)`;
+            slider.style.left = `${percent}%`;
+          }
+
+          slider.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startClip = parseFloat(afterImg.style.clipPath.match(/\d+\.?\d*/)?.[0] || 50);
+            e.preventDefault();
+          });
+
+          document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            updateSlider(e.clientX);
+          });
+
+          document.addEventListener('mouseup', () => {
+            isDragging = false;
+          });
+
+          // Touch support
+          slider.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            startX = e.touches[0].clientX;
+            e.preventDefault();
+          });
+
+          document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            updateSlider(e.touches[0].clientX);
+            e.preventDefault();
+          });
+
+          document.addEventListener('touchend', () => {
+            isDragging = false;
+          });
+
+          // Click to position
+          wrap.addEventListener('click', (e) => {
+            if (e.target === slider) return;
+            updateSlider(e.clientX);
+          });
+        });
+      }
+
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initBeforeAfterSliders);
+      } else {
+        initBeforeAfterSliders();
+      }
+
+      // Re-initialize when photos are loaded dynamically
+      document.addEventListener('progress:tab-activated', (ev) => {
+        if (ev.detail?.name === 'photos') {
+          setTimeout(initBeforeAfterSliders, 100);
+        }
+      });
+    })();
+  </script>
+  <script>
+    // Minimal loader to reuse photo-progress data endpoints if available
+    (async () => {
+      try {
+        const token = getAccessToken();
+        if (!token) return;
+        const resp = await apiFetch('/progress-photos/?limit=6');
+        if (!resp.ok) return;
+        const data = await resp.json();
+        const tl = document.getElementById('pp-photo-timeline');
+        const cg = document.getElementById('pp-comparisons-grid');
+        if (tl) tl.innerHTML = (data.results || []).map(p => `<div class="activity-item"><div class="activity-icon">📸</div><div>${new Date(p.created_at).toLocaleDateString()}</div></div>`).join('');
+        if (cg) cg.innerHTML = '<div style="color:#6b7280;">Add comparisons from the Photo Progress page.</div>';
+      } catch (e) {}
+    })();
+  </script>
+  
+  <!-- Enhanced Body Map JavaScript -->
+  <script>
+    (function() {
+      'use strict';
+      
+      // Front/Back view toggle
+      const frontBtn = document.getElementById('view-front');
+      const backBtn = document.getElementById('view-back');
+      const frontSvg = document.getElementById('body-front');
+      const backSvg = document.getElementById('body-back');
+      
+      function switchView(view) {
+        if (view === 'front') {
+          frontSvg.classList.remove('hidden');
+          backSvg.classList.add('hidden');
+          frontBtn.className = 'px-3 py-1 text-sm font-medium rounded-md bg-white text-slate-900 shadow-sm transition-all duration-200';
+          backBtn.className = 'px-3 py-1 text-sm font-medium rounded-md text-slate-500 hover:text-slate-900 transition-all duration-200';
+        } else {
+          frontSvg.classList.add('hidden');
+          backSvg.classList.remove('hidden');
+          backBtn.className = 'px-3 py-1 text-sm font-medium rounded-md bg-white text-slate-900 shadow-sm transition-all duration-200';
+          frontBtn.className = 'px-3 py-1 text-sm font-medium rounded-md text-slate-500 hover:text-slate-900 transition-all duration-200';
+        }
+      }
+      
+      frontBtn?.addEventListener('click', () => switchView('front'));
+      backBtn?.addEventListener('click', () => switchView('back'));
+      
+      // Enhanced body map interaction
+      function wireEnhancedBodyMap() {
+        const frontSvg = document.getElementById('body-front');
+        const backSvg = document.getElementById('body-back');
+        
+        if (!frontSvg && !backSvg) return;
+        
+        // Map region IDs to input field names/IDs
+        const fieldMap = {
+          // Front view mappings
+          'neck': 'm-neck',
+          'shoulder': 'm-shoulder', 
+          'chest': 'm-chest',
+          'waist': 'm-waist',
+          'hips': 'm-hips',
+          'l_bicep': 'm-l-bicep',
+          'r_bicep': 'm-r-bicep',
+          'l_forearm': 'm-l-forearm',
+          'r_forearm': 'm-r-forearm',
+          'l_thigh': 'm-l-thigh',
+          'r_thigh': 'm-r-thigh',
+          'l_calf': 'm-l-calf',
+          'r_calf': 'm-r-calf',
+          
+          // Back view mappings
+          'neck-back': 'm-back-neck',
+          'shoulder-back': 'm-back-shoulder',
+          'chest-back': 'm-back-chest', 
+          'waist-back': 'm-back-waist',
+          'hips-back': 'm-back-hips'
+        };
+        
+        function highlightRegion(regionId, isActive = true) {
+          const region = document.getElementById(regionId);
+          if (!region) return;
+          
+          if (isActive) {
+            region.classList.add('is-active');
+            region.style.fill = 'url(#bmAccent)';
+            region.style.filter = 'drop-shadow(0 2px 6px rgba(249, 115, 22, 0.3))';
+          } else {
+            region.classList.remove('is-active');
+            region.style.fill = 'transparent';
+            region.style.filter = 'none';
+          }
+        }
+        
+        function focusField(regionId) {
+          const fieldName = fieldMap[regionId];
+          if (!fieldName) return;
+          
+          // Try multiple possible selectors
+          const selectors = [
+            `#${fieldName}`,
+            `[name="${fieldName}"]`,
+            `[id="${fieldName}"]`,
+            `input[name*="${fieldName}"]`
+          ];
+          
+          let input = null;
+          for (const selector of selectors) {
+            input = document.querySelector(selector);
+            if (input) break;
+          }
+          
+          if (input) {
+            input.focus();
+            input.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            highlightRegion(regionId, true);
+            
+            // Clear highlight after a delay
+            setTimeout(() => highlightRegion(regionId, false), 2000);
+          }
+        }
+        
+        function updateValueBadge(regionId, value) {
+          const badgeId = regionId.includes('back-') ? `${regionId}-value` : `${regionId}-value`;
+          const badge = document.getElementById(badgeId);
+          if (badge && value) {
+            badge.textContent = `${value} cm`;
+          }
+        }
+        
+        // Wire up all regions
+        function wireRegions(svg) {
+          if (!svg) return;
+          
+          const regions = svg.querySelectorAll('.bm-region');
+          regions.forEach(region => {
+            const regionId = region.id;
+            
+            // Click handler
+            region.addEventListener('click', (e) => {
+              e.preventDefault();
+              focusField(regionId);
+            });
+            
+            // Keyboard handler
+            region.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                focusField(regionId);
+              }
+            });
+            
+            // Hover effects
+            region.addEventListener('mouseenter', () => {
+              if (!region.classList.contains('is-active')) {
+                region.style.fill = 'rgba(249, 115, 22, 0.1)';
+                region.style.stroke = '#f97316';
+              }
+            });
+            
+            region.addEventListener('mouseleave', () => {
+              if (!region.classList.contains('is-active')) {
+                region.style.fill = 'transparent';
+                region.style.stroke = 'transparent';
+              }
+            });
+          });
+        }
+        
+        // Wire both SVGs
+        wireRegions(frontSvg);
+        wireRegions(backSvg);
+        
+        // Listen for input changes to update value badges
+        Object.entries(fieldMap).forEach(([regionId, fieldName]) => {
+          const selectors = [
+            `#${fieldName}`,
+            `[name="${fieldName}"]`,
+            `[id="${fieldName}"]`
+          ];
+          
+          let input = null;
+          for (const selector of selectors) {
+            input = document.querySelector(selector);
+            if (input) break;
+          }
+          
+          if (input) {
+            input.addEventListener('input', (e) => {
+              if (e.target.value) {
+                updateValueBadge(regionId, e.target.value);
+              }
+            });
+            
+            input.addEventListener('focus', () => {
+              highlightRegion(regionId, true);
+            });
+            
+            input.addEventListener('blur', () => {
+              highlightRegion(regionId, false);
+            });
+          }
+        });
+      }
+      
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', wireEnhancedBodyMap);
+      } else {
+        wireEnhancedBodyMap();
+      }
+      
+      // Also wire when body-stats tab is activated
+      document.addEventListener('progress:tab-activated', (e) => {
+        if (e.detail?.name === 'body-stats') {
+          setTimeout(wireEnhancedBodyMap, 100);
+        }
+      });
+      
+    })();
+  </script>
 </body>
 
 </html>

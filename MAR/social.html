@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ff6b35">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Maverick Aim Rush">
+    <title>Social & Community - Maverick Aim Rush</title>
+    <link rel="stylesheet" href="https://unpkg.com/@unocss/reset/tailwind.css">
+    <link rel="stylesheet" href="/MAR/css/uno.css?v=2025-09-30">
+    <link rel="icon" type="image/png" href="/MAR/Images/favicon.png">
+    <link rel="apple-touch-icon" href="/MAR/Images/favicon.png">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        .connection-status.connected {
+            color: #10b981;
+        }
+        .connection-status.disconnected {
+            color: #ef4444;
+        }
+        .connection-status.disabled {
+            color: #6b7280;
+        }
+        .notification {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .achievement-notification {
+            animation: bounceIn 0.5s ease-out;
+        }
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur shadow-sm">
+      <nav class="mx-auto max-w-6xl flex items-center justify-between px-4 py-3">
+        <a href="/MAR/index.html" class="flex items-center gap-2 font-display text-xl text-gray-900"><img src="/MAR/Images/LOGO.png" alt="" class="h-8 w-8"> Maverick Aim Rush</a>
+        <ul class="hidden md:flex items-center gap-6 text-gray-700">
+          <li><a href="/MAR/index.html" class="hover:text-orange-600">Dashboard</a></li>
+          <li><a href="/MAR/about.html" class="hover:text-orange-600">Workout Tracker</a></li>
+          <li><a href="/MAR/services.html" class="hover:text-orange-600">Nutrition Log</a></li>
+          <li><a href="/MAR/contact.html" class="hover:text-orange-600">Progress</a></li>
+          <li><a href="/MAR/social.html" class="hover:text-orange-600 font-medium">Social</a></li>
+        </ul>
+        <div class="flex items-center gap-3">
+          <button id="units-toggle" class="hidden md:inline-flex items-center rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50"><span id="units-display">kg/km</span></button>
+          <button id="logout-btn" class="rounded-lg bg-orange-600 px-4 py-2 text-white hover:bg-orange-500">Logout</button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="min-h-screen bg-gray-50">
+        <div class="mx-auto max-w-7xl px-6 py-8">
+            <!-- Social Hero -->
+            <section class="mb-8">
+              <div class="rounded-2xl bg-gray-900 text-white p-8 shadow-md">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h1 class="text-3xl font-bold mb-2">Social & Community</h1>
+                    <p class="text-gray-300">Connect with friends, join challenges, and compete on leaderboards</p>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <div id="connection-status" class="connection-status disconnected text-sm">
+                      🔴 Disconnected
+                    </div>
+                    <button id="refresh-social" class="bg-orange-600 hover:bg-orange-500 px-4 py-2 rounded-lg text-sm">
+                      Refresh
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Navigation Tabs -->
+            <section class="mb-6 flex w-full justify-center">
+              <div class="inline-flex rounded-xl border border-gray-200 bg-white p-1 shadow-sm">
+                <button class="social-tab rounded-lg px-4 py-2 text-sm font-medium text-gray-600 data-[active=true]:bg-orange-50 data-[active=true]:text-orange-700 data-[active=true]:shadow" data-section="friends">Friends</button>
+                <button class="social-tab rounded-lg px-4 py-2 text-sm font-medium text-gray-600 data-[active=true]:bg-orange-50 data-[active=true]:text-orange-700 data-[active=true]:shadow" data-section="challenges">Challenges</button>
+                <button class="social-tab rounded-lg px-4 py-2 text-sm font-medium text-gray-600 data-[active=true]:bg-orange-50 data-[active=true]:text-orange-700 data-[active=true]:shadow" data-section="leaderboards">Leaderboards</button>
+                <button class="social-tab rounded-lg px-4 py-2 text-sm font-medium text-gray-600 data-[active=true]:bg-orange-50 data-[active=true]:text-orange-700 data-[active=true]:shadow" data-section="achievements">Achievements</button>
+                <button class="social-tab rounded-lg px-4 py-2 text-sm font-medium text-gray-600 data-[active=true]:bg-orange-50 data-[active=true]:text-orange-700 data-[active=true]:shadow" data-section="community">Community</button>
+              </div>
+            </section>
+
+            <!-- Loading State -->
+            <section id="loading-section" class="hidden">
+                <div class="mx-auto w-10 h-10 border-4 border-gray-200 border-t-orange-500 rounded-full animate-spin"></div>
+                <p class="text-center text-gray-500 mt-3">Loading social features...</p>
+            </section>
+
+            <!-- Friends Section -->
+            <section id="friends-section" class="block">
+              <div class="mb-4 flex items-center justify-between">
+                <h2 class="text-xl font-semibold">👥 Friends</h2>
+                <button id="add-friend-btn" class="rounded-lg bg-orange-600 px-4 py-2 text-white hover:bg-orange-500">Add Friend</button>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm flex gap-3 items-start">
+                  <div class="text-2xl">👤</div>
+                  <div class="flex-1">
+                    <h3 class="font-medium">John Doe</h3>
+                    <p class="text-sm text-gray-500">7 day streak • 12 workouts this month</p>
+                    <div class="mt-2 flex gap-2">
+                      <button class="rounded-md border px-3 py-1 text-sm hover:bg-gray-50">View Activity</button>
+                      <button class="rounded-md border px-3 py-1 text-sm hover:bg-gray-50">Message</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm flex gap-3 items-start">
+                  <div class="text-2xl">👩</div>
+                  <div class="flex-1">
+                    <h3 class="font-medium">Jane Smith</h3>
+                    <p class="text-sm text-gray-500">3 day streak • 8 workouts this month</p>
+                    <div class="mt-2 flex gap-2">
+                      <button class="rounded-md border px-3 py-1 text-sm hover:bg-gray-50">View Activity</button>
+                      <button class="rounded-md border px-3 py-1 text-sm hover:bg-gray-50">Message</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="rounded-xl border border-dashed border-gray-300 bg-white p-4 shadow-sm flex flex-col items-center justify-center text-center">
+                  <div class="text-3xl">+</div>
+                  <h3 class="font-medium mt-2">Add New Friend</h3>
+                  <p class="text-sm text-gray-500">Connect with other fitness enthusiasts</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- Challenges Section -->
+            <section id="challenges-section" class="hidden">
+              <div class="mb-4 flex items-center justify-between">
+                <h2 class="text-xl font-semibold">🏆 Challenges</h2>
+                <button id="create-challenge-btn" class="rounded-lg bg-orange-600 px-4 py-2 text-white hover:bg-orange-500">Create Challenge</button>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+                  <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-semibold">30-Day Workout Streak</h3>
+                    <span class="rounded-full bg-green-100 text-green-700 text-xs px-2 py-0.5">Active</span>
+                  </div>
+                  <p class="text-sm text-gray-600 mb-3">Complete a workout every day for 30 days</p>
+                  <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-2"><div class="h-2 bg-orange-500" style="width:60%"></div></div>
+                  <div class="text-xs text-gray-500 mb-3">18/30 days (60%)</div>
+                  <div class="grid grid-cols-2 gap-3 text-sm">
+                    <div><div class="text-gray-500">Participants</div><div class="font-medium">247</div></div>
+                    <div><div class="text-gray-500">Your Rank</div><div class="font-medium">#15</div></div>
+                  </div>
+                </div>
+                <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+                  <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-semibold">Weight Loss Warrior</h3>
+                    <span class="rounded-full bg-gray-100 text-gray-700 text-xs px-2 py-0.5">Upcoming</span>
+                  </div>
+                  <p class="text-sm text-gray-600 mb-3">Lose 10 pounds in 8 weeks</p>
+                  <div class="grid grid-cols-2 gap-3 text-sm mb-3">
+                    <div><div class="text-gray-500">Starts</div><div class="font-medium">Jan 15, 2024</div></div>
+                    <div><div class="text-gray-500">Duration</div><div class="font-medium">8 weeks</div></div>
+                  </div>
+                  <button class="rounded-lg bg-orange-600 px-4 py-2 text-white hover:bg-orange-500 w-full">Join Challenge</button>
+                </div>
+              </div>
+            </section>
+
+            <!-- Leaderboards Section -->
+            <section id="leaderboards-section" class="hidden">
+              <div class="mb-4 flex items-center justify-between">
+                <h2 class="text-xl font-semibold">🏅 Leaderboards</h2>
+                <select id="leaderboard-period" class="rounded-lg border px-3 py-1.5 text-sm">
+                  <option value="weekly">This Week</option>
+                  <option value="monthly">This Month</option>
+                  <option value="yearly">This Year</option>
+                  <option value="all_time">All Time</option>
+                </select>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+                  <div class="flex items-center justify-between mb-3"><h3 class="font-semibold">Workout Streak</h3><span class="text-xs text-gray-500">Weekly</span></div>
+                  <div class="divide-y divide-gray-100">
+                    <div class="flex items-center gap-3 py-2"><div class="w-6 text-center font-semibold">1</div><div class="text-xl">👑</div><div class="flex-1">FitnessKing</div><div class="text-sm text-gray-600">15 days</div></div>
+                    <div class="flex items-center gap-3 py-2"><div class="w-6 text-center font-semibold">2</div><div class="text-xl">💪</div><div class="flex-1">MuscleMaster</div><div class="text-sm text-gray-600">12 days</div></div>
+                    <div class="flex items-center gap-3 py-2"><div class="w-6 text-center font-semibold">3</div><div class="text-xl">🔥</div><div class="flex-1">IronWoman</div><div class="text-sm text-gray-600">10 days</div></div>
+                    <div class="flex items-center gap-3 py-2 bg-orange-50 rounded-lg mt-2"><div class="w-6 text-center font-semibold">7</div><div class="text-xl">🙂</div><div class="flex-1">You</div><div class="text-sm text-gray-600">7 days</div></div>
+                  </div>
+                </div>
+                <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+                  <div class="flex items-center justify-between mb-3"><h3 class="font-semibold">Total Volume</h3><span class="text-xs text-gray-500">Monthly</span></div>
+                  <div class="divide-y divide-gray-100">
+                    <div class="flex items-center gap-3 py-2"><div class="w-6 text-center font-semibold">1</div><div class="text-xl">🏋️</div><div class="flex-1">HeavyLifter</div><div class="text-sm text-gray-600">45,230 kg</div></div>
+                    <div class="flex items-center gap-3 py-2"><div class="w-6 text-center font-semibold">2</div><div class="text-xl">💥</div><div class="flex-1">PowerLifter</div><div class="text-sm text-gray-600">42,180 kg</div></div>
+                    <div class="flex items-center gap-3 py-2"><div class="w-6 text-center font-semibold">3</div><div class="text-xl">⚡</div><div class="flex-1">SpeedDemon</div><div class="text-sm text-gray-600">38,950 kg</div></div>
+                    <div class="flex items-center gap-3 py-2 bg-orange-50 rounded-lg mt-2"><div class="w-6 text-center font-semibold">12</div><div class="text-xl">🙂</div><div class="flex-1">You</div><div class="text-sm text-gray-600">25,430 kg</div></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Achievements Section -->
+            <section id="achievements-section" class="hidden">
+              <div class="mb-4 flex items-center justify-between">
+                <h2 class="text-xl font-semibold">🏆 Achievements</h2>
+                <select id="achievement-filter" class="rounded-lg border px-3 py-1.5 text-sm">
+                  <option value="all">All Achievements</option>
+                  <option value="earned">Earned</option>
+                  <option value="available">Available</option>
+                </select>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="rounded-xl border border-green-200 bg-green-50 p-5 shadow-sm flex gap-3">
+                  <div class="text-2xl">🏋️</div>
+                  <div>
+                    <h3 class="font-semibold">First Workout</h3>
+                    <p class="text-sm text-gray-600">Complete your first workout</p>
+                    <div class="mt-1 text-xs text-green-700">Common • Earned Jan 5, 2024</div>
+                  </div>
+                </div>
+                <div class="rounded-xl border border-orange-200 bg-orange-50 p-5 shadow-sm flex gap-3">
+                  <div class="text-2xl">🔥</div>
+                  <div>
+                    <h3 class="font-semibold">7-Day Streak</h3>
+                    <p class="text-sm text-gray-600">Work out for 7 consecutive days</p>
+                    <div class="mt-1 text-xs text-orange-700">Uncommon • Earned Jan 12, 2024</div>
+                  </div>
+                </div>
+                <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm flex gap-3">
+                  <div class="text-2xl">💪</div>
+                  <div class="flex-1">
+                    <h3 class="font-semibold">30-Day Streak</h3>
+                    <p class="text-sm text-gray-600">Work out for 30 consecutive days</p>
+                    <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden mt-2"><div class="h-2 bg-orange-500" style="width:60%"></div></div>
+                  </div>
+                </div>
+                <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm flex gap-3">
+                  <div class="text-2xl">🏆</div>
+                  <div class="flex-1">
+                    <h3 class="font-semibold">Weight Loss Champion</h3>
+                    <p class="text-sm text-gray-600">Lose 20 pounds</p>
+                    <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden mt-2"><div class="h-2 bg-orange-500" style="width:25%"></div></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Community Section -->
+            <section id="community-section" class="hidden">
+              <div class="mb-4"><h2 class="text-xl font-semibold">🌍 Community</h2></div>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm text-center"><div class="text-2xl">👥</div><div class="text-2xl font-bold">12,847</div><div class="text-sm text-gray-500">Active Users</div></div>
+                <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm text-center"><div class="text-2xl">🏋️</div><div class="text-2xl font-bold">45,230</div><div class="text-sm text-gray-500">Workouts Today</div></div>
+                <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm text-center"><div class="text-2xl">🏆</div><div class="text-2xl font-bold">1,247</div><div class="text-sm text-gray-500">Active Challenges</div></div>
+                <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm text-center"><div class="text-2xl">📈</div><div class="text-2xl font-bold">89.2%</div><div class="text-sm text-gray-500">Success Rate</div></div>
+              </div>
+              <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+                <h3 class="font-semibold mb-3">Recent Community Activity</h3>
+                <div class="divide-y divide-gray-100">
+                  <div class="flex items-start gap-3 py-2"><div class="text-xl">👤</div><div><p><strong>FitnessKing</strong> completed a 2‑hour strength session!</p><div class="text-xs text-gray-500">2 minutes ago</div></div></div>
+                  <div class="flex items-start gap-3 py-2"><div class="text-xl">👩</div><div><p><strong>IronWoman</strong> hit a 135kg deadlift PR!</p><div class="text-xs text-gray-500">15 minutes ago</div></div></div>
+                  <div class="flex items-start gap-3 py-2"><div class="text-xl">💪</div><div><p><strong>MuscleMaster</strong> joined the 30‑Day Streak challenge</p><div class="text-xs text-gray-500">1 hour ago</div></div></div>
+                  <div class="flex items-start gap-3 py-2"><div class="text-xl">🔥</div><div><p><strong>SpeedDemon</strong> completed their 50th workout this month!</p><div class="text-xs text-gray-500">2 hours ago</div></div></div>
+                </div>
+              </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/api.js?v=4"></script>
+    <script src="js/social-realtime.js?v=1"></script>
+    <script>
+      // Simple tab toggling using data-active for Uno-friendly styles
+      (function(){
+        function activate(key){
+          document.querySelectorAll('.social-tab').forEach(b=>b.dataset.active=(b.dataset.section===key));
+          const ids=['friends','challenges','leaderboards','achievements','community'];
+          ids.forEach(id=>{
+            const el=document.getElementById(id+'-section');
+            if (el) el.classList.toggle('hidden', id!==key);
+          });
+        }
+        document.querySelectorAll('.social-tab').forEach(b=>{
+          b.addEventListener('click', ()=>activate(b.dataset.section));
+        });
+        activate('friends');
+      })();
+    </script>
+</body>
+</html>

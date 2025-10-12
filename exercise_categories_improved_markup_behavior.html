@@ -1,0 +1,117 @@
+<!-- Exercise Categories: redesigned with tabs for cleaner UI -->
+<section id="exercise-categories" class="mx-auto max-w-6xl px-4 py-10">
+  <!-- Header -->
+  <div class="mb-6 text-center">
+    <h2 class="text-2xl font-bold tracking-tight">Exercise Categories</h2>
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Switch between tabs to explore exercises by focus area.</p>
+  </div>
+
+  <!-- KPI Strip -->
+  <div class="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+    <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <p class="text-xs text-gray-500">Calories Burned</p>
+      <p id="kpi-calories" class="mt-1 text-xl font-semibold">0</p>
+    </div>
+    <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <p class="text-xs text-gray-500">Workout Duration</p>
+      <p id="kpi-duration" class="mt-1 text-xl font-semibold">0 min</p>
+    </div>
+    <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <p class="text-xs text-gray-500">Exercises</p>
+      <p id="kpi-exercises" class="mt-1 text-xl font-semibold">0</p>
+    </div>
+    <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <p class="text-xs text-gray-500">Personal Records</p>
+      <p id="kpi-prs" class="mt-1 text-xl font-semibold">0</p>
+    </div>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="mb-6 flex justify-center gap-4 border-b border-gray-200 dark:border-gray-700">
+    <button class="tab-btn active" data-tab="strength">💪 Strength</button>
+    <button class="tab-btn" data-tab="cardio">🏃 Cardio</button>
+    <button class="tab-btn" data-tab="flexibility">🧘 Flexibility</button>
+    <button class="tab-btn" data-tab="bodyweight">🤸 Bodyweight</button>
+  </div>
+
+  <!-- Tab Panels -->
+  <div id="tab-panels">
+    <div id="tab-strength" class="tab-panel">
+      <h3 class="text-lg font-semibold">Strength Training</h3>
+      <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">Build muscle and increase strength.</p>
+      <ul class="space-y-3" id="strength-list"></ul>
+    </div>
+    <div id="tab-cardio" class="tab-panel hidden">
+      <h3 class="text-lg font-semibold">Cardio</h3>
+      <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">Improve endurance and burn calories.</p>
+      <ul class="space-y-3" id="cardio-list"></ul>
+    </div>
+    <div id="tab-flexibility" class="tab-panel hidden">
+      <h3 class="text-lg font-semibold">Flexibility</h3>
+      <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">Improve mobility and prevent injury.</p>
+      <ul class="space-y-3" id="flexibility-list"></ul>
+    </div>
+    <div id="tab-bodyweight" class="tab-panel hidden">
+      <h3 class="text-lg font-semibold">Bodyweight</h3>
+      <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">No equipment needed workouts.</p>
+      <ul class="space-y-3" id="bodyweight-list"></ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tab-btn { @apply px-4 py-2 text-sm font-medium text-gray-600 hover:text-primary transition relative; }
+  .tab-btn.active { @apply text-primary border-b-2 border-primary; }
+  .tab-panel { @apply rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900; }
+</style>
+
+<script>
+  const EXERCISES = {
+    strength: [
+      { name: 'Squat', equipment: 'Barbell', difficulty: 'Intermediate' },
+      { name: 'Bench Press', equipment: 'Barbell', difficulty: 'Intermediate' },
+    ],
+    cardio: [
+      { name: 'Running', equipment: 'Treadmill', difficulty: 'All' },
+      { name: 'Cycling', equipment: 'Bike', difficulty: 'All' },
+    ],
+    flexibility: [
+      { name: 'Hamstring Stretch', equipment: 'Mat', difficulty: 'Beginner' },
+      { name: 'Hip Flexor Stretch', equipment: 'Mat', difficulty: 'Beginner' },
+    ],
+    bodyweight: [
+      { name: 'Push-Up', equipment: 'None', difficulty: 'Beginner' },
+      { name: 'Plank', equipment: 'None', difficulty: 'Beginner' },
+    ]
+  };
+
+  function renderExercises() {
+    for (let cat in EXERCISES) {
+      const list = document.getElementById(`${cat}-list`);
+      if (!list) continue;
+      list.innerHTML = EXERCISES[cat].map(ex => `
+        <li class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm dark:border-gray-700 dark:bg-gray-800">
+          <div>
+            <p class="font-medium">${ex.name}</p>
+            <p class="text-xs text-gray-500">${ex.equipment} • ${ex.difficulty}</p>
+          </div>
+          <button class="rounded-md bg-primary px-3 py-1 text-xs text-white">Start</button>
+        </li>`).join('');
+    }
+  }
+
+  function initTabs() {
+    const btns = document.querySelectorAll('.tab-btn');
+    btns.forEach(btn => btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden');
+    }));
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderExercises();
+    initTabs();
+  });
+</script>

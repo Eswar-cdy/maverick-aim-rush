@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Onboarding • Maverick Aim Rush</title>
+  <link rel="icon" href="/assets/favicon.png" />
+  <link rel="stylesheet" href="css/uno.css" />
+</head>
+<body class="min-h-screen bg-gray-50">
+  <main class="mx-auto max-w-3xl px-6 py-10">
+    <header class="mb-8 text-center">
+      <h1 class="text-3xl font-bold">Welcome to Maverick Aim Rush</h1>
+      <p class="text-gray-600">Let’s personalize your experience. Takes under a minute.</p>
+    </header>
+
+    <section class="bg-white rounded-xl shadow-sm border p-6" id="onboarding-root">
+      <div id="step-goals" class="space-y-4">
+        <h2 class="text-xl font-semibold">Your Goals</h2>
+        <label class="block">
+          <span class="text-sm text-gray-700">Primary goal</span>
+          <select id="primary_goal" class="w-full rounded-lg border px-3 py-2">
+            <option value="fat_loss">Fat loss</option>
+            <option value="muscle_gain">Muscle gain</option>
+            <option value="endurance">Endurance</option>
+          </select>
+        </label>
+        <label class="block">
+          <span class="text-sm text-gray-700">Target days per week</span>
+          <input id="target_days" type="number" min="2" max="7" value="4" class="w-full rounded-lg border px-3 py-2" />
+        </label>
+        <div class="flex justify-between pt-2">
+          <a href="index.html" class="text-gray-500">Skip</a>
+          <button id="next-btn" class="rounded-lg bg-orange-600 px-5 py-2 text-white">Next</button>
+        </div>
+      </div>
+
+      <div id="step-done" class="hidden text-center">
+        <h2 class="text-xl font-semibold mb-2">You’re all set!</h2>
+        <p class="text-gray-600 mb-6">We saved your preferences.</p>
+        <a href="about.html" class="rounded-lg bg-orange-600 px-5 py-2 text-white">Go to Workout Tracker</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/onboarding.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Maverick Aim Rush - Onboarding</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header__content">
+                <div class="header__logo">
+                    <img src="images/LOGO.png" alt="Maverick Aim Rush" class="header__logo-img">
+                    <span class="header__logo-text">Maverick Aim Rush</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Onboarding Hero -->
+            <section class="onboarding-hero">
+                <div class="onboarding-hero__content">
+                    <h1 class="onboarding-hero__title">Welcome to Maverick Aim Rush!</h1>
+                    <p class="onboarding-hero__subtitle">Let's personalize your fitness journey with a few quick questions</p>
+                </div>
+            </section>
+
+            <!-- Progress Bar -->
+            <section class="onboarding-progress">
+                <div class="progress-bar">
+                    <div class="progress-bar__fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="progress-step">Step 1 of 4</span>
+                </div>
+            </section>
+
+            <!-- Onboarding Form -->
+            <section class="onboarding-section">
+                <form id="onboarding-form" class="onboarding-form">
+                    
+                    <!-- Step 1: Basic Info -->
+                    <div class="onboarding-step" id="step-1">
+                        <h2 class="onboarding-step__title">Basic Information</h2>
+                        <p class="onboarding-step__subtitle">Tell us about yourself</p>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="age" class="form-label">Age</label>
+                                <input type="number" id="age" name="age" class="form-input" min="13" max="100" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="gender" class="form-label">Gender</label>
+                                <select id="gender" name="gender" class="form-select" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="height" class="form-label">Height</label>
+                                <div class="height-input">
+                                    <input type="number" id="height" name="height" class="form-input" min="100" max="250" required>
+                                    <span class="height-unit" id="height-unit">cm</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="weight" class="form-label">Current Weight</label>
+                                <div class="weight-input">
+                                    <input type="number" id="weight" name="weight" class="form-input" min="30" max="300" step="0.1" required>
+                                    <span class="weight-unit" id="weight-unit">kg</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Fitness Level & Goals -->
+                    <div class="onboarding-step" id="step-2" style="display: none;">
+                        <h2 class="onboarding-step__title">Fitness Goals</h2>
+                        <p class="onboarding-step__subtitle">What are you looking to achieve?</p>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Primary Goal</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="primary_goal" value="weight_loss" required>
+                                    <span class="radio-custom"></span>
+                                    <div class="radio-content">
+                                        <div class="radio-title">Weight Loss</div>
+                                        <div class="radio-subtitle">Burn fat and get lean</div>
+                                    </div>
+                                </label>
+                                
+                                <label class="radio-option">
+                                    <input type="radio" name="primary_goal" value="muscle_gain" required>
+                                    <span class="radio-custom"></span>
+                                    <div class="radio-content">
+                                        <div class="radio-title">Muscle Gain</div>
+                                        <div class="radio-subtitle">Build strength and size</div>
+                                    </div>
+                                </label>
+                                
+                                <label class="radio-option">
+                                    <input type="radio" name="primary_goal" value="performance" required>
+                                    <span class="radio-custom"></span>
+                                    <div class="radio-content">
+                                        <div class="radio-title">Performance</div>
+                                        <div class="radio-subtitle">Improve athletic performance</div>
+                                    </div>
+                                </label>
+                                
+                                <label class="radio-option">
+                                    <input type="radio" name="primary_goal" value="general_fitness" required>
+                                    <span class="radio-custom"></span>
+                                    <div class="radio-content">
+                                        <div class="radio-title">General Fitness</div>
+                                        <div class="radio-subtitle">Stay healthy and active</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="fitness_level" class="form-label">Current Fitness Level</label>
+                            <select id="fitness_level" name="fitness_level" class="form-select" required>
+                                <option value="">Select Level</option>
+                                <option value="beginner">Beginner - New to working out</option>
+                                <option value="intermediate">Intermediate - Some experience</option>
+                                <option value="advanced">Advanced - Very experienced</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="workout_frequency" class="form-label">How many days per week can you workout?</label>
+                            <select id="workout_frequency" name="workout_frequency" class="form-select" required>
+                                <option value="">Select Frequency</option>
+                                <option value="2">2 days per week</option>
+                                <option value="3">3 days per week</option>
+                                <option value="4">4 days per week</option>
+                                <option value="5">5 days per week</option>
+                                <option value="6">6 days per week</option>
+                                <option value="7">7 days per week</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Equipment -->
+                    <div class="onboarding-step" id="step-3" style="display: none;">
+                        <h2 class="onboarding-step__title">Available Equipment</h2>
+                        <p class="onboarding-step__subtitle">What equipment do you have access to?</p>
+                        
+                        <div class="equipment-grid">
+                            <label class="equipment-option">
+                                <input type="checkbox" name="equipment" value="bodyweight">
+                                <span class="equipment-custom"></span>
+                                <div class="equipment-content">
+                                    <div class="equipment-icon">🏃</div>
+                                    <div class="equipment-name">Bodyweight Only</div>
+                                </div>
+                            </label>
+                            
+                            <label class="equipment-option">
+                                <input type="checkbox" name="equipment" value="dumbbells">
+                                <span class="equipment-custom"></span>
+                                <div class="equipment-content">
+                                    <div class="equipment-icon">🏋️</div>
+                                    <div class="equipment-name">Dumbbells</div>
+                                </div>
+                            </label>
+                            
+                            <label class="equipment-option">
+                                <input type="checkbox" name="equipment" value="barbell">
+                                <span class="equipment-custom"></span>
+                                <div class="equipment-content">
+                                    <div class="equipment-icon">🏋️‍♂️</div>
+                                    <div class="equipment-name">Barbell</div>
+                                </div>
+                            </label>
+                            
+                            <label class="equipment-option">
+                                <input type="checkbox" name="equipment" value="resistance_bands">
+                                <span class="equipment-custom"></span>
+                                <div class="equipment-content">
+                                    <div class="equipment-icon">🎯</div>
+                                    <div class="equipment-name">Resistance Bands</div>
+                                </div>
+                            </label>
+                            
+                            <label class="equipment-option">
+                                <input type="checkbox" name="equipment" value="kettlebell">
+                                <span class="equipment-custom"></span>
+                                <div class="equipment-content">
+                                    <div class="equipment-icon">⚡</div>
+                                    <div class="equipment-name">Kettlebell</div>
+                                </div>
+                            </label>
+                            
+                            <label class="equipment-option">
+                                <input type="checkbox" name="equipment" value="pull_up_bar">
+                                <span class="equipment-custom"></span>
+                                <div class="equipment-content">
+                                    <div class="equipment-icon">🆙</div>
+                                    <div class="equipment-name">Pull-up Bar</div>
+                                </div>
+                            </label>
+                            
+                            <label class="equipment-option">
+                                <input type="checkbox" name="equipment" value="cardio_machine">
+                                <span class="equipment-custom"></span>
+                                <div class="equipment-content">
+                                    <div class="equipment-icon">🏃‍♀️</div>
+                                    <div class="equipment-name">Cardio Machine</div>
+                                </div>
+                            </label>
+                            
+                            <label class="equipment-option">
+                                <input type="checkbox" name="equipment" value="full_gym">
+                                <span class="equipment-custom"></span>
+                                <div class="equipment-content">
+                                    <div class="equipment-icon">🏋️‍♀️</div>
+                                    <div class="equipment-name">Full Gym Access</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Preferences -->
+                    <div class="onboarding-step" id="step-4" style="display: none;">
+                        <h2 class="onboarding-step__title">Preferences</h2>
+                        <p class="onboarding-step__subtitle">Final touches to personalize your experience</p>
+                        
+                        <div class="form-group">
+                            <label for="workout_duration" class="form-label">Preferred Workout Duration</label>
+                            <select id="workout_duration" name="workout_duration" class="form-select" required>
+                                <option value="">Select Duration</option>
+                                <option value="30">30 minutes</option>
+                                <option value="45">45 minutes</option>
+                                <option value="60">60 minutes</option>
+                                <option value="90">90+ minutes</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="workout_time" class="form-label">Preferred Workout Time</label>
+                            <select id="workout_time" name="workout_time" class="form-select" required>
+                                <option value="">Select Time</option>
+                                <option value="morning">Morning (6-9 AM)</option>
+                                <option value="midday">Midday (9 AM-2 PM)</option>
+                                <option value="afternoon">Afternoon (2-6 PM)</option>
+                                <option value="evening">Evening (6-10 PM)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Unit System</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="unit_system" value="metric" required>
+                                    <span class="radio-custom"></span>
+                                    <div class="radio-content">
+                                        <div class="radio-title">Metric (kg, cm)</div>
+                                        <div class="radio-subtitle">Kilograms and centimeters</div>
+                                    </div>
+                                </label>
+                                
+                                <label class="radio-option">
+                                    <input type="radio" name="unit_system" value="imperial" required>
+                                    <span class="radio-custom"></span>
+                                    <div class="radio-content">
+                                        <div class="radio-title">Imperial (lbs, ft/in)</div>
+                                        <div class="radio-subtitle">Pounds and feet/inches</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="onboarding-navigation">
+                        <button type="button" id="prev-btn" class="nav-btn nav-btn--secondary" style="display: none;">Previous</button>
+                        <button type="button" id="next-btn" class="nav-btn nav-btn--primary">Next</button>
+                        <button type="submit" id="complete-btn" class="nav-btn nav-btn--primary" style="display: none;">Complete Setup</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/onboarding.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+# Maverick Aim Rush - Cursor Rules (v1 fallback)
+# Note: This project uses .cursor/rules/ (v2) - see .cursor/rules/ directory
+# This file is kept for backward compatibility
+
+Project: Maverick Aim Rush
+
+General
+- Keep answers concise and direct; prioritize code over prose.
+- Use code references for existing files; use fenced code blocks for proposed code.
+- Respect existing indentation and formatting.
+- Avoid speculative changes; propose minimal, reversible edits.
+
+Backend (Django/DRF)
+- Prefer Django REST Framework patterns: serializers, viewsets, routers.
+- Use PostgreSQL via environment-based DATABASES config; no SQLite in production.
+- Write migrations for model changes; keep data migrations idempotent.
+- Validate inputs in serializers; avoid business logic in views.
+- Return paginated responses for list endpoints by default.
+- **MANDATORY: All new endpoints must be under /api/v1/ path. No exceptions.**
+- **MANDATORY: Add schema snapshot tests for all new endpoints.**
+
+Auth/Security
+- Use JWT or cookie-based auth consistent with `tracker/csrf_jwt.py`.
+- Enforce permissions (`permissions.py`) and throttling where applicable.
+- Never log secrets; use settings/env variables only.
+
+Testing
+- Default to `pytest` style if present; otherwise Django test runner.
+- Add tests for serializers, views, and critical utils.
+
+Frontend
+- Use React components in `frontend/app/` with functional components and hooks.
+- Keep API calls in a dedicated client; no inline fetches in components.
+- Validate props with TypeScript or PropTypes if TypeScript not available.
+
+Performance/Infra
+- Prefer async tasks for heavy workloads; avoid blocking request/response cycle.
+- Cache read-heavy endpoints where safe.
+
+Docs
+- For new APIs: update `PROJECT_SUMMARY.md` and relevant README sections.

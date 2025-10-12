@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Progress - Maverick Aim Rush</title>
+    <link rel="stylesheet" href="css/reset.css?v=3">
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="icon" href="images/favicon.png">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Maverick Aim Rush">
+    <link rel="apple-touch-icon" href="images/favicon.png">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="main-header">
+        <div class="header__content">
+            <div class="header__logo">
+                <img src="images/LOGO.png" alt="Maverick Aim Rush" class="logo">
+            </div>
+            <nav class="header__nav">
+                <a href="index.html" class="header__nav-link">Dashboard</a>
+                <a href="calculator.html" class="header__nav-link">Calculator</a>
+                <a href="recommendations.html" class="header__nav-link">AI Recommendations</a>
+                <a href="social.html" class="header__nav-link">Social</a>
+                <a href="data-management.html" class="header__nav-link">Data Management</a>
+                <a href="photo-progress.html" class="header__nav-link active">Photo Progress</a>
+            </nav>
+            <div class="header__auth">
+                <button class="btn btn--primary" onclick="showLogin()">Login</button>
+                <button class="btn btn--secondary" onclick="showRegister()">Register</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main page-offset" id="main-content">
+        <!-- Hero Section -->
+        <section class="hero hero--photo-progress">
+            <div class="hero__content">
+                <h1 class="hero__title">📸 Photo Progress Tracking</h1>
+                <p class="hero__subtitle">Track your transformation with visual progress photos, body measurements, and milestone celebrations</p>
+                <div class="hero__actions">
+                    <button class="btn btn--primary btn--large" onclick="showPhotoUpload()">
+                        📷 Upload Progress Photo
+                    </button>
+                    <button class="btn btn--secondary btn--large" onclick="showMeasurementForm()">
+                        📏 Add Body Measurement
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Photo Progress Dashboard -->
+        <section class="photo-progress-dashboard">
+            <div class="container">
+                <!-- Quick Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card__icon">📸</div>
+                        <div class="stat-card__content">
+                            <h3 class="stat-card__value" id="total-photos">0</h3>
+                            <p class="stat-card__label">Progress Photos</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card__icon">⚖️</div>
+                        <div class="stat-card__content">
+                            <h3 class="stat-card__value" id="weight-change">0 kg</h3>
+                            <p class="stat-card__label">Weight Change</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card__icon">📏</div>
+                        <div class="stat-card__content">
+                            <h3 class="stat-card__value" id="measurements">0</h3>
+                            <p class="stat-card__label">Body Measurements</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card__icon">🏆</div>
+                        <div class="stat-card__content">
+                            <h3 class="stat-card__value" id="milestones">0</h3>
+                            <p class="stat-card__label">Milestones Achieved</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photo Timeline -->
+                <div class="photo-timeline">
+                    <h2 class="section-title">📅 Progress Timeline</h2>
+                    <div class="timeline-container" id="photo-timeline">
+                        <!-- Timeline items will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Before/After Comparisons -->
+                <div class="photo-comparisons">
+                    <h2 class="section-title">🔄 Before & After Comparisons</h2>
+                    <div class="comparisons-grid" id="comparisons-grid">
+                        <!-- Comparisons will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Body Measurements Chart -->
+                <div class="measurements-section">
+                    <h2 class="section-title">📊 Body Measurements Progress</h2>
+                    <div class="measurements-chart" id="measurements-chart">
+                        <!-- Chart will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Milestones -->
+                <div class="milestones-section">
+                    <h2 class="section-title">🎯 Achieved Milestones</h2>
+                    <div class="milestones-grid" id="milestones-grid">
+                        <!-- Milestones will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Photo Upload Modal -->
+    <div class="modal" id="photo-upload-modal">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3>📷 Upload Progress Photo</h3>
+                <button class="modal__close" onclick="hidePhotoUpload()">&times;</button>
+            </div>
+            <div class="modal__body">
+                <form id="photo-upload-form" class="photo-upload-form">
+                    <div class="form-group">
+                        <label for="photo-type">Photo Type</label>
+                        <select id="photo-type" name="photo_type" required>
+                            <option value="front">Front View</option>
+                            <option value="side">Side View</option>
+                            <option value="back">Back View</option>
+                            <option value="flexed">Flexed</option>
+                            <option value="relaxed">Relaxed</option>
+                            <option value="before">Before Photo</option>
+                            <option value="after">After Photo</option>
+                            <option value="milestone">Milestone Photo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="photo-file">Select Photo</label>
+                        <input type="file" id="photo-file" name="image" accept="image/*" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="weight-at-time">Weight at Time (kg)</label>
+                        <input type="number" id="weight-at-time" name="weight_at_time" step="0.1" placeholder="70.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="body-fat-at-time">Body Fat % at Time</label>
+                        <input type="number" id="body-fat-at-time" name="body_fat_at_time" step="0.1" placeholder="15.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="photo-notes">Notes</label>
+                        <textarea id="photo-notes" name="notes" placeholder="How are you feeling? Any changes you notice?"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn--secondary" onclick="hidePhotoUpload()">Cancel</button>
+                        <button type="submit" class="btn btn--primary">Upload Photo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Body Measurement Modal -->
+    <div class="modal" id="measurement-modal">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3>📏 Add Body Measurement</h3>
+                <button class="modal__close" onclick="hideMeasurementForm()">&times;</button>
+            </div>
+            <div class="modal__body">
+                <form id="measurement-form" class="measurement-form">
+                    <div class="form-group">
+                        <label for="body-part">Body Part</label>
+                        <select id="body-part" name="body_part" required>
+                            <option value="neck">Neck</option>
+                            <option value="chest">Chest</option>
+                            <option value="shoulders">Shoulders</option>
+                            <option value="left_bicep">Left Bicep</option>
+                            <option value="right_bicep">Right Bicep</option>
+                            <option value="left_forearm">Left Forearm</option>
+                            <option value="right_forearm">Right Forearm</option>
+                            <option value="waist">Waist</option>
+                            <option value="hips">Hips</option>
+                            <option value="left_thigh">Left Thigh</option>
+                            <option value="right_thigh">Right Thigh</option>
+                            <option value="left_calf">Left Calf</option>
+                            <option value="right_calf">Right Calf</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="measurement-cm">Measurement (cm)</label>
+                        <input type="number" id="measurement-cm" name="measurement_cm" step="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="measurement-inches">Measurement (inches)</label>
+                        <input type="number" id="measurement-inches" name="measurement_inches" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="is-flexed" name="is_flexed"> Flexed Measurement
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="measurement-notes">Notes</label>
+                        <textarea id="measurement-notes" name="notes" placeholder="Any notes about this measurement"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn--secondary" onclick="hideMeasurementForm()">Cancel</button>
+                        <button type="submit" class="btn btn--primary">Add Measurement</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentication Modals -->
+    <div class="modal" id="login-modal">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3>Login to Maverick Aim Rush</h3>
+                <button class="modal__close" onclick="hideLogin()">&times;</button>
+            </div>
+            <div class="modal__body">
+                <form id="login-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" name="password" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn--primary btn--full">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="register-modal">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3>Join Maverick Aim Rush</h3>
+                <button class="modal__close" onclick="hideRegister()">&times;</button>
+            </div>
+            <div class="modal__body">
+                <form id="register-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="register-username">Username</label>
+                        <input type="text" id="register-username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password-confirm">Confirm Password</label>
+                        <input type="password" id="register-password-confirm" name="password_confirm" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn--primary btn--full">Create Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js?v=10"></script>
+    <script src="js/photo-progress.js?v=4"></script>
+    <script src="js/mobile.js?v=5"></script>
+    <script src="js/notifications.js?v=5"></script>
+    <script src="js/notification-ui.js?v=5"></script>
+    <script src="js/smart-notifications.js?v=5"></script>
+    
+    <!-- Service Worker -->
+    <script>
+      // Disable SW on this page during debugging and gate content behind auth
+      (async () => {
+        try {
+          if ('serviceWorker' in navigator) {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            for (const r of regs) { try { await r.unregister(); } catch(e){} }
+          }
+        } catch (e) {}
+
+        const token = localStorage.getItem('access_token') || localStorage.getItem('accessToken');
+        const authButtons = document.querySelector('.header__auth');
+        if (!token) {
+          const modal = document.getElementById('login-modal');
+          if (modal) modal.classList.add('modal--open');
+        } else {
+          if (authButtons) authButtons.style.display = 'none';
+          const header = document.getElementById('main-header');
+          if (header) header.style.display = 'block';
+        }
+      })();
+    </script>
+</body>
+</html>

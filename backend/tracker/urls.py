@@ -2,10 +2,27 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
-    RegisterView, NutritionLogViewSet, FoodCatalogViewSet, WorkoutSessionViewSet,
+    RegisterView, LoginView, NutritionLogViewSet, FoodCatalogViewSet, WorkoutSessionViewSet,
     StrengthSetViewSet, CardioEntryViewSet, ExerciseCatalogViewSet,
-    MuscleViewSet, EquipmentViewSet, TagViewSet, WeeklyPlanView, ProgressStatsView, ProgressExerciseTrendView, MeasurementViewSet, GoalViewSet
+    MuscleViewSet, EquipmentViewSet, TagViewSet, WeeklyPlanView, ProgressStatsView, 
+    ProgressExerciseTrendView, MeasurementViewSet, GoalViewSet, CalculatorView,
+    MacroTargetViewSet, CalculatorResultViewSet, RecommendationsView,
+    AnalyticsView, SocialView, LeaderboardView, FriendActivityView,
+    ProgressPhotoViewSet, PhotoComparisonViewSet, BodyPartMeasurementViewSet,
+    ProgressMilestoneViewSet, PhotoProgressAPIView, MuscleGroupViewSet,
+    BodyCompositionViewSet, MuscleGroupMeasurementViewSet, BodyAnalyticsViewSet,
+    ProgressPredictionViewSet, AdvancedAnalyticsAPIView,
+    # Enhanced Nutrition Views
+    FoodCategoryViewSet, RecipeViewSet, RecipeIngredientViewSet, RecipeInstructionViewSet,
+    MealPlanViewSet, MealPlanDayViewSet, MealPlanMealViewSet, MealTemplateViewSet,
+    NutritionGoalViewSet, WaterIntakeViewSet, SupplementLogViewSet, MealRatingViewSet,
+    GroceryListViewSet, RestaurantFoodViewSet, NutritionalAnalysisViewSet,
+    NutritionAnalyticsAPIView, MealPlanGeneratorAPIView, ProfileAPIView,
+    TrainerProfileViewSet, ExerciseContraindicationViewSet,
+    OnboardingStatusAPIView, OnboardingQuestionsAPIView, OnboardingAnswersAPIView, OnboardingCompleteAPIView, OnboardingResetAPIView
 )
+from .auth_cookies import CookieTokenObtainPairView
+from .export_import import export_data, import_data, export_status
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
@@ -20,13 +37,74 @@ router.register(r'cardio-entries', CardioEntryViewSet, basename='cardioentry')
 router.register(r'nutrition-logs', NutritionLogViewSet, basename='nutritionlog')
 router.register(r'measurements', MeasurementViewSet, basename='measurement')
 router.register(r'goals', GoalViewSet, basename='goal')
+router.register(r'macro-targets', MacroTargetViewSet, basename='macrotarget')
+router.register(r'calculator-results', CalculatorResultViewSet, basename='calculatorresult')
+router.register(r'progress-photos', ProgressPhotoViewSet, basename='progressphoto')
+router.register(r'photo-comparisons', PhotoComparisonViewSet, basename='photocomparison')
+router.register(r'body-measurements', BodyPartMeasurementViewSet, basename='bodypartmeasurement')
+router.register(r'progress-milestones', ProgressMilestoneViewSet, basename='progressmilestone')
+router.register(r'muscle-groups', MuscleGroupViewSet, basename='musclegroup')
+router.register(r'body-compositions', BodyCompositionViewSet, basename='bodycomposition')
+router.register(r'muscle-group-measurements', MuscleGroupMeasurementViewSet, basename='musclegroupmeasurement')
+router.register(r'body-analytics', BodyAnalyticsViewSet, basename='bodyanalytics')
+router.register(r'progress-predictions', ProgressPredictionViewSet, basename='progressprediction')
+
+# Enhanced Nutrition System endpoints
+router.register(r'food-categories', FoodCategoryViewSet, basename='foodcategory')
+router.register(r'recipes', RecipeViewSet, basename='recipe')
+router.register(r'recipe-ingredients', RecipeIngredientViewSet, basename='recipeingredient')
+router.register(r'recipe-instructions', RecipeInstructionViewSet, basename='recipeinstruction')
+router.register(r'meal-plans', MealPlanViewSet, basename='mealplan')
+router.register(r'meal-plan-days', MealPlanDayViewSet, basename='mealplanday')
+router.register(r'meal-plan-meals', MealPlanMealViewSet, basename='mealplanmeal')
+router.register(r'meal-templates', MealTemplateViewSet, basename='mealtemplate')
+router.register(r'nutrition-goals', NutritionGoalViewSet, basename='nutritiongoal')
+router.register(r'water-intake', WaterIntakeViewSet, basename='waterintake')
+router.register(r'supplement-logs', SupplementLogViewSet, basename='supplementlog')
+router.register(r'meal-ratings', MealRatingViewSet, basename='mealrating')
+router.register(r'grocery-lists', GroceryListViewSet, basename='grocerylist')
+router.register(r'restaurant-foods', RestaurantFoodViewSet, basename='restaurantfood')
+router.register(r'nutritional-analyses', NutritionalAnalysisViewSet, basename='nutritionalanalysis')
+router.register(r'trainer-profile', TrainerProfileViewSet, basename='trainerprofile')
+router.register(r'exercise-contras', ExerciseContraindicationViewSet, basename='exercisecontra')
 
 # The API URLs are now determined automatically by the router.
 urlpatterns = [
-    # URL for user registration
+    # URL for user registration and login
     path('', include(router.urls)),
     path('register/', RegisterView.as_view(), name='auth_register'),
+    path('auth/login/', LoginView.as_view(), name='auth_login'),
+    path('auth/login-cookie/', CookieTokenObtainPairView.as_view(), name='auth_login_cookie'),
     path('weekly-plan/', WeeklyPlanView.as_view(), name='weekly_plan'),
     path('progress/summary/', ProgressStatsView.as_view(), name='progress_summary'),
     path('progress/exercise-trend/', ProgressExerciseTrendView.as_view(), name='progress_exercise_trend'),
+    path('calculator/', CalculatorView.as_view(), name='calculator'),
+    path('recommendations/', RecommendationsView.as_view(), name='recommendations'),
+    path('analytics/', AnalyticsView.as_view(), name='analytics'),
+    path('social/', SocialView.as_view(), name='social'),
+    path('leaderboards/<int:leaderboard_id>/', LeaderboardView.as_view(), name='leaderboard'),
+    path('friends/<int:friend_id>/activity/', FriendActivityView.as_view(), name='friend_activity'),
+    
+    # Data Export/Import endpoints
+    path('export/', export_data, name='export_data'),
+    path('import/', import_data, name='import_data'),
+    path('export-status/', export_status, name='export_status'),
+    
+    # Photo Progress endpoints
+    path('photo-progress/', PhotoProgressAPIView.as_view(), name='photo_progress'),
+    
+    # Advanced Analytics endpoints
+    path('advanced-analytics/', AdvancedAnalyticsAPIView.as_view(), name='advanced_analytics'),
+    
+    # Enhanced Nutrition Analytics endpoints
+    path('nutrition-analytics/', NutritionAnalyticsAPIView.as_view(), name='nutrition_analytics'),
+    path('meal-plan-generator/', MealPlanGeneratorAPIView.as_view(), name='meal_plan_generator'),
+    path('profile/', ProfileAPIView.as_view(), name='profile_upsert'),
+    
+    # Onboarding (account-level)
+    path('onboarding/status', OnboardingStatusAPIView.as_view(), name='onboarding_status'),
+    path('onboarding/questions', OnboardingQuestionsAPIView.as_view(), name='onboarding_questions'),
+    path('onboarding/answers', OnboardingAnswersAPIView.as_view(), name='onboarding_answers'),
+    path('onboarding/complete', OnboardingCompleteAPIView.as_view(), name='onboarding_complete'),
+    path('onboarding/reset', OnboardingResetAPIView.as_view(), name='onboarding_reset'),
 ]

@@ -1,0 +1,87 @@
+{
+  "name": "Maverick Aim Rush",
+  "short_name": "Maverick",
+  "description": "Complete fitness tracking and social platform",
+  "start_url": "/MAR/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff6b35",
+  "orientation": "portrait-primary",
+  "scope": "/MAR/",
+  "lang": "en",
+  "categories": ["fitness", "health", "lifestyle"],
+  "icons": [
+    {
+      "src": "/MAR/Images/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/MAR/Images/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/MAR/Images/screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/MAR/Images/screenshot2.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View your fitness dashboard",
+      "url": "/MAR/index.html",
+      "icons": [
+        {
+          "src": "/MAR/Images/favicon.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Social",
+      "short_name": "Social",
+      "description": "Connect with friends",
+      "url": "/MAR/social.html",
+      "icons": [
+        {
+          "src": "/MAR/Images/favicon.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Gamification",
+      "short_name": "Levels",
+      "description": "View your progress and badges",
+      "url": "/MAR/gamification.html",
+      "icons": [
+        {
+          "src": "/MAR/Images/favicon.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
+}

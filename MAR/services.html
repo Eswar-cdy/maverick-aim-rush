@@ -4,360 +4,1119 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/png" href="images/favicon.png" />
-  <title>Maverick Aim Rush - Nutrition Log</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <!-- Head: CSS + fonts + favicon -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Fredoka:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="icon" href="/MAR/Images/favicon.png">
+  <!-- UnoCSS Reset + Build (absolute path + cache buster) -->
+  <link rel="stylesheet" href="https://unpkg.com/@unocss/reset/tailwind.css">
+  <link rel="stylesheet" href="/MAR/css/uno.css?v=2025-09-30" />
+  <link rel="stylesheet" href="css/modern-components.css">
+  
+  <!-- Removed temporary overrides (UnoCSS handles utilities) -->
+  <style>
+    /* Enhanced Tracker Card Styles */
+    .tracker-card {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tracker-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #3b82f6, #06b6d4, #8b5cf6);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .tracker-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .tracker-card:hover::before {
+      opacity: 1;
+    }
+
+    .metric-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-circle::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      padding: 4px;
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    .water-wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 0%;
+      background: linear-gradient(180deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.6));
+      transition: height 1s ease;
+    }
+
+    /* Enhanced Macro Card Styles */
+    .macro-card {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .macro-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6, #ff6b35);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .macro-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    .macro-card:hover::before {
+      opacity: 1;
+    }
+
+    .macro-ring {
+      width: 150px;
+      height: 150px;
+      position: relative;
+    }
+
+    .macro-ring svg {
+      transform: rotate(-90deg);
+    }
+    
+    /* Responsive Design Enhancements */
+    @media (max-width: 768px) {
+      .macro-card {
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      
+      .macro-ring {
+        width: 120px;
+        height: 120px;
+      }
+      
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      
+      .hero-subtitle {
+        font-size: 1.125rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .macro-card {
+        padding: 1rem;
+      }
+      
+      .macro-ring {
+        width: 100px;
+        height: 100px;
+      }
+    }
+    
+    /* Enhanced Animations */
+    .animate-fade-in {
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    .animate-slide-up {
+      animation: slideUp 0.8s ease-out;
+    }
+    
+    .animate-scale-in {
+      animation: scaleIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    /* New Nutrition Page UI Styles */
+    .nutrition-tab {
+      transition: all 0.2s ease-in-out;
+    }
+    .nutrition-tab.active {
+      border-color: #f97316;
+      color: #ea580c;
+    }
+    
+    .macro-card-small {
+      background-color: #fafafa;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      transition: all 0.2s ease-in-out;
+    }
+    .macro-card-small:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border-color: #d1d5db;
+    }
+
+    .progress-bar-sm {
+      height: 8px;
+      background-color: #e5e7eb;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    .progress-fill-sm {
+      height: 100%;
+      border-radius: 9999px;
+    }
+    
+    .quick-action-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background-color: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1rem;
+      font-weight: 500;
+      color: #374151;
+      transition: all 0.2s ease-in-out;
+      width: 100%;
+      text-align: left;
+    }
+    .quick-action-btn:hover {
+      background-color: #e5e7eb;
+      border-color: #d1d5db;
+      transform: translateY(-2px);
+    }
+    .quick-action-btn .icon {
+      font-size: 1.5rem;
+    }
+    
+    .ai-reco-item, .food-log-item, .supplement-item {
+      background-color: #fafafa;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+    }
+    
+    .btn-primary {
+      background-color: #ea580c;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: background-color 0.2s ease-in-out;
+    }
+    .btn-primary:hover {
+      background-color: #c2410c;
+    }
+
+    .btn-secondary {
+      background-color: #e5e7eb;
+      color: #374151;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: background-color 0.2s ease-in-out;
+    }
+    .btn-secondary:hover {
+      background-color: #d1d5db;
+    }
+
+    /* Styles for new tabs and modals */
+    .form-input, .form-select {
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      width: 100%;
+    }
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: #fb923c;
+      box-shadow: 0 0 0 2px rgba(251, 146, 60, 0.5);
+    }
+    
+    .recipe-card-placeholder, .analytics-card {
+      background-color: #fafafa;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal.show {
+      display: flex;
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: auto;
+      padding: 2rem;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      animation: scaleIn 0.3s ease-out;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 1rem;
+    }
+    .modal-header h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #9ca3af;
+    }
+    .modal-close:hover {
+      color: #374151;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #374151;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 2rem;
+    }
+
+  </style>
+  
+  <title>Maverick Aim Rush - Nutrition Log & Meal Planning</title>
+  <meta name="description" content="Track your daily nutrition and follow a personalized meal plan." />
+  <link rel="canonical" href="http://localhost:8001/services.html" />
+  <meta property="og:title" content="Nutrition Log | Maverick Aim Rush" />
+  <meta property="og:description" content="Personalized macro targets and daily meal plan logging." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="http://localhost:8001/services.html" />
+  <meta property="og:image" content="http://localhost:8001/images/LOGO.png" />
+  <meta name="twitter:card" content="summary_large_image" />
 </head>
 
-<body>
-  <div class="wrapper">
-    <header class="header">
-      <div class="header__container">
-        <a href="index.html" class="header__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.75rem;vertical-align:middle;" /></a>
-        <div class="header__navigation">
-          <div class="header__menu menu">
-            <nav class="menu__body">
-                <ul class="menu__list">
-                  <li class="menu__item"><a href="index.html" class="menu__link">Dashboard</a></li>
-                  <li class="menu__item"><a href="about.html" class="menu__link">Workout Tracker</a></li>
-                  <li class="menu__item"><a href="services.html" class="menu__link">Nutrition Log</a></li>
-                  <li class="menu__item"><a href="contact.html" class="menu__link">Progress</a></li>
-                </ul>
-                <a href="about.html" class="actions-header__button">Log Workout</a>
-              </nav>
+<body class="app-shell">
+  <!-- Accessible skip link -->
+  <a href="#main-content" class="visually-hidden-focusable">Skip to content</a>
+
+  <!-- Top bar -->
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur shadow-sm">
+    <nav class="mx-auto max-w-6xl flex items-center justify-between px-4 py-3">
+      <a href="/MAR/index.html" class="flex items-center gap-2 font-display text-xl text-gray-900">
+        <img src="/MAR/Images/LOGO.png" alt="" class="h-8 w-8"> Maverick Aim Rush
+      </a>
+      <ul class="hidden md:flex items-center gap-6 text-gray-700">
+        <li><a href="/MAR/index.html" class="hover:text-orange-600">Dashboard</a></li>
+        <li><a href="/MAR/about.html" class="hover:text-orange-600">Workout Tracker</a></li>
+        <li><a href="/MAR/services.html" class="hover:text-orange-600 font-medium">Nutrition Log</a></li>
+        <li><a href="/MAR/contact.html" class="hover:text-orange-600">Progress</a></li>
+        <li><a href="/MAR/social.html" class="hover:text-orange-600">Social</a></li>
+      </ul>
+      <div class="flex items-center gap-3">
+        <button id="units-toggle" class="hidden md:inline-flex items-center rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50">
+          <span id="units-display">lb/mi</span>
+        </button>
+        <div id="user-status" class="hidden flex items-center gap-2">
+          <span id="welcome-message" class="text-sm text-gray-600"></span>
+          <button id="notification-settings-btn" class="rounded-lg border p-2 hover:bg-gray-50" title="Notification Settings">🔔</button>
+          <button id="logout-button" class="rounded-lg bg-orange-600 px-4 py-2 text-white hover:bg-orange-500">Logout</button>
+        </div>
+        <button id="mobile-menu-toggle" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border hover:bg-gray-50">≡</button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Removed secondary side nav to avoid duplicate headers / routing issues -->
+
+  <!-- Main content -->
+  <main class="min-h-screen bg-gray-50">
+    <div class="mx-auto max-w-7xl px-6 py-8" id="main-content">
+      <!-- Enhanced Hero Section -->
+      <section class="relative text-center mb-16 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50"></div>
+        <div class="relative z-10 py-16">
+          <div class="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 mb-6 shadow-lg">
+            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+            <span class="text-sm font-medium text-gray-700">Nutrition Tracking Active</span>
           </div>
-          <div class="header__actions actions-header">
-            <button type="button" class="menu__icon icon-menu"><span></span></button>
+          <h1 class="text-5xl md:text-6xl font-bold mb-6">
+            <span class="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent">
+              Nutrition Log
+            </span>
+          </h1>
+          <p class="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto mb-8 leading-relaxed">
+            Follow your personalized fitness meal plan, track daily nutrition goals, and plan meals with macro tracking.
+          </p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <div class="flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-md">
+              <span class="text-2xl">🥗</span>
+              <span class="text-sm font-medium text-gray-700">Smart Meal Plans</span>
+            </div>
+            <div class="flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-md">
+              <span class="text-2xl">📊</span>
+              <span class="text-sm font-medium text-gray-700">Macro Tracking</span>
+            </div>
+            <div class="flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-md">
+              <span class="text-2xl">🍎</span>
+              <span class="text-sm font-medium text-gray-700">Food Database</span>
+            </div>
+          </div>
+        </div>
+        <!-- Floating elements -->
+        <div class="absolute top-20 left-10 w-20 h-20 bg-green-200/30 rounded-full blur-xl animate-pulse"></div>
+        <div class="absolute bottom-20 right-10 w-32 h-32 bg-emerald-200/30 rounded-full blur-xl animate-pulse delay-1000"></div>
+      </section>
+
+      <!-- Enhanced Daily Macros Overview -->
+      <section class="mb-12">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">
+            <span class="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+              📊 Daily Macros
+            </span>
+          </h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">Track your daily macronutrient intake with beautiful progress rings</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 animate-fade-in">
+          <!-- Calories -->
+          <div class="macro-card group">
+            <div class="macro-ring mx-auto mb-6 relative">
+              <svg width="150" height="150" class="transform -rotate-90">
+                <circle cx="75" cy="75" r="65" stroke="#e5e7eb" stroke-width="8" fill="none"/>
+                <circle cx="75" cy="75" r="65" stroke="#ff6b35" stroke-width="8" fill="none" 
+                        stroke-dasharray="408" stroke-dashoffset="102" stroke-linecap="round" class="transition-all duration-1000"/>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <div class="text-3xl font-bold text-gray-900">1800</div>
+                <div class="text-sm text-gray-600">/ 2400 kcal</div>
+              </div>
+            </div>
+            <div class="text-center">
+              <div class="flex items-center justify-center gap-2 mb-2">
+                <span class="text-2xl">🔥</span>
+                <div class="text-lg font-semibold text-gray-900">Calories</div>
+              </div>
+              <div class="text-sm text-orange-600 font-medium">600 remaining</div>
+            </div>
+          </div>
+
+          <!-- Protein -->
+          <div class="macro-card group">
+            <div class="macro-ring mx-auto mb-6 relative">
+              <svg width="150" height="150" class="transform -rotate-90">
+                <circle cx="75" cy="75" r="65" stroke="#e5e7eb" stroke-width="8" fill="none"/>
+                <circle cx="75" cy="75" r="65" stroke="#3b82f6" stroke-width="8" fill="none" 
+                        stroke-dasharray="408" stroke-dashoffset="163" stroke-linecap="round" class="transition-all duration-1000"/>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <div class="text-3xl font-bold text-gray-900">120g</div>
+                <div class="text-sm text-gray-600">/ 200g</div>
+              </div>
+            </div>
+            <div class="text-center">
+              <div class="flex items-center justify-center gap-2 mb-2">
+                <span class="text-2xl">💪</span>
+                <div class="text-lg font-semibold text-gray-900">Protein</div>
+              </div>
+              <div class="text-sm text-blue-600 font-medium">80g remaining</div>
+            </div>
+          </div>
+
+          <!-- Carbs -->
+          <div class="macro-card group">
+            <div class="macro-ring mx-auto mb-6 relative">
+              <svg width="150" height="150" class="transform -rotate-90">
+                <circle cx="75" cy="75" r="65" stroke="#e5e7eb" stroke-width="8" fill="none"/>
+                <circle cx="75" cy="75" r="65" stroke="#10b981" stroke-width="8" fill="none" 
+                        stroke-dasharray="408" stroke-dashoffset="122" stroke-linecap="round" class="transition-all duration-1000"/>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <div class="text-3xl font-bold text-gray-900">180g</div>
+                <div class="text-sm text-gray-600">/ 250g</div>
+              </div>
+            </div>
+            <div class="text-center">
+              <div class="flex items-center justify-center gap-2 mb-2">
+                <span class="text-2xl">🍞</span>
+                <div class="text-lg font-semibold text-gray-900">Carbs</div>
+              </div>
+              <div class="text-sm text-green-600 font-medium">70g remaining</div>
+            </div>
+          </div>
+
+          <!-- Fats -->
+          <div class="macro-card group">
+            <div class="macro-ring mx-auto mb-6 relative">
+              <svg width="150" height="150" class="transform -rotate-90">
+                <circle cx="75" cy="75" r="65" stroke="#e5e7eb" stroke-width="8" fill="none"/>
+                <circle cx="75" cy="75" r="65" stroke="#8b5cf6" stroke-width="8" fill="none" 
+                        stroke-dasharray="408" stroke-dashoffset="204" stroke-linecap="round" class="transition-all duration-1000"/>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <div class="text-3xl font-bold text-gray-900">40g</div>
+                <div class="text-sm text-gray-600">/ 80g</div>
+              </div>
+            </div>
+            <div class="text-center">
+              <div class="flex items-center justify-center gap-2 mb-2">
+                <span class="text-2xl">🥑</span>
+                <div class="text-lg font-semibold text-gray-900">Fats</div>
+              </div>
+              <div class="text-sm text-purple-600 font-medium">40g remaining</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Hydration Tracker Section -->
+      <section class="mb-12">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">
+            <span class="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+              💧 Daily Hydration
+            </span>
+          </h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">Stay hydrated throughout the day for optimal health and performance</p>
+        </div>
+        <div class="max-w-md mx-auto">
+          <div class="tracker-card group">
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white text-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  💧
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900">Hydration</h3>
+              </div>
+              <button onclick="addWater(250)" class="w-8 h-8 bg-blue-100 hover:bg-blue-200 rounded-full flex items-center justify-center text-blue-600 hover:text-blue-700 transition-all duration-200 group-hover:scale-110">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+              </button>
+            </div>
+            <div class="flex flex-col items-center">
+              <div class="metric-circle mb-6 relative">
+                <div class="water-wave" id="water-level" style="height: 60%"></div>
+                <div class="relative z-10 text-center">
+                  <div class="text-3xl font-bold text-gray-900" id="water-amount">1.8</div>
+                  <div class="text-sm text-gray-600">/ 3.0 L</div>
+                </div>
+                <!-- Progress ring -->
+                <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="50" stroke="#e5e7eb" stroke-width="8" fill="none"/>
+                  <circle cx="60" cy="60" r="50" stroke="#3b82f6" stroke-width="8" fill="none"
+                          stroke-dasharray="314" stroke-dashoffset="125" stroke-linecap="round" class="transition-all duration-1000"/>
+                </svg>
+              </div>
+              <div class="flex gap-3">
+                <button onclick="addWater(250)" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                  +250ml
+                </button>
+                <button onclick="addWater(500)" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                  +500ml
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Redesigned Nutrition Dashboard -->
+      <section class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-8 animate-fade-in">
+        <div class="max-w-7xl mx-auto">
+          <!-- Modern Tab Navigation -->
+          <div class="mb-8 border-b border-gray-200">
+            <nav class="flex -mb-px gap-6" aria-label="Tabs">
+              <button class="nutrition-tab shrink-0 border-b-2 border-orange-500 px-1 pb-4 text-sm font-medium text-orange-600" data-tab="overview">
+                📊 Overview
+              </button>
+              <button class="nutrition-tab shrink-0 border-b-2 border-transparent px-1 pb-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-tab="meal-plan">
+                🍽️ Meal Plan
+              </button>
+              <button class="nutrition-tab shrink-0 border-b-2 border-transparent px-1 pb-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-tab="recipes">
+                🍳 Recipes
+              </button>
+              <button class="nutrition-tab shrink-0 border-b-2 border-transparent px-1 pb-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-tab="analytics">
+                📈 Analytics
+              </button>
+            </nav>
+          </div>
+
+          <!-- Tab Panes -->
+          <div>
+            <!-- Overview Pane -->
+            <div class="nutrition-tab-pane" id="overview">
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Column: Today's Progress -->
+                <div class="lg:col-span-2 space-y-8">
+                  <!-- Today's Macros (Redesigned) -->
+                  <div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Today's Macros</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <!-- Calories -->
+                      <div class="macro-card-small">
+                        <div class="text-lg font-semibold text-orange-600">Calories</div>
+                        <div class="text-2xl font-bold text-gray-800" id="calories-consumed">1800</div>
+                        <div class="text-sm text-gray-500">/ 2400 kcal</div>
+                        <div class="progress-bar-sm mt-2"><div class="progress-fill-sm bg-orange-500" style="width: 75%;"></div></div>
+                      </div>
+                      <!-- Protein -->
+                      <div class="macro-card-small">
+                        <div class="text-lg font-semibold text-blue-600">Protein</div>
+                        <div class="text-2xl font-bold text-gray-800" id="protein-consumed">120g</div>
+                        <div class="text-sm text-gray-500">/ 200g</div>
+                        <div class="progress-bar-sm mt-2"><div class="progress-fill-sm bg-blue-500" style="width: 60%;"></div></div>
+                      </div>
+                      <!-- Carbs -->
+                      <div class="macro-card-small">
+                        <div class="text-lg font-semibold text-green-600">Carbs</div>
+                        <div class="text-2xl font-bold text-gray-800" id="carbs-consumed">180g</div>
+                        <div class="text-sm text-gray-500">/ 250g</div>
+                        <div class="progress-bar-sm mt-2"><div class="progress-fill-sm bg-green-500" style="width: 72%;"></div></div>
+                      </div>
+                      <!-- Fat -->
+                      <div class="macro-card-small">
+                        <div class="text-lg font-semibold text-purple-600">Fat</div>
+                        <div class="text-2xl font-bold text-gray-800" id="fat-consumed">40g</div>
+                        <div class="text-sm text-gray-500">/ 80g</div>
+                        <div class="progress-bar-sm mt-2"><div class="progress-fill-sm bg-purple-500" style="width: 50%;"></div></div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Food Log -->
+                  <div>
+                    <div class="flex items-center justify-between mb-4">
+                      <h3 class="text-xl font-semibold text-gray-900">Today's Food Log</h3>
+                      <button class="btn-primary" onclick="showAddFoodModal()">+ Log Food</button>
+                    </div>
+                    <div id="food-log-list" class="space-y-3">
+                      <div class="food-log-item">No items logged yet.</div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Right Column: Quick Actions & AI -->
+                <div class="space-y-8">
+                  <!-- Quick Actions -->
+                  <div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                      <button class="quick-action-btn" onclick="generateMealPlan()">
+                        <span class="icon">🍽️</span> Generate Meal Plan
+                      </button>
+                      <button class="quick-action-btn" onclick="createGroceryList()">
+                        <span class="icon">🛒</span> Create Grocery List
+                      </button>
+                      <button class="quick-action-btn" onclick="logRestaurantFood()">
+                        <span class="icon">🍕</span> Log Restaurant Food
+                      </button>
+                      <button class="quick-action-btn" onclick="openMealPhotoUpload()">
+                        <span class="icon">📸</span> Upload Meal Photo
+                      </button>
+                    </div>
+                  </div>
+                  <!-- AI Recommendations -->
+                  <div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">AI Recommendations</h3>
+                    <div id="nutrition-recommendations" class="space-y-3">
+                      <div class="ai-reco-item">Loading recommendations...</div>
+                    </div>
+                  </div>
+                  <!-- Supplements -->
+                  <div>
+                    <div class="flex items-center justify-between mb-4">
+                      <h3 class="text-xl font-semibold text-gray-900">Supplements</h3>
+                      <button class="btn-secondary" onclick="showAddSupplementModal()">+ Add</button>
+                    </div>
+                    <div id="supplements-list" class="space-y-2">
+                      <div class="supplement-item">No supplements logged.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Other Tab Panes (Initially Hidden) -->
+            <div class="nutrition-tab-pane hidden" id="meal-plan">
+              <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-semibold text-gray-900">Your Personalized Meal Plan</h3>
+                <div class="flex gap-2">
+                  <button class="btn-secondary" onclick="generateMealPlan()">Regenerate Plan</button>
+                  <button class="btn-primary" onclick="createGroceryList()">Create Grocery List</button>
+                </div>
+              </div>
+              <div class="space-y-6" id="meal-plan-content">
+                <!-- Meal plan for each day will be generated here -->
+                <div class="p-6 bg-gray-50 rounded-lg text-center">
+                  <p class="text-gray-600">Your meal plan is empty. Click "Generate Meal Plan" to get started!</p>
+                  <button class="btn-primary mt-4" onclick="generateMealPlan()">🍽️ Generate Meal Plan</button>
+                </div>
+              </div>
+            </div>
+            <div class="nutrition-tab-pane hidden" id="recipes">
+              <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+                <h3 class="text-xl font-semibold text-gray-900">Recipe Collection</h3>
+                <div class="flex gap-4">
+                  <select id="recipe-filter-meal-type" class="form-select">
+                    <option value="">All Meal Types</option>
+                    <option value="breakfast">Breakfast</option>
+                    <option value="lunch">Lunch</option>
+                    <option value="dinner">Dinner</option>
+                    <option value="snack">Snack</option>
+                  </select>
+                  <input type="text" id="recipe-search" placeholder="Search recipes..." class="form-input">
+                </div>
+              </div>
+              <div id="recipes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Recipe cards will be loaded here -->
+                <div class="recipe-card-placeholder">Loading recipes...</div>
+              </div>
+            </div>
+            <div class="nutrition-tab-pane hidden" id="analytics">
+              <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-semibold text-gray-900">Nutrition Analytics</h3>
+                <select id="analytics-timeframe" class="form-select">
+                  <option value="7">Last 7 Days</option>
+                  <option value="30">Last 30 Days</option>
+                  <option value="90">Last 90 Days</option>
+                </select>
+              </div>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="analytics-card">
+                  <h4 class="text-lg font-semibold mb-4">Macro Trends</h4>
+                  <canvas id="macro-trends-chart"></canvas>
+                </div>
+                <div class="analytics-card">
+                  <h4 class="text-lg font-semibold mb-4">Calorie Balance</h4>
+                  <canvas id="calorie-balance-chart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Add Food Modal -->
+      <div id="add-food-modal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Log Food Item</h3>
+            <button class="modal-close" onclick="closeAddFoodModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form id="add-food-form">
+              <div class="form-group">
+                <label for="food-name-input">Food Name *</label>
+                <div class="input-with-scanner">
+                  <input type="text" id="food-name-input" placeholder="e.g., Chicken Breast, Apple" required>
+                  <button type="button" class="scanner-btn" onclick="openBarcodeScanner()" title="Scan Barcode">
+                    <span class="icon">📷</span>
+                  </button>
+                </div>
+                <div id="food-suggestions" class="food-suggestions"></div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="food-quantity-input">Quantity *</label>
+                  <input type="text" id="food-quantity-input" placeholder="e.g., 100g, 1 cup" required>
+                </div>
+                <div class="form-group">
+                  <label for="food-meal-type">Meal Type</label>
+                  <select id="food-meal-type">
+                    <option value="breakfast">Breakfast</option>
+                    <option value="lunch">Lunch</option>
+                    <option value="dinner">Dinner</option>
+                    <option value="snack">Snack</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="food-calories-input">Calories</label>
+                  <input type="number" id="food-calories-input" placeholder="0" min="0" step="0.1">
+                </div>
+                <div class="form-group">
+                  <label for="food-protein-input">Protein (g)</label>
+                  <input type="number" id="food-protein-input" placeholder="0" min="0" step="0.1">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="food-carbs-input">Carbs (g)</label>
+                  <input type="number" id="food-carbs-input" placeholder="0" min="0" step="0.1">
+                </div>
+                <div class="form-group">
+                  <label for="food-fat-input">Fat (g)</label>
+                  <input type="number" id="food-fat-input" placeholder="0" min="0" step="0.1">
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" class="btn-secondary" onclick="closeAddFoodModal()">Cancel</button>
+                <button type="submit" class="btn-primary">Log Food</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
-    </header>
-    <main class="page">
-      <section class="page__main main main_services main_pages">
-        <div class="main__container main__container_pages">
-          <h1 class="main__title">Nutrition Log</h1>
-          <div class="main__text main__text_pages">
-            Follow your personalized fitness meal plan and track your daily nutrition goals.
+
+      <!-- Add Supplement Modal -->
+      <div id="add-supplement-modal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Add Supplement</h3>
+            <button class="modal-close" onclick="closeAddSupplementModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form id="add-supplement-form">
+              <div class="form-group">
+                <label for="supplement-name-input">Supplement Name *</label>
+                <input type="text" id="supplement-name-input" placeholder="e.g., Whey Protein, Multivitamin" required>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="supplement-dosage-input">Dosage *</label>
+                  <input type="text" id="supplement-dosage-input" placeholder="e.g., 1 scoop, 2 tablets" required>
+                </div>
+                <div class="form-group">
+                  <label for="supplement-time-input">Time Taken</label>
+                  <input type="time" id="supplement-time-input">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="supplement-notes-input">Notes (Optional)</label>
+                <textarea id="supplement-notes-input" placeholder="Any additional notes about this supplement..."></textarea>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" class="btn-secondary" onclick="closeAddSupplementModal()">Cancel</button>
+                <button type="submit" class="btn-primary">Add Supplement</button>
+              </div>
+            </form>
           </div>
         </div>
-      </section>
-
-      <!-- Daily Progress Overview -->
-      <section class="page__nutrition-overview nutrition-overview">
-        <div class="nutrition-overview__container">
-          <h2 class="nutrition-overview__title title">Today's Nutrition Progress</h2>
-          <div class="nutrition-overview__stats">
-            <div class="nutrition-stat">
-              <div class="nutrition-stat__label">Calories</div>
-              <div class="nutrition-stat__progress">
-                <div class="progress-bar">
-                  <div class="progress-bar__fill" data-progress="0" style="width: 0%"></div>
-                </div>
-                <div class="nutrition-stat__numbers">
-                  <span id="calories-consumed">0</span> / <span>2000</span> kcal
-                </div>
-              </div>
-            </div>
-            <div class="nutrition-stat">
-              <div class="nutrition-stat__label">Protein</div>
-              <div class="nutrition-stat__progress">
-                <div class="progress-bar">
-                  <div class="progress-bar__fill" data-progress="0" style="width: 0%"></div>
-                </div>
-                <div class="nutrition-stat__numbers">
-                  <span id="protein-consumed">0</span> / <span>120</span>g
-                </div>
-              </div>
-            </div>
-            <div class="nutrition-stat">
-              <div class="nutrition-stat__label">Carbs</div>
-              <div class="nutrition-stat__progress">
-                <div class="progress-bar">
-                  <div class="progress-bar__fill" data-progress="0" style="width: 0%"></div>
-                </div>
-                <div class="nutrition-stat__numbers">
-                  <span id="carbs-consumed">0</span> / <span>200</span>g
-                </div>
-              </div>
-            </div>
-            <div class="nutrition-stat">
-              <div class="nutrition-stat__label">Fat</div>
-              <div class="nutrition-stat__progress">
-                <div class="progress-bar">
-                  <div class="progress-bar__fill" data-progress="0" style="width: 0%"></div>
-                </div>
-                <div class="nutrition-stat__numbers">
-                  <span id="fat-consumed">0</span> / <span>78</span>g
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Meal Plan Schedule -->
-      <section class="page__meal-plan meal-plan">
-        <div class="meal-plan__container">
-          <h2 class="meal-plan__title title">Your Daily Meal Plan</h2>
-          <div class="meal-plan__subtitle">Maverick Aim Rush - Fat Loss Diet Plan</div>
-          
-          <!-- Meal 1 - Breakfast -->
-          <div class="meal-card" data-meal="breakfast">
-            <div class="meal-card__header">
-              <div class="meal-card__info">
-                <h3 class="meal-card__title">Meal 1 - Breakfast</h3>
-                <div class="meal-card__calories">500 calories</div>
-              </div>
-              <div class="meal-card__status">
-                <input type="checkbox" id="breakfast-complete" class="meal-checkbox">
-                <label for="breakfast-complete" class="meal-status-label">Complete</label>
-              </div>
-            </div>
-            <div class="meal-card__content">
-              <div class="food-items">
-                <div class="food-item">
-                  <span class="food-name">Rolled oats</span>
-                  <span class="food-quantity">50g</span>
-                  <span class="food-calories">190 cal</span>
-                  <button class="adjust-btn" onclick="adjustPortion('breakfast', 'oats', this)">±</button>
-                </div>
-                <div class="food-item">
-                  <span class="food-name">Peanut butter</span>
-                  <span class="food-quantity">1 tbsp (16g)</span>
-                  <span class="food-calories">95 cal</span>
-                  <button class="adjust-btn" onclick="adjustPortion('breakfast', 'peanut-butter', this)">±</button>
-                </div>
-                <div class="food-item">
-                  <span class="food-name">Whey protein</span>
-                  <span class="food-quantity">1 scoop (25g)</span>
-                  <span class="food-calories">110 cal</span>
-                  <button class="adjust-btn" onclick="adjustPortion('breakfast', 'whey', this)">±</button>
-                </div>
-                <div class="food-item">
-                  <span class="food-name">Banana</span>
-                  <span class="food-quantity">1 medium (~120g)</span>
-                  <span class="food-calories">105 cal</span>
-                  <button class="adjust-btn" onclick="adjustPortion('breakfast', 'banana', this)">±</button>
-                </div>
-              </div>
-              <div class="meal-totals">
-                <strong>Totals: 500 cal | 30g protein | 13.5g fat | 65g carbs</strong>
-              </div>
-            </div>
-          </div>
-
-          <!-- Meal 2 - Mid-Morning Snack -->
-          <div class="meal-card" data-meal="mid-morning">
-            <div class="meal-card__header">
-              <div class="meal-card__info">
-                <h3 class="meal-card__title">Meal 2 - Mid-Morning Snack</h3>
-                <div class="meal-card__calories">300 calories</div>
-              </div>
-              <div class="meal-card__status">
-                <input type="checkbox" id="mid-morning-complete" class="meal-checkbox">
-                <label for="mid-morning-complete" class="meal-status-label">Complete</label>
-              </div>
-            </div>
-            <div class="meal-card__content">
-              <div class="food-items">
-                <div class="food-item">
-                  <span class="food-name">Boiled eggs</span>
-                  <span class="food-quantity">3 whole</span>
-                  <span class="food-calories">210 cal</span>
-                  <button class="adjust-btn" onclick="adjustPortion('mid-morning', 'eggs', this)">±</button>
-                </div>
-                <div class="food-item">
-                  <span class="food-name">Almonds</span>
-                  <span class="food-quantity">10 pcs (15g)</span>
-                  <span class="food-calories">90 cal</span>
-                  <button class="adjust-btn" onclick="adjustPortion('mid-morning', 'almonds', this)">±</button>
-                </div>
-              </div>
-              <div class="meal-totals">
-                <strong>Totals: 300 cal | 21g protein | 22g fat | 2g carbs</strong>
-              </div>
-            </div>
-          </div>
-
-          <!-- Meal 3 - Lunch -->
-          <div class="meal-card" data-meal="lunch">
-            <div class="meal-card__header">
-              <div class="meal-card__info">
-                <h3 class="meal-card__title">Meal 3 - Lunch</h3>
-                <div class="meal-card__calories">465 calories</div>
-              </div>
-              <div class="meal-card__status">
-                <input type="checkbox" id="lunch-complete" class="meal-checkbox">
-                <label for="lunch-complete" class="meal-status-label">Complete</label>
-              </div>
-            </div>
-            <div class="meal-card__content">
-              <div class="food-items">
-                <div class="food-item">
-                  <span class="food-name">Grilled chicken</span>
-                  <span class="food-quantity">150g raw weight</span>
-                  <span class="food-calories">250 cal</span>
-                  <button class="adjust-btn" onclick="adjustPortion('lunch', 'chicken', this)">±</button>
-                </div>
-                <div class="food-item">
-                  <span class="food-name">Cooked white rice</span>
-                  <span class="food-quantity">100g</span>
-                  <span class="food-calories">130 cal</span>
-                  <button class="adjust-btn" onclick="adjustPortion('lunch', 'rice', this)">±</button>
-                </div>
-                <div class="food-item">
-                  <span class="food-name">Mixed vegetables</span>
-                  <span class="food-quantity">100g</span>
-                  <span class="food-calories">40 cal</span>
-                  <button class="adjust-btn" onclick="adjustPortion('lunch', 'vegetables', this)">±</button>
-                </div>
-                <div class="food-item">
-                  <span class="food-name">Ghee</span>
-                  <span class="food-quantity">1 tsp (5g)</span>
-                  <span class="food-calories">45 cal</span>
-                  <button class="adjust-btn" onclick="adjustPortion('lunch', 'ghee', this)">±</button>
-                </div>
-              </div>
-              <div class="meal-totals">
-                <strong>Totals: 465 cal | 39.5g protein | 11g fat | 36g carbs</strong>
-              </div>
-            </div>
-          </div>
-
-          <!-- Meal 4 - Pre-Workout Snack -->
-          <div class="meal-card" data-meal="pre-workout">
-            <div class="meal-card__header">
-              <div class="meal-card__info">
-                <h3 class="meal-card__title">Meal 4 - Pre-Workout Snack</h3>
-                <div class="meal-card__calories">244 calories</div>
-              </div>
-              <div class="meal-card__status">
-                <input type="checkbox" id="pre-workout-complete" class="meal-checkbox">
-                <label for="pre-workout-complete" class="meal-status-label">Complete</label>
-              </div>
-            </div>
-            <div class="meal-card__content">
-              <div class="food-items">
-                <div class="food-item">
-                  <span class="food-name">Boiled egg</span>
-                  <span class="food-quantity">1 whole</span>
-                  <span class="food-calories">70 cal</span>
-                  <button class="adjust-btn" onclick="adjustPortion('pre-workout', 'egg', this)">±</button>
-                </div>
-                <div class="food-item">
-                  <span class="food-name">Egg whites</span>
-                  <span class="food-quantity">2</span>
-                  <span class="food-calories">34 cal</span>
-                  <button class="adjust-btn" onclick="adjustPortion('pre-workout', 'egg-whites', this)">±</button>
-                </div>
-                <div class="food-item">
-                  <span class="food-name">Apple</span>
-                  <span class="food-quantity">1 medium (~150g)</span>
-                  <span class="food-calories">95 cal</span>
-                  <button class="adjust-btn" onclick="adjustPortion('pre-workout', 'apple', this)">±</button>
-                </div>
-                <div class="food-item">
-                  <span class="food-name">Walnuts</span>
-                  <span class="food-quantity">1 tbsp (7g)</span>
-                  <span class="food-calories">45 cal</span>
-                  <button class="adjust-btn" onclick="adjustPortion('pre-workout', 'walnuts', this)">±</button>
-                </div>
-              </div>
-              <div class="meal-totals">
-                <strong>Totals: 244 cal | 14.5g protein | 9.5g fat | 28g carbs</strong>
-              </div>
-            </div>
-          </div>
-
-          <!-- Meal 5 - Post-Workout -->
-          <div class="meal-card" data-meal="post-workout">
-            <div class="meal-card__header">
-              <div class="meal-card__info">
-                <h3 class="meal-card__title">Meal 5 - Post-Workout</h3>
-                <div class="meal-card__calories">190 calories</div>
-              </div>
-              <div class="meal-card__status">
-                <input type="checkbox" id="post-workout-complete" class="meal-checkbox">
-                <label for="post-workout-complete" class="meal-status-label">Complete</label>
-              </div>
-            </div>
-            <div class="meal-card__content">
-              <div class="food-items">
-                <div class="food-item">
-                  <span class="food-name">Whey protein</span>
-                  <span class="food-quantity">1 scoop (25g)</span>
-                  <span class="food-calories">110 cal</span>
-                  <button class="adjust-btn" onclick="adjustPortion('post-workout', 'whey-protein', this)">±</button>
-                </div>
-                <div class="food-item">
-                  <span class="food-name">Dates</span>
-                  <span class="food-quantity">3 pcs (~20g)</span>
-                  <span class="food-calories">80 cal</span>
-                  <button class="adjust-btn" onclick="adjustPortion('post-workout', 'dates', this)">±</button>
-                </div>
-              </div>
-              <div class="meal-totals">
-                <strong>Totals: 190 cal | 21g protein | 1.5g fat | 20g carbs</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Extra Food Logging -->
-      <section class="page__extra-logging extra-logging">
-        <div class="extra-logging__container">
-          <h2 class="extra-logging__title title">Log Additional Food</h2>
-          <div class="extra-logging__form">
-            <div class="form-group">
-              <label for="food-name">Food Item</label>
-              <input type="text" id="food-name" placeholder="e.g., Banana, Chicken breast">
-            </div>
-            <div class="form-group">
-              <label for="food-quantity">Quantity</label>
-              <input type="text" id="food-quantity" placeholder="e.g., 100g, 1 cup">
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="food-calories">Calories</label>
-                <input type="number" id="food-calories" placeholder="0">
-              </div>
-              <div class="form-group">
-                <label for="food-protein">Protein (g)</label>
-                <input type="number" id="food-protein" placeholder="0">
-              </div>
-              <div class="form-group">
-                <label for="food-carbs">Carbs (g)</label>
-                <input type="number" id="food-carbs" placeholder="0">
-              </div>
-              <div class="form-group">
-                <label for="food-fat">Fat (g)</label>
-                <input type="number" id="food-fat" placeholder="0">
-              </div>
-            </div>
-            <button class="extra-logging__button button" onclick="addExtraFood()">Log Food</button>
-          </div>
-          
-          <div class="extra-foods-list" id="extra-foods-list">
-            <h3>Additional Foods Today:</h3>
-            <div id="extra-foods-container">
-              <!-- Extra foods will be added here dynamically -->
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-    <footer class="footer">
-      <div class="footer__container">
-        <a href="contact.html" class="footer__policy">Privacy Policy – Terms & Conditions</a>
-        <a href="index.html" class="footer__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.2rem;vertical-align:middle;" /></a>
-        <div class="footer__copyright">Copyright © 2025 Maverick Aim Rush – All Rights Reserved</div>
       </div>
-    </footer>
-  </div>
+
+      <!-- Recipe Detail Modal -->
+      <div id="recipe-detail-modal" class="modal modal-large">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 id="recipe-detail-title">Recipe Details</h3>
+            <button class="modal-close" onclick="closeRecipeDetailModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div id="recipe-detail-content">
+              <!-- Recipe content will be loaded here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grocery List Modal -->
+      <div id="grocery-list-modal" class="modal modal-large">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Grocery List</h3>
+            <button class="modal-close" onclick="closeGroceryListModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="grocery-list-controls">
+              <button class="btn-secondary" onclick="generateGroceryList()">Generate from Meal Plan</button>
+              <button class="btn-primary" onclick="exportGroceryList()">Export List</button>
+            </div>
+            <div id="grocery-list-content">
+              <!-- Grocery list will be loaded here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Restaurant Food Modal -->
+      <div id="restaurant-food-modal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Log Restaurant Food</h3>
+            <button class="modal-close" onclick="closeRestaurantFoodModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form id="restaurant-food-form">
+              <div class="form-group">
+                <label for="restaurant-name-input">Restaurant Name *</label>
+                <input type="text" id="restaurant-name-input" placeholder="e.g., McDonald's, Subway" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="restaurant-item-input">Food Item *</label>
+                <input type="text" id="restaurant-item-input" placeholder="e.g., Big Mac, Chicken Sandwich" required>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="restaurant-calories-input">Calories</label>
+                  <input type="number" id="restaurant-calories-input" placeholder="0" min="0">
+                </div>
+                <div class="form-group">
+                  <label for="restaurant-meal-type">Meal Type</label>
+                  <select id="restaurant-meal-type">
+                    <option value="breakfast">Breakfast</option>
+                    <option value="lunch">Lunch</option>
+                    <option value="dinner">Dinner</option>
+                    <option value="snack">Snack</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" class="btn-secondary" onclick="closeRestaurantFoodModal()">Cancel</button>
+                <button type="submit" class="btn-primary">Log Restaurant Food</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barcode Scanner Modal -->
+      <div id="barcode-scanner-modal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Scan Barcode</h3>
+            <button class="modal-close" onclick="closeBarcodeScanner()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="scanner-container">
+              <div id="scanner-video-container">
+                <video id="scanner-video" autoplay playsinline></video>
+                <canvas id="scanner-canvas" style="display: none;"></canvas>
+              </div>
+              <div class="scanner-overlay">
+                <div class="scanner-frame"></div>
+                <p class="scanner-instructions">Position the barcode within the frame</p>
+              </div>
+              <div class="scanner-controls">
+                <button class="btn-secondary" onclick="closeBarcodeScanner()">Cancel</button>
+                <button class="btn-primary" onclick="startBarcodeScan()">Start Scan</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meal Photo Upload Modal -->
+      <div id="meal-photo-modal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Upload Meal Photo</h3>
+            <button class="modal-close" onclick="closeMealPhotoModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="photo-upload-area" id="meal-photo-dropzone">
+              <div class="photo-upload-content">
+                <div class="photo-upload-icon">📸</div>
+                <h4>Upload Meal Photo</h4>
+                <p>Drag & drop your meal photo here or click to browse</p>
+                <input type="file" id="meal-photo-input" accept="image/*" style="display: none;">
+                <button class="btn-primary" onclick="document.getElementById('meal-photo-input').click()">
+                  Choose Photo
+                </button>
+              </div>
+            </div>
+            <div id="meal-photo-preview" class="photo-preview" style="display: none;">
+              <img id="meal-photo-img" alt="Meal preview">
+              <div class="photo-preview-actions">
+                <button class="btn-secondary" onclick="retakeMealPhoto()">Retake</button>
+                <button class="btn-primary" onclick="analyzeMealPhoto()">Analyze & Log</button>
+              </div>
+            </div>
+            <div id="meal-analysis-results" class="meal-analysis" style="display: none;">
+              <h4>AI Analysis Results</h4>
+              <div id="detected-foods"></div>
+              <div class="analysis-actions">
+                <button class="btn-secondary" onclick="closeMealPhotoModal()">Cancel</button>
+                <button class="btn-primary" onclick="logDetectedFoods()">Log Foods</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END existing content -->
+    </div>
+  </main>
+
+  <!-- Optional toast container -->
+  <div id="toast" class="toast" hidden></div>
+
+  <script>
+    // Highlight active nav link
+    (function () {
+      var p = location.pathname.replace(/\/+$/, '');
+      document.querySelectorAll('.sidebar__link').forEach(a=>{
+        if (p.endsWith(a.dataset.path)) a.classList.add('sidebar__link--active');
+      });
+    }());
+  </script>
   <script src="js/script.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/nutrition.js"></script>
+  <script src="js/api.js?v=10"></script>
+  <script src="js/nutrition.js?v=2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <script src="js/micro-interactions.js"></script>
+  <!-- Embed Calculator module into Nutrition page -->
+  <script src="js/calculator.js?v=1"></script>
+  <script>
+    // Wire calculator outputs to update macro progress targets dynamically (simple demo hook)
+    window.addEventListener('calculator:macroTarget', async (e) => {
+      try {
+        const payload = e.detail; // {calories, protein, carbs, fat}
+        const resp = await apiFetch('/macro-targets/', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+        if (resp.ok) console.log('Macro target saved');
+      } catch (err) { console.warn('Macro target hook failed', err); }
+    });
+  </script>
+
+  <script>
+    // Hydration Tracking Functions
+    let waterIntake = 1800; // ml
+    const waterGoal = 3000; // ml
+
+    function addWater(amount) {
+      waterIntake += amount;
+      updateWaterDisplay();
+
+      // Success animation
+      if (window.microInteractions) {
+        window.microInteractions.triggerSuccess(`Added ${amount}ml water!`);
+      }
+    }
+
+    function updateWaterDisplay() {
+      const percentage = Math.min((waterIntake / waterGoal) * 100, 100);
+      const waterLevel = document.getElementById('water-level');
+      const waterAmount = document.getElementById('water-amount');
+
+      if (waterLevel) waterLevel.style.height = percentage + '%';
+      if (waterAmount) waterAmount.textContent = (waterIntake / 1000).toFixed(1);
+    }
+
+    // Initialize hydration tracking on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      updateWaterDisplay();
+    });
+
+    // New Tab Navigation Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabs = document.querySelectorAll('.nutrition-tab');
+      const panes = document.querySelectorAll('.nutrition-tab-pane');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const target = tab.dataset.tab;
+
+          // Update tab active state
+          tabs.forEach(t => {
+            t.classList.remove('active', 'border-orange-500', 'text-orange-600');
+            t.classList.add('border-transparent', 'text-gray-500', 'hover:border-gray-300', 'hover:text-gray-700');
+          });
+          tab.classList.add('active', 'border-orange-500', 'text-orange-600');
+          tab.classList.remove('border-transparent', 'text-gray-500', 'hover:border-gray-300', 'hover:text-gray-700');
+          
+          // Update pane visibility
+          panes.forEach(pane => {
+            if (pane.id === target) {
+              pane.classList.remove('hidden');
+            } else {
+              pane.classList.add('hidden');
+            }
+          });
+        });
+      });
+    });
+  </script>
 </body>
 
 </html>

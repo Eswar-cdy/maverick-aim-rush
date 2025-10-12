@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Settings - Maverick Aim Rush</title>
+    <link rel="stylesheet" href="css/uno.css">
+    <link rel="stylesheet" href="css/modern-components.css">
+    <link rel="icon" href="/MAR/Images/favicon.png">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        .notification-settings {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        .settings-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            border: 1px solid #f3f4f6;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .settings-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b35, #f7931e, #fbbf24);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .settings-section:hover::before {
+            opacity: 1;
+        }
+        
+        .settings-section:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .settings-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .settings-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .settings-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .settings-description {
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-info {
+            flex: 1;
+        }
+        
+        .setting-label {
+            font-weight: 500;
+            color: #1f2937;
+        }
+        
+        .setting-description {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background: #d1d5db;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .toggle-switch.active {
+            background: #ff6b35;
+        }
+        
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+        
+        .toggle-switch.active::after {
+            transform: translateX(24px);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .stat-card {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff6b35;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
+        .notification-history {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .history-content {
+            flex: 1;
+        }
+        
+        .history-title {
+            font-weight: 500;
+            color: #1f2937;
+        }
+        
+        .history-body {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
+        .history-time {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+        
+        .history-status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-delivered {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-clicked {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .status-failed {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur shadow-sm">
+        <nav class="mx-auto max-w-6xl flex items-center justify-between px-4 py-3">
+            <a href="index.html" class="flex items-center gap-2 font-display text-xl text-gray-900">
+                <img src="/MAR/Images/LOGO.png" alt="" class="h-8 w-8"> Maverick Aim Rush
+            </a>
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="notification-settings">
+        <div class="settings-section">
+            <div class="settings-header">
+                <div class="settings-icon">🔔</div>
+                <div>
+                    <h1 class="settings-title">Notification Settings</h1>
+                    <p class="settings-description">Manage your notification preferences and stay connected with your fitness journey</p>
+                </div>
+            </div>
+
+            <!-- Push Notification Toggle -->
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Push Notifications</div>
+                    <div class="setting-description">Receive notifications on your device</div>
+                </div>
+                <button id="notification-toggle" class="btn btn-secondary">🔕 Notifications Off</button>
+            </div>
+
+            <!-- Test Notification -->
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Test Notification</div>
+                    <div class="setting-description">Send a test notification to verify your setup</div>
+                </div>
+                <button id="test-notification" class="btn btn-primary">Send Test</button>
+            </div>
+        </div>
+
+        <!-- Notification Preferences -->
+        <div class="settings-section" id="notification-settings" style="display: none;">
+            <h2 class="text-xl font-semibold mb-4">Notification Types</h2>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Friend Requests</div>
+                    <div class="setting-description">When someone sends you a friend request</div>
+                </div>
+                <div class="toggle-switch" data-setting="friend_requests"></div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Friend Activities</div>
+                    <div class="setting-description">When friends complete workouts or achieve goals</div>
+                </div>
+                <div class="toggle-switch" data-setting="friend_activities"></div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Challenge Invites</div>
+                    <div class="setting-description">When you're invited to join a challenge</div>
+                </div>
+                <div class="toggle-switch" data-setting="challenge_invites"></div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Achievement Unlocks</div>
+                    <div class="setting-description">When you earn new badges and achievements</div>
+                </div>
+                <div class="toggle-switch" data-setting="achievement_unlocks"></div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Level Ups</div>
+                    <div class="setting-description">When you level up in the gamification system</div>
+                </div>
+                <div class="toggle-switch" data-setting="level_ups"></div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Streak Reminders</div>
+                    <div class="setting-description">Reminders to maintain your workout streak</div>
+                </div>
+                <div class="toggle-switch" data-setting="streak_reminders"></div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Daily Quests</div>
+                    <div class="setting-description">When new daily quests become available</div>
+                </div>
+                <div class="toggle-switch" data-setting="daily_quests"></div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Social Interactions</div>
+                    <div class="setting-description">When friends like or comment on your activities</div>
+                </div>
+                <div class="toggle-switch" data-setting="social_interactions"></div>
+            </div>
+        </div>
+
+        <!-- Notification Statistics -->
+        <div class="settings-section">
+            <h2 class="text-xl font-semibold mb-4">Notification Statistics</h2>
+            <div class="stats-grid" id="notification-stats">
+                <div class="stat-card">
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Total Sent</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Delivered</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Clicked</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Click Rate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification History -->
+        <div class="settings-section">
+            <h2 class="text-xl font-semibold mb-4">Recent Notifications</h2>
+            <div class="notification-history" id="notification-history">
+                <div class="text-center text-gray-500 py-8">
+                    Loading notification history...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/modern-components.js"></script>
+    <script src="js/push-notifications.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const pushManager = window.pushNotificationManager;
+            
+            // Set up notification toggle
+            const notificationToggle = document.getElementById('notification-toggle');
+            notificationToggle.addEventListener('click', async () => {
+                if (pushManager.subscription) {
+                    await pushManager.unsubscribe();
+                } else {
+                    await pushManager.subscribe();
+                }
+            });
+            
+            // Set up test notification
+            const testNotification = document.getElementById('test-notification');
+            testNotification.addEventListener('click', () => {
+                pushManager.sendTestNotification();
+            });
+            
+            // Set up preference toggles
+            document.querySelectorAll('.toggle-switch').forEach(toggle => {
+                toggle.addEventListener('click', async () => {
+                    const setting = toggle.dataset.setting;
+                    const isActive = toggle.classList.contains('active');
+                    
+                    // Toggle visual state
+                    toggle.classList.toggle('active');
+                    
+                    // Update preferences
+                    const preferences = await pushManager.getNotificationPreferences();
+                    if (preferences) {
+                        preferences[setting] = !isActive;
+                        await pushManager.updateNotificationPreferences(preferences);
+                    }
+                });
+            });
+            
+            // Load notification statistics
+            const loadStats = async () => {
+                const stats = await pushManager.getNotificationStats();
+                if (stats) {
+                    document.querySelector('#notification-stats .stat-card:nth-child(1) .stat-value').textContent = stats.total_notifications;
+                    document.querySelector('#notification-stats .stat-card:nth-child(2) .stat-value').textContent = stats.delivered_notifications;
+                    document.querySelector('#notification-stats .stat-card:nth-child(3) .stat-value').textContent = stats.clicked_notifications;
+                    document.querySelector('#notification-stats .stat-card:nth-child(4) .stat-value').textContent = `${stats.click_rate.toFixed(1)}%`;
+                }
+            };
+            
+            // Load notification history
+            const loadHistory = async () => {
+                const history = await pushManager.getNotificationHistory();
+                const historyContainer = document.getElementById('notification-history');
+                
+                if (history.length === 0) {
+                    historyContainer.innerHTML = '<div class="text-center text-gray-500 py-8">No notifications yet</div>';
+                    return;
+                }
+                
+                historyContainer.innerHTML = history.map(notification => `
+                    <div class="history-item">
+                        <div class="history-icon" style="background: ${getNotificationColor(notification.notification_type)}">
+                            ${getNotificationIcon(notification.notification_type)}
+                        </div>
+                        <div class="history-content">
+                            <div class="history-title">${notification.title}</div>
+                            <div class="history-body">${notification.body}</div>
+                            <div class="history-time">${formatTime(notification.sent_at)}</div>
+                        </div>
+                        <div class="history-status status-${notification.status}">
+                            ${notification.status}
+                        </div>
+                    </div>
+                `).join('');
+            };
+            
+            // Load preferences
+            const loadPreferences = async () => {
+                const preferences = await pushManager.getNotificationPreferences();
+                if (preferences) {
+                    Object.keys(preferences).forEach(key => {
+                        const toggle = document.querySelector(`[data-setting="${key}"]`);
+                        if (toggle && preferences[key]) {
+                            toggle.classList.add('active');
+                        }
+                    });
+                }
+            };
+            
+            // Load all data
+            await Promise.all([
+                loadStats(),
+                loadHistory(),
+                loadPreferences()
+            ]);
+        });
+        
+        function getNotificationIcon(type) {
+            const icons = {
+                'friend_request': '👥',
+                'friend_activity': '💪',
+                'challenge_invite': '🏆',
+                'achievement_unlock': '🎖️',
+                'level_up': '⬆️',
+                'streak_reminder': '🔥',
+                'daily_quest': '📋',
+                'social_interaction': '💬'
+            };
+            return icons[type] || '🔔';
+        }
+        
+        function getNotificationColor(type) {
+            const colors = {
+                'friend_request': '#3b82f6',
+                'friend_activity': '#10b981',
+                'challenge_invite': '#f59e0b',
+                'achievement_unlock': '#8b5cf6',
+                'level_up': '#ef4444',
+                'streak_reminder': '#f97316',
+                'daily_quest': '#06b6d4',
+                'social_interaction': '#ec4899'
+            };
+            return colors[type] || '#6b7280';
+        }
+        
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 60000) return 'Just now';
+            if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+            if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+            return `${Math.floor(diff / 86400000)}d ago`;
+        }
+    </script>
+</body>
+</html>

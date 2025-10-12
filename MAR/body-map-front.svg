@@ -1,0 +1,116 @@
+<svg viewBox="0 0 360 640" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="bodymapTitle bodymapDesc">
+  <title id="bodymapTitle">Front view body silhouette for measurements</title>
+  <desc id="bodymapDesc">Clickable blueprint showing front measurement zones with proper anatomical proportions.</desc>
+  <defs>
+    <linearGradient id="bmAccent" x1="0" x2="1">
+      <stop offset="0" stop-color="#fb923c"/>
+      <stop offset="1" stop-color="#f97316"/>
+    </linearGradient>
+    <filter id="bmGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="rgba(251,146,60,0.55)"/>
+    </filter>
+    <style>
+      .bm-silhouette{fill:#dbeafe;stroke:#2563eb;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
+      .bm-silhouette--limb{fill:#dbeafe;stroke:#2563eb;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+      .bm-guide{stroke:rgba(59,130,246,0.4);stroke-width:1.5;stroke-linecap:round;stroke-dasharray:8 4;}
+      .bm-joint{fill:rgba(191,219,254,0.7);stroke:#3b82f6;stroke-width:2;}
+      .bm-region{fill:rgba(59,130,246,0);stroke:transparent;cursor:pointer;transition:fill .2s ease,stroke .2s ease;}
+      .bm-region:hover,.bm-region:focus-visible{outline:none;fill:rgba(59,130,246,0.15);stroke:rgba(59,130,246,0.5);}
+      .bm-region.is-active{fill:url(#bmAccent);stroke:#fb923c;filter:url(#bmGlow);}
+      .bm-label{font:600 12px/1.2 'Inter',system-ui,sans-serif;fill:#1e3a8a;}
+      .bm-label-sub{font:500 11px/1.2 'Inter',system-ui,sans-serif;fill:#475569;}
+      .measurement-band{stroke:#f59e0b;stroke-width:2;opacity:0.6;stroke-dasharray:8 4;}
+      .measurement-band.active{stroke-width:3;opacity:1;animation:pulse 1.5s ease-in-out infinite;}
+      @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+    </style>
+  </defs>
+
+  <!-- Height guide line -->
+  <line class="bm-guide" x1="320" y1="30" x2="320" y2="610"/>
+
+  <!-- Main body silhouette with proper 7.5-head proportions -->
+  <!-- Head (1 unit) -->
+  <circle class="bm-silhouette" cx="180" cy="70" r="28"/>
+  
+  <!-- Neck (0.5 unit) - proper width -->
+  <rect class="bm-silhouette" x="160" y="98" width="40" height="20" rx="8"/>
+  
+  <!-- Torso with proper tapering -->
+  <!-- Shoulders (2.2 heads wide) -->
+  <path class="bm-silhouette" d="M120 118 Q180 108 240 118 C260 130 280 150 285 170 C295 200 295 240 295 280 C295 340 280 380 260 400 C240 420 220 450 220 480 L140 480 C140 450 120 420 100 400 C80 380 65 340 65 280 C65 240 65 200 75 170 C80 150 100 130 120 118 Z"/>
+  
+  <!-- Legs with proper separation -->
+  <path class="bm-silhouette" d="M140 480 L140 580 Q140 610 180 610 Q220 610 220 580 L220 480"/>
+  
+  <!-- Arms with natural hang (10-15 degrees from body) -->
+  <!-- Left arm -->
+  <path class="bm-silhouette--limb" d="M120 140 Q100 170 95 210 L90 250 L95 290 L105 330 L120 370 L140 410"/>
+  <!-- Right arm -->
+  <path class="bm-silhouette--limb" d="M240 140 Q260 170 265 210 L270 250 L265 290 L255 330 L240 370 L220 410"/>
+  
+  <!-- Legs with proper tapering -->
+  <!-- Left leg -->
+  <path class="bm-silhouette--limb" d="M140 480 L135 520 L130 560 L125 600 L120 640"/>
+  <!-- Right leg -->
+  <path class="bm-silhouette--limb" d="M220 480 L225 520 L230 560 L235 600 L240 640"/>
+  
+  <!-- Feet -->
+  <ellipse class="bm-silhouette" cx="120" cy="650" rx="15" ry="8"/>
+  <ellipse class="bm-silhouette" cx="240" cy="650" rx="15" ry="8"/>
+
+  <!-- Joint circles for articulation points -->
+  <circle class="bm-joint" cx="95" cy="250" r="8"/>  <!-- Left elbow -->
+  <circle class="bm-joint" cx="265" cy="250" r="8"/> <!-- Right elbow -->
+  <circle class="bm-joint" cx="120" cy="370" r="6"/> <!-- Left wrist -->
+  <circle class="bm-joint" cx="240" cy="370" r="6"/> <!-- Right wrist -->
+  <circle class="bm-joint" cx="180" cy="480" r="10"/> <!-- Hip center -->
+  <circle class="bm-joint" cx="130" cy="560" r="8"/> <!-- Left knee -->
+  <circle class="bm-joint" cx="230" cy="560" r="8"/> <!-- Right knee -->
+  <circle class="bm-joint" cx="120" cy="640" r="6"/> <!-- Left ankle -->
+  <circle class="bm-joint" cx="240" cy="640" r="6"/> <!-- Right ankle -->
+
+  <!-- Measurement bands at correct anatomical positions -->
+  <line class="measurement-band" x1="160" y1="108" x2="200" y2="108"/> <!-- Neck -->
+  <line class="measurement-band" x1="120" y1="128" x2="240" y2="128"/> <!-- Shoulders -->
+  <line class="measurement-band" x1="100" y1="200" x2="260" y2="200"/> <!-- Chest -->
+  <line class="measurement-band" x1="120" y1="280" x2="240" y2="280"/> <!-- Waist -->
+  <line class="measurement-band" x1="130" y1="340" x2="230" y2="340"/> <!-- Hips -->
+  <line class="measurement-band" x1="95" y1="200" x2="95" y2="250"/> <!-- Left bicep -->
+  <line class="measurement-band" x1="265" y1="200" x2="265" y2="250"/> <!-- Right bicep -->
+  <line class="measurement-band" x1="120" y1="310" x2="120" y2="370"/> <!-- Left forearm -->
+  <line class="measurement-band" x1="240" y1="310" x2="240" y2="370"/> <!-- Right forearm -->
+  <line class="measurement-band" x1="130" y1="500" x2="130" y2="560"/> <!-- Left thigh -->
+  <line class="measurement-band" x1="230" y1="500" x2="230" y2="560"/> <!-- Right thigh -->
+  <line class="measurement-band" x1="120" y1="600" x2="120" y2="640"/> <!-- Left calf -->
+  <line class="measurement-band" x1="240" y1="600" x2="240" y2="640"/> <!-- Right calf -->
+
+  <!-- Interactive regions with proper anatomical mapping -->
+  <path id="neck" data-region="neck" class="bm-region" role="button" tabindex="0" aria-label="Neck measurement" d="M160 98 L200 98 L200 118 L160 118 Z"/>
+  <path id="shoulder" data-region="shoulder" class="bm-region" role="button" tabindex="0" aria-label="Shoulder measurement" d="M120 118 L240 118 L240 138 L120 138 Z"/>
+  <path id="chest" data-region="chest" class="bm-region" role="button" tabindex="0" aria-label="Chest measurement" d="M100 180 L260 180 L260 220 L100 220 Z"/>
+  <path id="waist" data-region="waist" class="bm-region" role="button" tabindex="0" aria-label="Waist measurement" d="M120 260 L240 260 L240 300 L120 300 Z"/>
+  <path id="hips" data-region="hips" class="bm-region" role="button" tabindex="0" aria-label="Hips measurement" d="M130 320 L230 320 L230 360 L130 360 Z"/>
+  <path id="l_bicep" data-region="l_bicep" class="bm-region" role="button" tabindex="0" aria-label="Left bicep measurement" d="M90 180 L110 180 L110 250 L90 250 Z"/>
+  <path id="r_bicep" data-region="r_bicep" class="bm-region" role="button" tabindex="0" aria-label="Right bicep measurement" d="M250 180 L270 180 L270 250 L250 250 Z"/>
+  <path id="l_forearm" data-region="l_forearm" class="bm-region" role="button" tabindex="0" aria-label="Left forearm measurement" d="M110 300 L130 300 L130 370 L110 370 Z"/>
+  <path id="r_forearm" data-region="r_forearm" class="bm-region" role="button" tabindex="0" aria-label="Right forearm measurement" d="M230 300 L250 300 L250 370 L230 370 Z"/>
+  <path id="l_thigh" data-region="l_thigh" class="bm-region" role="button" tabindex="0" aria-label="Left thigh measurement" d="M140 480 L160 480 L160 560 L140 560 Z"/>
+  <path id="r_thigh" data-region="r_thigh" class="bm-region" role="button" tabindex="0" aria-label="Right thigh measurement" d="M200 480 L220 480 L220 560 L200 560 Z"/>
+  <path id="l_calf" data-region="l_calf" class="bm-region" role="button" tabindex="0" aria-label="Left calf measurement" d="M120 580 L140 580 L140 640 L120 640 Z"/>
+  <path id="r_calf" data-region="r_calf" class="bm-region" role="button" tabindex="0" aria-label="Right calf measurement" d="M220 580 L240 580 L240 640 L220 640 Z"/>
+
+  <!-- Labels with proper positioning -->
+  <text class="bm-label" x="20" y="115" data-badge="neck-value">Neck - cm</text>
+  <text class="bm-label" x="20" y="135" data-badge="shoulder-value">Shoulder - cm</text>
+  <text class="bm-label" x="20" y="205" data-badge="chest-value">Chest - cm</text>
+  <text class="bm-label" x="20" y="285" data-badge="waist-value">Waist - cm</text>
+  <text class="bm-label" x="20" y="345" data-badge="hips-value">Hips - cm</text>
+  <text class="bm-label" x="20" y="220" data-badge="l_bicep-value">Left Bicep - cm</text>
+  <text class="bm-label" x="20" y="240" data-badge="r_bicep-value">Right Bicep - cm</text>
+  <text class="bm-label" x="20" y="340" data-badge="l_forearm-value">Left Forearm - cm</text>
+  <text class="bm-label" x="20" y="360" data-badge="r_forearm-value">Right Forearm - cm</text>
+  <text class="bm-label" x="20" y="520" data-badge="l_thigh-value">Left Thigh - cm</text>
+  <text class="bm-label" x="20" y="540" data-badge="r_thigh-value">Right Thigh - cm</text>
+  <text class="bm-label" x="20" y="620" data-badge="l_calf-value">Left Calf - cm</text>
+  <text class="bm-label" x="20" y="640" data-badge="r_calf-value">Right Calf - cm</text>
+</svg>

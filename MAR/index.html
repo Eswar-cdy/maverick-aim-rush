@@ -4,261 +4,710 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#ffb347" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Maverick Aim Rush" />
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <!-- Head: CSS + fonts + favicon -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Fredoka:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- UnoCSS production build -->
+  <link rel="stylesheet" href="css/uno.css" />
+  <link rel="stylesheet" href="css/modern-components.css" />
+  
+  <!-- Fix for auth/dashboard visibility -->
+  <style>
+    .hidden { display: none !important; }
+  </style>
+
+  <link rel="icon" href="/MAR/Images/favicon.png">
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="/MAR/Images/favicon.png" />
+  <link rel="manifest" href="manifest.json" />
+  <!-- Service Worker temporarily disabled for debugging -->
   <title>Maverick Aim Rush - Fitness Dashboard</title>
-  <link rel="stylesheet" href="css/reset.css" />
-  <link rel="stylesheet" href="css/style.css" />
+  <meta name="description" content="AI-powered fitness tracking: workouts, nutrition, progress analytics, and personalized insights." />
+  <link rel="canonical" href="http://localhost:8001/" />
+  <link rel="preconnect" href="http://localhost:8000" crossorigin>
+  <meta property="og:title" content="Maverick Aim Rush – Fitness Dashboard" />
+  <meta property="og:description" content="Track workouts, log meals, and visualize progress with AI insights." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="http://localhost:8001/" />
+  <meta property="og:image" content="http://127.0.0.1:8001/assets/LOGO.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Maverick Aim Rush",
+    "url": "http://localhost:8001",
+    "logo": "http://127.0.0.1:8001/assets/LOGO.png"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Maverick Aim Rush",
+    "url": "http://localhost:8001",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "http://localhost:8001/search?q={query}",
+      "query-input": "required name=query"
+    }
+  }
+  </script>
+  <!-- Removed old CSS files to prevent conflicts with UnoCSS -->
+  
+  <!-- Removed temporary emergency overrides (now using UnoCSS) -->
+  
+  <script>
+    // Authentication state management fix
+    window.authState = {
+      isAuthenticated: false,
+      isLoading: false
+    };
+    
+    // Force cache refresh
+    if ('caches' in window) {
+      caches.keys().then(function(names) {
+        for (let name of names) {
+          caches.delete(name);
+        }
+      });
+    }
+    
+    // Force reload CSS (exclude external fonts)
+    const timestamp = new Date().getTime();
+    const links = document.querySelectorAll('link[rel="stylesheet"]');
+    links.forEach(link => {
+      // Skip external font links
+      if (link.href.includes('fonts.googleapis.com') || link.href.includes('fonts.gstatic.com')) {
+        return;
+      }
+      const href = link.href.split('?')[0];
+      link.href = href + '?v=' + timestamp;
+    });
+    
+    // Interactive floating elements
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add click handlers to floating toggles
+      const toggles = document.querySelectorAll('.floating-toggle');
+      toggles.forEach((toggle, index) => {
+        toggle.addEventListener('click', function() {
+          // Create a ripple effect
+          const ripple = document.createElement('div');
+          ripple.style.cssText = `
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+            width: 100px;
+            height: 100px;
+            left: 50%;
+            top: 50%;
+            margin-left: -50px;
+            margin-top: -50px;
+          `;
+          
+          this.style.position = 'relative';
+          this.appendChild(ripple);
+          
+          setTimeout(() => {
+            ripple.remove();
+          }, 600);
+          
+          // Add some fun interactions
+          const messages = [
+            '🎮 Game Mode Activated!',
+            '📊 Analytics Dashboard Ready!',
+            '🎵 Workout Music Playing!',
+            '🎨 Creative Mode Enabled!'
+          ];
+          
+          // Show a temporary message
+          const message = document.createElement('div');
+          message.textContent = messages[index] || '✨ Magic Activated!';
+          message.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 179, 71, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.5s ease-out;
+          `;
+          
+          document.body.appendChild(message);
+          
+          setTimeout(() => {
+            message.style.animation = 'slideOut 0.5s ease-in';
+            setTimeout(() => message.remove(), 500);
+          }, 2000);
+        });
+      });
+      
+      // Add hover effects to floating stickers
+      const stickers = document.querySelectorAll('.floating-sticker');
+      stickers.forEach(sticker => {
+        sticker.addEventListener('mouseenter', function() {
+          this.style.filter = 'drop-shadow(0 0 10px rgba(255, 255, 255, 0.5))';
+        });
+        
+        sticker.addEventListener('mouseleave', function() {
+          this.style.filter = 'none';
+        });
+      });
+    });
+    
+    // Add CSS animations for the interactive effects
+    const interactiveStyle = document.createElement('style');
+    interactiveStyle.textContent = `
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+      
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      
+      @keyframes slideOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(interactiveStyle);
+  </script>
 </head>
 
 <body>
+  <a href="#page-root" class="skip-link">Skip to main content</a>
   <div class="wrapper">
-    <header class="header">
-      <div class="header__container">
-        <a href="index.html" class="header__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.75rem;vertical-align:middle;" /></a>
-        <div class="header__navigation">
-          <div class="header__menu menu">
-            <nav class="menu__body">
-              <ul class="menu__list">
-                <li class="menu__item"><a href="index.html" class="menu__link">Dashboard</a></li>
-                <li class="menu__item"><a href="about.html" class="menu__link">Workout Tracker</a></li>
-                <li class="menu__item"><a href="services.html" class="menu__link">Nutrition Log</a></li>
-                <li class="menu__item"><a href="contact.html" class="menu__link">Progress</a></li>
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur shadow-sm" id="main-header">
+      <nav class="mx-auto max-w-6xl flex items-center justify-between px-4 py-3">
+        <a href="index.html" class="flex items-center gap-2 font-display text-xl text-gray-900">
+          <img src="/MAR/Images/LOGO.png" alt="" class="h-8 w-8"> Maverick Aim Rush
+        </a>
+        <ul class="flex items-center gap-4 sm:gap-6 text-gray-700 overflow-x-auto whitespace-nowrap">
+          <li><a href="index.html" class="hover:text-orange-600 font-medium">Dashboard</a></li>
+          <li><a href="about.html" class="hover:text-orange-600">Workout Tracker</a></li>
+          <li><a href="services.html" class="hover:text-orange-600">Nutrition Log</a></li>
+          <li><a href="contact.html" class="hover:text-orange-600">Progress</a></li>
+          <li><a href="social.html" class="hover:text-orange-600">Social</a></li>
               </ul>
-              <a href="about.html" class="actions-header__button">Log Workout</a>
-            </nav>
+        <div class="flex items-center gap-3">
+          <button id="dark-mode-toggle" class="hidden md:inline-flex items-center rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50" title="Toggle Dark Mode">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+          </button>
+          <button id="units-toggle" class="hidden md:inline-flex items-center rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50">
+            <span id="units-display">lb/mi</span>
+          </button>
+          <div id="user-status" class="hidden flex items-center gap-2">
+            <span id="welcome-message" class="text-sm text-gray-600"></span>
+            <a href="notifications.html" class="rounded-lg border p-2 hover:bg-gray-50" title="Notification Settings">🔔</a>
+            <button id="logout-button" class="rounded-lg bg-orange-600 px-4 py-2 text-white hover:bg-orange-500">Logout</button>
           </div>
-          <div class="header__actions actions-header">
-            <!-- User Status Display -->
-            <div id="user-status" style="display: none;">
-              <span id="welcome-message"></span>
-              <button id="logout-button" class="actions-header__button actions-header__button_logout">Logout</button>
+          <button id="mobile-menu-toggle" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border hover:bg-gray-50">≡</button>
+        </div>
+      </nav>
+    </header>
+    <main class="page" id="page-root" role="main">
+      <!-- Authentication Section -->
+      <section id="auth-section" class="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center p-4 hidden">
+        <div class="mx-auto max-w-6xl">
+          <div class="grid gap-8 md:grid-cols-2">
+            <div class="text-center md:text-left">
+              <div class="inline-flex items-center rounded-full bg-orange-100 px-4 py-2 text-sm font-medium text-orange-800 mb-6">
+                <span class="mr-2">🏆</span>
+                Join 10,000+ Fitness Champions
+          </div>
+              <h1 class="text-5xl font-bold text-gray-900 mb-6">
+                <span class="text-orange-600">Welcome to</span><br>
+                <span class="text-gray-900">Maverick Aim Rush</span>
+              </h1>
+              <p class="text-xl text-gray-600 mb-8 max-w-lg mx-auto md:mx-0">
+                Transform your fitness journey with AI-powered insights and comprehensive tracking
+              </p>
+              <div class="grid grid-cols-3 gap-4 mb-8">
+                <div class="text-center">
+                  <div class="text-3xl mb-2">💪</div>
+                  <div class="text-sm font-medium text-gray-700">Smart Workouts</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-3xl mb-2">📊</div>
+                  <div class="text-sm font-medium text-gray-700">Progress Tracking</div>
             </div>
-            <button type="button" class="menu__icon icon-menu"><span></span></button>
+                <div class="text-center">
+                  <div class="text-3xl mb-2">🎯</div>
+                  <div class="text-sm font-medium text-gray-700">Goal Achievement</div>
           </div>
         </div>
-      </div>
-    </header>
-    <main class="page">
-      <!-- Authentication Section -->
-      <section id="auth-section" class="page__auth auth-section">
-        <div class="auth-section__container">
-          <!-- Login Form -->
-          <div class="auth-form">
-            <h2 class="auth-form__title title">Login</h2>
-            <form id="login-form">
-              <div class="form-group">
-                <label for="login-username">Username</label>
-                <input type="text" id="login-username" required>
+              <div class="grid grid-cols-3 gap-6">
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-orange-600">10K+</div>
+                  <div class="text-sm text-gray-500">Active Users</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-orange-600">50K+</div>
+                  <div class="text-sm text-gray-500">Workouts Logged</div>
+                  </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-orange-600">95%</div>
+                  <div class="text-sm text-gray-500">Success Rate</div>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="login-password">Password</label>
-                <input type="password" id="login-password" required>
+            </div>
+            
+            <div class="space-y-6">
+              <!-- Login Form -->
+              <div class="rounded-2xl border bg-white p-6 shadow-sm" id="login-form-container">
+                <div class="text-center mb-6">
+                  <div class="text-4xl mb-4">🚀</div>
+                  <h2 class="text-2xl font-semibold text-gray-900">Welcome Back, Champion!</h2>
+                  <p class="text-gray-600">Ready to continue your fitness journey? Let's get you back on track!</p>
+                  <div class="flex items-center justify-center gap-2 mt-4 p-3 bg-orange-50 rounded-lg">
+                    <span class="text-2xl">💪</span>
+                    <span class="text-sm font-medium text-orange-800">"Every workout is a step closer to your goals"</span>
+                  </div>
+                </div>
+                <form id="login-form" class="space-y-4">
+                  <input type="text" id="login-username" class="w-full rounded-lg border px-3 py-2" placeholder="Enter your username" required aria-required="true">
+                  <input type="password" id="login-password" class="w-full rounded-lg border px-3 py-2" placeholder="Enter your password" required aria-required="true" minlength="6">
+                  <button type="submit" class="w-full rounded-lg bg-orange-600 px-4 py-2 font-medium text-white hover:bg-orange-500">
+                    <span>Sign In</span>
+                    <div class="spinner spinner--sm hidden" id="login-spinner"></div>
+                  </button>
+                  <p id="login-message" class="text-sm text-center" aria-live="polite"></p>
+                </form>
+                
+                <!-- Demo Mode Button -->
+                <div class="text-center mt-6 pt-6 border-t border-gray-200">
+                  <button onclick="enableDemoMode()" class="rounded-lg border px-3 py-2 hover:bg-gray-50">
+                    🎭 Try Demo Mode
+                  </button>
+                  <p class="text-xs text-gray-500 mt-2">
+                    Experience the dashboard without creating an account
+                  </p>
+                </div>
+                
+                <div class="text-center mt-4">
+                  <p class="text-sm text-gray-600">
+                    New to our community? 
+                    <a href="#" onclick="if(window.dashboardManager) { dashboardManager.showAuthForm('register'); } else { console.error('DashboardManager not loaded yet'); } return false;" class="text-orange-600 underline font-medium">Join the Champions</a>
+                  </p>
+                </div>
               </div>
-              <button type="submit" class="auth-form__button button">Login</button>
-              <p id="login-message" class="auth-message"></p>
-            </form>
-          </div>
-          <!-- Registration Form -->
-          <div class="auth-form">
-            <h2 class="auth-form__title title">Register</h2>
-            <form id="register-form">
-              <div class="form-group">
-                <label for="register-username">Username</label>
-                <input type="text" id="register-username" required>
+              
+              <!-- Registration Form -->
+              <div class="rounded-2xl border bg-white p-6 shadow-sm hidden" id="register-form-container">
+                <div class="text-center mb-6">
+                  <div class="text-4xl mb-4">⭐</div>
+                  <h2 class="text-2xl font-semibold text-gray-900">Join the Champions!</h2>
+                  <p class="text-gray-600">Start your transformation today and become part of our fitness community</p>
+                  <div class="flex items-center justify-center gap-2 mt-4 p-3 bg-amber-50 rounded-lg">
+                    <span class="text-2xl">🎯</span>
+                    <span class="text-sm font-medium text-amber-800">"Your fitness journey starts with a single step"</span>
+                  </div>
+                </div>
+                <form id="register-form" class="space-y-4">
+                  <input type="text" id="register-username" class="w-full rounded-lg border px-3 py-2" placeholder="Choose a username" required aria-required="true" minlength="3">
+                  <input type="email" id="register-email" class="w-full rounded-lg border px-3 py-2" placeholder="Enter your email" required aria-required="true">
+                  <input type="password" id="register-password" class="w-full rounded-lg border px-3 py-2" placeholder="Create a strong password" required aria-required="true" minlength="8">
+                  <input type="password" id="register-password-confirm" class="w-full rounded-lg border px-3 py-2" placeholder="Confirm your password" required aria-required="true" minlength="8">
+                  <button type="submit" class="w-full rounded-lg bg-amber-600 px-4 py-2 font-medium text-white hover:bg-amber-500">
+                    <span>Create Account</span>
+                    <div class="spinner spinner--sm hidden" id="register-spinner"></div>
+                  </button>
+                  <p id="register-message" class="text-sm text-center" aria-live="polite"></p>
+                </form>
+                
+                <div class="text-center mt-4">
+                  <p class="text-sm text-gray-600">
+                    Already a member? 
+                    <a href="#" onclick="if(window.dashboardManager) { dashboardManager.showAuthForm('login'); } else { console.error('DashboardManager not loaded yet'); } return false;" class="text-orange-600 underline font-medium">Welcome Back!</a>
+                  </p>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="register-email">Email</label>
-                <input type="email" id="register-email">
-              </div>
-              <div class="form-group">
-                <label for="register-password">Password</label>
-                <input type="password" id="register-password" required>
-              </div>
-              <button type="submit" class="auth-form__button button">Register</button>
-              <p id="register-message" class="auth-message"></p>
-            </form>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- Main Content - Initially hidden if not logged in -->
-      <div id="main-content" style="display: none;">
-        <section class="page__main main">
-          <div class="main__container">
-            <h3 class="main__caption">Your Fitness Journey</h3>
-            <h1 class="main__title">Dashboard</h1>
-            <div class="main__text">
-              Track your workouts, monitor nutrition, and achieve your fitness goals with comprehensive progress tracking.
-            </div>
-            <a href="about.html" class="main__button">Log Today's Workout</a>
-          </div>
-        </section>
-        
-        <!-- START: Recent Workouts Section -->
-        <section class="page__workout-history workout-history" style="padding-top: 2rem; padding-bottom: 2rem; background: #f8f9fa;">
-          <div class="workout-history__container">
-            <h2 class="workout-history__title title" style="font-size: 2.5rem;">Recent Workouts</h2>
-            <div class="workout-history__list" id="workout-history">
-              <!-- Workout history will be loaded here -->
-              <p>Loading recent workouts...</p>
-            </div>
-          </div>
-        </section>
-        <!-- END: Recent Workouts Section -->
+      <!-- Dashboard Section (shown when authenticated) -->
+      <div id="dashboard-wrapper" class="hidden">
+        <section id="dashboard-section" class="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50 to-amber-50 p-6">
+          <div class="mx-auto max-w-7xl">
+            <!-- Welcome Header with Enhanced Design -->
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 animate-fade-in">
+              <div class="relative">
+                <!-- Animated Background Element -->
+                <div class="absolute -inset-4 bg-gradient-to-r from-orange-400 to-amber-400 rounded-2xl opacity-20 blur-xl animate-pulse"></div>
+                <div class="relative">
+                  <div class="flex items-center gap-3 mb-2">
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center text-white text-2xl animate-bounce">
+                      🔥
+                    </div>
+                    <h1 class="text-4xl font-bold bg-gradient-to-r from-gray-900 via-orange-600 to-amber-600 bg-clip-text text-transparent">
+                      Hello, <span id="dash-username" class="animate-pulse">User</span>!
+                    </h1>
+                  </div>
+                  <p class="text-lg text-gray-600 font-medium">
+                    Ready to <span class="text-orange-600 font-semibold">dominate</span> today? <span id="dash-date" class="text-amber-600"></span>
+                  </p>
+                  <!-- Motivational streak indicator -->
+                  <div class="flex items-center gap-2 mt-3 p-3 bg-white/70 backdrop-blur-sm rounded-lg border border-orange-200 shadow-sm hover:shadow-md transition-all duration-300">
+                    <span class="text-2xl animate-pulse">⚡</span>
+                    <span class="text-sm font-medium text-orange-700">
+                      <span id="current-streak">0</span>-day streak • Keep the momentum!
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Enhanced Action Buttons -->
+              <div class="flex gap-4 mt-6 lg:mt-0">
+                <a href="about.html" class="group relative overflow-hidden rounded-xl bg-gradient-to-r from-orange-600 to-orange-500 px-6 py-4 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300" style="background: linear-gradient(135deg, #ff6b35, #f7931e); color: white;">
+                  <div class="absolute inset-0 bg-gradient-to-r from-orange-700 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div class="relative flex items-center gap-2">
+                    <span class="text-xl group-hover:animate-bounce" style="color: white;">💪</span>
+                    <span style="color: white; font-weight: 600;">Log Workout</span>
+                  </div>
+                </a>
+                <a href="services.html" class="group relative overflow-hidden rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 px-6 py-4 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">
+                  <div class="absolute inset-0 bg-gradient-to-r from-amber-700 to-amber-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div class="relative flex items-center gap-2">
+                    <span class="text-xl group-hover:animate-bounce" style="color: white;">🥗</span>
+                    <span style="color: white; font-weight: 600;">Log Meal</span>
+                  </div>
+                </a>
+                <a href="gamification.html" class="group relative overflow-hidden rounded-xl bg-gradient-to-r from-purple-600 to-purple-500 px-6 py-4 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white;">
+                  <div class="absolute inset-0 bg-gradient-to-r from-purple-700 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div class="relative flex items-center gap-2">
+                    <span class="text-xl group-hover:animate-bounce" style="color: white;">🎮</span>
+                    <span style="color: white; font-weight: 600;">Level Up</span>
+                  </div>
+                </a>
+              </div>
 
-        <section class="page__about about">
-          <div class="about__container">
-            <div class="about__image"><img src="images/Home/Dashboard- Hero.jpg" alt="Fitness Progress" /></div>
-            <div class="about__content">
-              <h2 class="about__title title">Today's Summary</h2>
-              <div class="about__text">
-                <p>
-                  <strong>Calories Consumed:</strong> <span id="dashboard-calories">0</span> / 2000 | <strong>Workouts:</strong> 1 | <strong>Steps:</strong> 8,240
-                </p>
-                <p>
-                  <strong>Meals Completed:</strong> <span id="dashboard-meals">0</span> / 5 | <strong>Weight:</strong> 165 lbs | <strong>Nutrition Goal:</strong> <span id="dashboard-nutrition-progress">0</span>% Complete
-                </p>
+              <!-- New Features Quick Access -->
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 p-4 bg-white/70 backdrop-blur-sm rounded-2xl border border-orange-200">
+                <a href="about.html" class="flex items-center gap-3 p-3 bg-white rounded-xl hover:shadow-md transition-all group">
+                  <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <span class="text-xl">📏</span>
+                  </div>
+                  <div>
+                    <div class="font-semibold text-gray-900">Fitness Tracker</div>
+                    <div class="text-xs text-gray-600">Track metrics & habits</div>
+                  </div>
+                </a>
+                <a href="services.html" class="flex items-center gap-3 p-3 bg-white rounded-xl hover:shadow-md transition-all group">
+                  <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <span class="text-xl">🥗</span>
+                  </div>
+                  <div>
+                    <div class="font-semibold text-gray-900">Nutrition Planner</div>
+                    <div class="text-xs text-gray-600">Plan meals & macros</div>
+                  </div>
+                </a>
+                <a href="about.html" class="flex items-center gap-3 p-3 bg-white rounded-xl hover:shadow-md transition-all group">
+                  <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <span class="text-xl">💪</span>
+                  </div>
+                  <div>
+                    <div class="font-semibold text-gray-900">Workout Planner</div>
+                    <div class="text-xs text-gray-600">Custom workout plans</div>
+                  </div>
+                </a>
               </div>
-              <a href="contact.html" class="about__button button">View Full Progress</a>
+            </div>
+            </div>
+
+            <!-- Enhanced KPI Cards with Animations -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <!-- Workout Card -->
+              <div class="group relative bg-white rounded-2xl shadow-lg border border-gray-100 p-6 text-center hover:shadow-xl transform hover:-translate-y-2 transition-all duration-500 overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-orange-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-400/20 to-orange-600/20 rounded-full -translate-y-10 translate-x-10 group-hover:scale-150 transition-transform duration-700"></div>
+                <div class="relative">
+                  <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-white text-2xl group-hover:animate-pulse shadow-lg">
+                    💪
+                  </div>
+                  <div class="text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent mb-2" id="kpi-workouts-week">0</div>
+                  <div class="text-sm font-medium text-gray-600 group-hover:text-orange-600 transition-colors duration-300">Workouts This Week</div>
+                  <div class="mt-3 h-1 bg-gray-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-orange-500 to-orange-600 rounded-full transform -translate-x-full group-hover:translate-x-0 transition-transform duration-1000" style="width: 70%"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Calories Card -->
+              <div class="group relative bg-white rounded-2xl shadow-lg border border-gray-100 p-6 text-center hover:shadow-xl transform hover:-translate-y-2 transition-all duration-500 overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-red-400/20 to-red-600/20 rounded-full -translate-y-10 translate-x-10 group-hover:scale-150 transition-transform duration-700"></div>
+                <div class="relative">
+                  <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center text-white text-2xl group-hover:animate-bounce shadow-lg">
+                    🔥
+                  </div>
+                  <div class="text-3xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent mb-2" id="kpi-calories-today">0</div>
+                  <div class="text-sm font-medium text-gray-600 group-hover:text-red-600 transition-colors duration-300">Calories Burned Today</div>
+                  <div class="mt-3 h-1 bg-gray-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-red-500 to-red-600 rounded-full transform -translate-x-full group-hover:translate-x-0 transition-transform duration-1000" style="width: 60%"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Weight Card -->
+              <div class="group relative bg-white rounded-2xl shadow-lg border border-gray-100 p-6 text-center hover:shadow-xl transform hover:-translate-y-2 transition-all duration-500 overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-400/20 to-blue-600/20 rounded-full -translate-y-10 translate-x-10 group-hover:scale-150 transition-transform duration-700"></div>
+                <div class="relative">
+                  <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl group-hover:animate-pulse shadow-lg">
+                    ⚖️
+                  </div>
+                  <div class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-2" id="kpi-current-weight">0 kg</div>
+                  <div class="text-sm font-medium text-gray-600 group-hover:text-blue-600 transition-colors duration-300">Current Weight</div>
+                  <div class="mt-3 h-1 bg-gray-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transform -translate-x-full group-hover:translate-x-0 transition-transform duration-1000" style="width: 85%"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Goals Card -->
+              <div class="group relative bg-white rounded-2xl shadow-lg border border-gray-100 p-6 text-center hover:shadow-xl transform hover:-translate-y-2 transition-all duration-500 overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-purple-400/20 to-purple-600/20 rounded-full -translate-y-10 translate-x-10 group-hover:scale-150 transition-transform duration-700"></div>
+                <div class="relative">
+                  <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-white text-2xl group-hover:animate-bounce shadow-lg">
+                    🎯
+                  </div>
+                  <div class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent mb-2" id="kpi-active-goals">0</div>
+                  <div class="text-sm font-medium text-gray-600 group-hover:text-purple-600 transition-colors duration-300">Active Goals</div>
+                  <div class="mt-3 h-1 bg-gray-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full transform -translate-x-full group-hover:translate-x-0 transition-transform duration-1000" style="width: 50%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Main Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <!-- Weekly Progress Chart -->
+              <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-sm border">
+                  <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-900">Weekly Volume</h3>
+                    <a href="contact.html" class="text-orange-600 hover:text-orange-500 text-sm font-medium">View Progress</a>
+                  </div>
+                  <div class="p-6">
+                    <canvas id="dash-volume-chart" height="150"></canvas>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Today's Plan -->
+              <div class="lg:col-span-1">
+                <div class="bg-white rounded-xl shadow-sm border">
+                  <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-900">Today's Plan</h3>
+                    <a href="about.html#weekly-schedule" class="text-orange-600 hover:text-orange-500 text-sm font-medium">View Full Plan</a>
+                  </div>
+                  <div class="p-6" id="dash-todays-plan">
+                    <p class="text-gray-600">Loading today's plan...</p>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Recent Activity -->
+              <div class="lg:col-span-1">
+                <div class="bg-white rounded-xl shadow-sm border">
+                  <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Recent Activity</h3>
+                  </div>
+                  <div class="p-6" id="dash-recent-activity">
+                    <p class="text-gray-600">No recent activity.</p>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- AI Recommendations -->
+              <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-sm border">
+                  <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">AI Recommendations</h3>
+                  </div>
+                  <div class="p-6" id="dash-ai-recs">
+                    <p class="text-gray-600">No recommendations yet.</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
-        <section class="page__services services">
-          <div class="services__container">
-            <h2 class="services__title title">Quick Actions</h2>
-            <div class="services__row">
-              <div class="services__column">
-                <div class="services__item item-services">
-                  <a class="item-services__top" href="about.html">
-                    <div class="item-services__image">
-                      <img src="images/Home/home-1.png" alt="Workout Tracking" />
-                    </div>
-                    <h3 class="item-services__title">Log Workout</h3>
-                  </a>
-                  <div class="item-services__text">
-                    Record your exercises, sets, reps, and track your performance over time.
-                  </div>
-                  <a href="about.html" class="item-services__button button">Start Workout</a>
-                </div>
-              </div>
-              <div class="services__column">
-                <div class="services__item item-services">
-                  <a class="item-services__top" href="services.html">
-                    <div class="item-services__image">
-                      <img src="images/Home/Dashboard-log meal.jpg" alt="Nutrition Tracking" />
-                    </div>
-                    <h3 class="item-services__title">Log Meal</h3>
-                  </a>
-                  <div class="item-services__text">
-                    Track your daily nutrition, calories, and macronutrients for optimal results.
-                  </div>
-                  <a href="services.html" class="item-services__button button">Add Meal</a>
-                </div>
-              </div>
-              <div class="services__column">
-                <div class="services__item item-services">
-                  <a class="item-services__top" href="about.html#weekly-schedule">
-                    <div class="item-services__image">
-                      <img src="images/Home/home-2.png" alt="Weekly Schedule" />
-                    </div>
-                    <h3 class="item-services__title">View Weekly Plan</h3>
-                  </a>
-                  <div class="item-services__text">
-                    Access your 7-day workout program and log your daily progress.
-                  </div>
-                  <a href="about.html#weekly-schedule" class="item-services__button button">View Plan</a>
-                </div>
-              </div>
-              <div class="services__column">
-                <div class="services__item item-services">
-                  <a class="item-services__top" href="contact.html">
-                    <div class="item-services__image">
-                      <img src="images/Home/home-3.png" alt="Progress Tracking" />
-                    </div>
-                    <h3 class="item-services__title">Update Progress</h3>
-                  </a>
-                  <div class="item-services__text">
-                    Log measurements, weight, and body composition to monitor your transformation.
-                  </div>
-                  <a href="contact.html" class="item-services__button button">Log Progress</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section class="page__testimonial testimonial">
-          <div class="testimonial__container">
-            <h3 class="testiomonial__caption">Weekly Achievement</h3>
-            <h2 class="testimonial__title title">
-              Congratulations! You've completed 5 workouts this week and are on track to reach your monthly goal.
-            </h2>
-            <div class="testimonial__item item-testimonial">
-              <div class="item-testimonial__image">
-                <img src="images/Home/home-4.png" alt="Achievement Badge" />
-              </div>
-              <h4 class="item-testimonial__title">Weekly Streak</h4>
-              <div class="item-testimonial__caption">5 Days Active</div>
-            </div>
-          </div>
-        </section>
-        <section class="page__outro outro outro_home">
-          <div class="outro__container">
-            <h2 class="outro__title title">Ready to Crush Your Goals?</h2>
-            <div class="outro__text">
-              Stay consistent, track your progress, and watch your fitness transformation unfold. Every workout counts toward your ultimate goal.
-            </div>
-            <a href="about.html" class="outro__button button">Start Today's Workout</a>
-          </div>
-        </section>
-      </div>
+        </div>
     </main>
-    <footer class="footer">
-      <div class="footer__container">
-        <a href="contact.html" class="footer__policy">Privacy Policy – Terms & Conditions</a>
-        <a href="index.html" class="footer__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.2rem;vertical-align:middle;" /></a>
-        <div class="footer__copyright">Copyright © 2025 Maverick Aim Rush – All Rights Reserved</div>
+    <footer class="bg-gray-900 text-white py-8">
+      <div class="mx-auto max-w-7xl px-6">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+          <a href="#" class="text-sm text-gray-400 hover:text-gray-300 transition-colors" onclick="alert('Privacy Policy and Terms & Conditions will be available soon!'); return false;">
+            Privacy Policy – Terms & Conditions
+          </a>
+          <a href="index.html" class="flex items-center gap-2">
+            <img src="/MAR/Images/LOGO.png" alt="Maverick Aim Rush Logo" class="h-8 w-8" />
+            <span class="font-display text-lg">Maverick Aim Rush</span>
+          </a>
+          <div class="text-sm text-gray-400">
+            Copyright © 2025 Maverick Aim Rush – All Rights Reserved
+          </div>
+        </div>
       </div>
     </footer>
   </div>
-  <script src="js/script.js"></script>
-  <script src="js/api.js?v=2"></script>
-  <script src="js/workout.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <script defer src="js/script.js?v=4"></script>
+  <script src="js/api.js?v=10"></script>
+  <script defer src="js/offline-queue.js?v=1"></script>
+  <script defer src="js/dashboard-manager.js?v=3"></script>
+  <script defer src="js/mobile.js?v=6"></script>
+  <script defer src="js/notifications.js?v=6"></script>
+  <script defer src="js/notification-ui.js?v=6"></script>
+  <script defer src="js/smart-notifications.js?v=6"></script>
+  <script defer src="js/data-export.js?v=6"></script>
+  <script defer src="js/test-utils.js?v=6"></script>
+  <!-- Temporarily disabled bug-fixes.js due to JavaScript errors -->
+  <!-- <script src="js/bug-fixes.js?v=7"></script> -->
+        <script defer src="js/performance-monitor.js?v=6"></script>
+        <script defer src="js/websocket-client.js?v=1"></script>
+        
+        <!-- Service Worker Registration -->
+        <script>
+          // Service worker disabled (no /public/sw.js present)
+        </script>
+        
+        <!-- Initialize Dashboard Manager -->
   <script>
-    // Update dashboard with nutrition data from localStorage (will be replaced later)
-    function updateDashboardFromLocalStorage() {
-      const nutritionData = localStorage.getItem('nutritionData');
-      if (nutritionData) {
-        try {
-          const data = JSON.parse(nutritionData);
-          const today = new Date().toDateString();
-          const savedDate = new Date(data.lastUpdated).toDateString();
-          
-          if (today === savedDate) {
-            if (document.getElementById('dashboard-calories')) {
-              document.getElementById('dashboard-calories').textContent = Math.round(data.consumed.calories || 0);
-            }
-            if (document.getElementById('dashboard-meals')) {
-              const completedMeals = Object.values(data.mealPlan || {}).filter(meal => meal.completed).length;
-              document.getElementById('dashboard-meals').textContent = completedMeals;
-            }
-            if (document.getElementById('dashboard-nutrition-progress')) {
-              const calorieProgress = Math.min(((data.consumed.calories || 0) / 2000) * 100, 100);
-              document.getElementById('dashboard-nutrition-progress').textContent = Math.round(calorieProgress);
-            }
+    // Force-clear caches and unregister any existing service workers
+    (async () => {
+      try {
+        if ('serviceWorker' in navigator) {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          for (const reg of regs) {
+            try { await reg.unregister(); } catch (e) { console.warn('SW unregister failed', e); }
           }
-        } catch (error) {
-          console.error('Error loading nutrition data for dashboard:', error);
         }
+        if ('caches' in window) {
+          const names = await caches.keys();
+          await Promise.all(names.map(name => caches.delete(name)));
+        }
+        // Bust cache for this page by updating the URL with a timestamp
+        if (!location.search.includes('v=')) {
+          const url = new URL(location.href);
+          url.searchParams.set('v', Date.now().toString());
+          history.replaceState({}, '', url.toString());
+        }
+      } catch (e) {
+        console.warn('Cache/SW cleanup warning:', e);
       }
+    })();
+
+    // Simple initialization test
+    console.log('🎯 Script loading...');
+    console.log('🎯 Current time:', new Date().toISOString());
+    console.log('🎯 Bug-fixes.js should be disabled - checking...');
+    
+    // Test basic functionality
+    setTimeout(() => {
+      console.log('🎯 Timeout test - JavaScript is working');
+      console.log('🎯 Document ready state:', document.readyState);
+      console.log('🎯 DashboardManager available:', typeof DashboardManager);
+      console.log('🎯 Bug-fixes.js disabled:', !document.querySelector('script[src*="bug-fixes.js"]'));
+    }, 1000);
+    
+    // Wait for everything to be ready
+    window.addEventListener('load', () => {
+      console.log('🎯 Window loaded, checking DashboardManager...');
+      console.log('🎯 DashboardManager available:', typeof DashboardManager);
+      
+      if (typeof DashboardManager === 'undefined') {
+        console.error('❌ DashboardManager class not found!');
+        return;
+      }
+      
+      try {
+        console.log('🎯 Creating dashboard manager...');
+        window.dashboardManager = new DashboardManager();
+        console.log('🎯 Dashboard manager created, calling init...');
+        window.dashboardManager.init();
+        console.log('🎯 Dashboard manager initialized successfully');
+      } catch (error) {
+        console.error('❌ Error creating dashboard manager:', error);
+        console.error('❌ Error details:', error.message);
+        console.error('❌ Error stack:', error.stack);
+      }
+    });
+  </script>
+  
+  <script>
+    // --- UTILITIES (Toast Notifications, etc.) ---
+    function showToast(message, type = 'info', duration = 4000) {
+      const toastId = 'toast-' + Date.now();
+      const toast = document.createElement('div');
+      toast.id = toastId;
+      toast.className = `toast-notification ${type}`;
+      
+      let icon = 'ℹ️';
+      if (type === 'success') icon = '✅';
+      if (type === 'error') icon = '❌';
+      if (type === 'warning') icon = '⚠️';
+
+      toast.innerHTML = `${icon} <span>${message}</span>`;
+      document.body.appendChild(toast);
+
+      setTimeout(() => toast.classList.add('show'), 10);
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+        toast.classList.add('hide');
+        setTimeout(() => document.getElementById(toastId)?.remove(), 500);
+      }, duration);
     }
 
     // --- NEW AUTHENTICATION LOGIC ---
     document.addEventListener('DOMContentLoaded', () => {
       const authSection = document.getElementById('auth-section');
-      const mainContent = document.getElementById('main-content');
+      const mainContent = document.getElementById('dashboard-wrapper'); // <--- CHANGE THIS
       const userStatus = document.getElementById('user-status');
       const welcomeMessage = document.getElementById('welcome-message');
+      const unitsToggle = document.getElementById('units-toggle');
+      const unitsDisplay = document.getElementById('units-display');
+      const toggleUnitsButton = document.getElementById('units-toggle');
       
       const loginForm = document.getElementById('login-form');
       const registerForm = document.getElementById('register-form');
@@ -267,67 +716,392 @@
       const loginMessage = document.getElementById('login-message');
       const registerMessage = document.getElementById('register-message');
 
-      function checkLoginState() {
-        const token = getAccessToken();
-        if (token) {
-          // User is logged in
-          authSection.style.display = 'none';
-          mainContent.style.display = 'block';
-          userStatus.style.display = 'flex';
-          // You would typically decode the JWT to get the username.
-          // For now, we'll just show a generic welcome.
-          welcomeMessage.textContent = 'Welcome!'; 
-          updateDashboardFromLocalStorage(); // Load dashboard data
-          
-          // Also load workout history on dashboard
-          if (typeof workoutTracker !== 'undefined' && workoutTracker.loadBackendHistory) {
-            workoutTracker.loadBackendHistory();
-          }
+      let currentProfile = null;
 
-        } else {
-          // User is logged out
-          authSection.style.display = 'block';
-          mainContent.style.display = 'none';
-          userStatus.style.display = 'none';
+      async function loadUserProfile() {
+        try {
+          currentProfile = await fetchUserProfile();
+          updateUnitsDisplay();
+          return currentProfile;
+        } catch (error) {
+          console.error('Failed to load user profile:', error);
+          return null;
         }
+      }
+
+      function updateUnitsDisplay() {
+        if (currentProfile) {
+          const isImperial = currentProfile.unit_system === 'imperial';
+          unitsDisplay.textContent = isImperial ? 'lb/mi' : 'kg/km';
+        }
+      }
+
+      async function toggleUnits() {
+        if (!currentProfile) return;
+        
+        try {
+          const newUnitSystem = currentProfile.unit_system === 'imperial' ? 'metric' : 'imperial';
+          const newDistanceUnit = newUnitSystem === 'imperial' ? 'mi' : 'km';
+          
+          currentProfile = await updateUserProfile({
+            unit_system: newUnitSystem,
+            distance_unit: newDistanceUnit
+          });
+          
+          updateUnitsDisplay();
+          
+          // Refresh workout tracker if it exists
+          if (typeof workoutTracker !== 'undefined' && workoutTracker.loadUserProfile) {
+            await workoutTracker.loadUserProfile();
+          }
+          
+          console.log('Units updated to:', newUnitSystem, newDistanceUnit);
+        } catch (error) {
+          console.error('Failed to update units:', error);
+        }
+      }
+
+      function setHeaderMeta() {
+        const nameEl = document.getElementById('dash-username');
+        const dateEl = document.getElementById('dash-date');
+        if (nameEl) nameEl.textContent = (currentProfile && (currentProfile.username || currentProfile.first_name)) || 'Athlete';
+        if (dateEl) dateEl.textContent = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
+      }
+
+      async function populateDashboardData() {
+        try {
+          // KPIs
+          try {
+            const resp = await apiFetch('/progress/summary/');
+            if (resp && resp.ok) {
+              const data = await resp.json();
+              const setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+              setText('kpi-workouts-week', data.sessions_this_week ?? 0);
+              setText('kpi-calories-today', data.calories_today ?? 0);
+              setText('kpi-current-weight', (data.current_weight ?? 0) + ' kg');
+              setText('kpi-active-goals', data.active_goals ?? 0);
+            }
+          } catch (e) {}
+
+          // Recent Activity
+          try {
+            const resp = await apiFetch('/sessions/?page_size=5');
+            if (resp && resp.ok) {
+              const data = await resp.json();
+              const list = Array.isArray(data.results) ? data.results : (Array.isArray(data) ? data : []);
+              const container = document.getElementById('dash-recent-activity');
+              if (container) {
+                container.innerHTML = list.length ? list.map(s => {
+                  const started = s.start_time || s.date;
+                  const duration = s.duration_minutes ? `${s.duration_minutes} min` : '';
+                  return `<div class="activity-item"><div class="activity-icon">💪</div><div class="activity-details"><div><strong>${(s.title||'Workout')}</strong> ${duration}</div><div class="activity-time">${new Date(started).toLocaleString()}</div></div></div>`;
+                }).join('') : '<p>No recent activity.</p>';
+              }
+            }
+          } catch (e) {}
+
+          // Today's Plan
+          try {
+            const resp = await apiFetch('/weekly-plan/');
+            if (resp && resp.ok) {
+              const data = await resp.json();
+              const today = new Date().toLocaleDateString(undefined, { weekday: 'long' });
+              const plan = (data.plan && (data.plan[today] || data.plan[Object.keys(data.plan)[0]])) || [];
+              const container = document.getElementById('dash-todays-plan');
+              if (container) {
+                container.innerHTML = plan.length ? plan.map(item => `<div class="plan-item"><span>${item.name || item.exercise || 'Exercise'}</span><span>${item.sets?`${item.sets}×${item.reps||''}`:''}</span></div>`).join('') : '<p>No plan for today. Create one in Workout Tracker.</p>';
+              }
+            }
+          } catch (e) {}
+
+          // AI Recommendations
+          try {
+            const resp = await apiFetch('/recommendations/');
+            if (resp && resp.ok) {
+              const data = await resp.json();
+              const recs = data.insights || data.tips || data.recommendations || [];
+              const el = document.getElementById('dash-ai-recs');
+              if (el) el.innerHTML = recs.length ? recs.slice(0,5).map(r => `<div class="activity-item"><div class="activity-icon">💡</div><div class="activity-details">${r}</div></div>`).join('') : '<p>No recommendations yet.</p>';
+            }
+          } catch (e) {}
+
+          // Chart
+          try {
+            const ctx = document.getElementById('dash-volume-chart');
+            if (ctx && window.Chart) {
+              const labels = Array.from({length:7}, (_,i) => new Date(Date.now() - (6-i)*86400000).toLocaleDateString(undefined,{weekday:'short'}));
+              // Use summary data instead of exercise-trend (which requires exercise_id)
+              let values = [0,0,0,0,0,0,0]; // Default values for demo
+              new Chart(ctx, {
+                type: 'line',
+                data: { labels, datasets: [{ label: 'Volume (kg)', data: values, borderColor: '#ff6b35', backgroundColor: 'rgba(255,107,53,0.15)', tension: 0.35, fill: true, pointRadius: 3 }] },
+                options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } }, responsive: true, maintainAspectRatio: false }
+              });
+              ctx.parentElement.style.height = '240px';
+            }
+          } catch (e) {}
+        } catch (e) {
+          console.warn('Dashboard populate warning', e);
+        }
+      }
+
+      async function checkLoginState() {
+        const token = getAccessToken();
+        const mainHeader = document.getElementById('main-header');
+        
+        console.log('🔍 Checking login state...', { token: token ? 'exists' : 'missing' });
+        
+        if (token) {
+          // Check if we're in demo mode
+          const isDemoMode = localStorage.getItem('demo_mode') === 'true';
+          
+          if (isDemoMode && token === 'demo_token_12345') {
+            // Demo mode - show dashboard without API validation
+            console.log('🎭 Demo mode - showing dashboard');
+            authSection.classList.add('hidden');
+            mainContent.classList.remove('hidden');
+            userStatus.classList.remove('hidden');
+            unitsToggle.classList.remove('hidden');
+            mainHeader.classList.remove('hidden');
+            
+            // Load demo user profile from localStorage
+            try {
+              const demoProfileData = localStorage.getItem('user_profile');
+              if (demoProfileData) {
+                  currentProfile = JSON.parse(demoProfileData);
+              }
+            } catch(e) { console.warn('Could not parse demo profile', e); }
+
+            setHeaderMeta();
+            populateDashboardData();
+            
+            welcomeMessage.textContent = 'Welcome, Demo User!';
+            
+            // Also load workout history on dashboard
+            if (typeof workoutTracker !== 'undefined' && workoutTracker.loadBackendHistory) {
+              workoutTracker.loadBackendHistory();
+            }
+          } else {
+            try {
+              // Test if token is valid by making a simple API call (use API wrapper for refresh logic)
+              const response = await api.apiFetch('/profile/');
+              
+              if (response.ok) {
+                // Token is valid - user is logged in
+                console.log('✅ Valid token - showing dashboard');
+                authSection.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                userStatus.classList.remove('hidden');
+                unitsToggle.classList.remove('hidden');
+                mainHeader.classList.remove('hidden');
+                
+                // Load user profile and initialize if needed
+                await loadUserProfile(); // This will fetch the latest from backend
+                setHeaderMeta();
+                populateDashboardData();
+                
+                welcomeMessage.textContent = `Welcome, ${currentProfile?.first_name || currentProfile?.username || 'Athlete'}!`;
+                
+                // Also load workout history on dashboard
+                if (typeof workoutTracker !== 'undefined' && workoutTracker.loadBackendHistory) {
+                  workoutTracker.loadBackendHistory();
+                }
+              } else if (response.status === 401) {
+                // Token is invalid/expired - this is a definitive logout signal
+                console.log('❌ Invalid token (401) - showing login');
+                clearTokens(); // Use the new clearTokens function from api.js
+                showLoginForm();
+              } else {
+                // Server error or other unexpected status: allow degraded dashboard rather than forcing login
+                console.log(`⚠️ Profile check failed (status ${response.status}) - showing dashboard in degraded mode`);
+                showDegradedDashboard();
+              }
+            } catch (error) {
+              // Network error or other issue
+              console.log('⚠️ Token validation network error - showing dashboard in degraded mode', error);
+              showDegradedDashboard();
+            }
+          }
+        } else {
+          // No token - show login form
+          console.log('❌ No token - showing login');
+          showLoginForm();
+        }
+      }
+      
+      function showLoginForm() {
+        authSection.classList.remove('hidden');
+        mainContent.classList.add('hidden');
+        userStatus.classList.add('hidden');
+        unitsToggle.classList.add('hidden');
+        const mainHeader = document.getElementById('main-header');
+        if (mainHeader) mainHeader.classList.add('hidden');
+        currentProfile = null;
+      }
+      
+      function showDegradedDashboard() {
+        authSection.classList.add('hidden');
+        mainContent.classList.remove('hidden');
+        userStatus.classList.remove('hidden');
+        unitsToggle.classList.remove('hidden');
+        mainHeader.classList.remove('hidden');
+        showToast('Connection issue. Displaying cached data.', 'warning');
+
+        // Try to load profile from localStorage as a fallback
+        try {
+            const localProfile = localStorage.getItem('user_profile');
+            if (localProfile) currentProfile = JSON.parse(localProfile);
+        } catch(e) {}
+        
+        setHeaderMeta();
+        populateDashboardData(); // This will use cached data or show placeholders
+        welcomeMessage.textContent = `Welcome, ${currentProfile?.first_name || currentProfile?.username || 'Athlete'}!`;
+      }
+
+      // Demo mode for testing without backend
+      function enableDemoMode() {
+        console.log('🎭 Enabling demo mode...');
+        localStorage.setItem('access_token', 'demo_token_12345');
+        localStorage.setItem('refresh_token', 'demo_refresh_12345'); // Also set a demo refresh token
+        localStorage.setItem('demo_mode', 'true');
+        
+        // Create demo user profile
+        const demoProfile = {
+          id: 1,
+          username: 'demo_user',
+          email: 'demo@example.com',
+          first_name: 'Demo',
+          last_name: 'User',
+          age: 25,
+          weight: 70,
+          height: 175,
+          experience_level: 'intermediate',
+          workout_frequency: 4,
+          workout_duration: 60
+        };
+        localStorage.setItem('user_profile', JSON.stringify(demoProfile));
+        
+        // Create demo trainer config with AI-suggested calories
+        const demoTrainerConfig = {
+          workout_split: 'PPL',
+          days_per_week: 4,
+          intensity_level: 'intermediate',
+          rest_between_sets: '60-90 seconds',
+          allowed_equipment: 'Dumbbells, Barbell, Bench, Bodyweight',
+          forbidden_exercises: '',
+          target_calories: 2300, // AI-suggested for muscle gain goal
+          current_calories: 2100, // User's baseline intake
+          protein_ratio: 0.3,
+          carbs_ratio: 0.4,
+          fat_ratio: 0.3,
+          dietary_restrictions: '',
+          cuisine_preferences: 'Mediterranean, Asian'
+        };
+        localStorage.setItem('trainerConfig', JSON.stringify(demoTrainerConfig));
+        
+        // Refresh the page to apply changes
+        window.location.reload();
+      }
+      
+      // Enhanced logout function
+      function logout() {
+        console.log('🚪 Logging out...');
+        clearTokens(); // Use the new clearTokens function from api.js
+        localStorage.removeItem('demo_mode');
+        localStorage.removeItem('user_profile');
+        localStorage.removeItem('trainerConfig');
+        localStorage.removeItem('nutrition_goal');
+        localStorage.removeItem('onboarding_completed');
+        currentProfile = null;
+        window.location.reload();
       }
 
       // --- Event Listeners ---
       loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        loginMessage.textContent = '';
-        const username = document.getElementById('login-username').value;
-        const password = document.getElementById('login-password').value;
+        const submitButton = loginForm.querySelector('button[type="submit"]');
+        const loader = submitButton.querySelector('.button-loader');
+        
+        // Basic validation
+        const usernameInput = document.getElementById('login-username');
+        const passwordInput = document.getElementById('login-password');
+        if (!usernameInput.value.trim() || !passwordInput.value.trim()) {
+          showToast('Username and password are required.', 'error');
+          return;
+        }
+
+        submitButton.disabled = true;
+        loader.style.display = 'block';
+        
+        const username = usernameInput.value;
+        const password = passwordInput.value;
         
         const success = await login(username, password);
         
         if (success) {
+          showToast('Login successful! Welcome back.', 'success');
+          // Initialize profile with auto-detected preferences on first login
+          try {
+            await initializeUserProfile();
+          } catch (error) {
+            console.warn('Profile initialization failed, but continuing:', error);
+          }
           checkLoginState();
         } else {
-          loginMessage.textContent = 'Login failed. Please check your credentials.';
+          showToast('Login failed. Please check your credentials.', 'error');
         }
+        
+        submitButton.disabled = false;
+        loader.style.display = 'none';
       });
 
       registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        registerMessage.textContent = '';
-        const username = document.getElementById('register-username').value;
-        const email = document.getElementById('register-email').value;
-        const password = document.getElementById('register-password').value;
+        const submitButton = registerForm.querySelector('button[type="submit"]');
+        const loader = submitButton.querySelector('.button-loader');
+
+        // Basic validation
+        const usernameInput = document.getElementById('register-username');
+        const emailInput = document.getElementById('register-email');
+        const passwordInput = document.getElementById('register-password');
+        const passwordConfirmInput = document.getElementById('register-password-confirm');
+        
+        if (passwordInput.value !== passwordConfirmInput.value) {
+          showToast('Passwords do not match.', 'error');
+          return;
+        }
+        if (passwordInput.value.length < 8) {
+          showToast('Password must be at least 8 characters long.', 'error');
+          return;
+        }
+        
+        submitButton.disabled = true;
+        loader.style.display = 'block';
+
+        const username = usernameInput.value;
+        const email = emailInput.value;
+        const password = passwordInput.value;
 
         try {
           const response = await register(username, password, email);
           if (response && response.id) {
-            registerMessage.textContent = 'Registration successful! Please log in.';
+            showToast('Registration successful! Please log in.', 'success');
             registerForm.reset();
+            // Optionally, switch to login form
+            if(window.dashboardManager) {
+              window.dashboardManager.showAuthForm('login');
+            }
           } else {
             // Display server errors if available
-            const errorText = Object.values(response).join(' ');
-            registerMessage.textContent = `Registration failed: ${errorText}`;
+            const errorText = Object.values(response || {}).flat().join(' ') || 'An unknown error occurred.';
+            showToast(`Registration failed: ${errorText}`, 'error');
           }
         } catch (error) {
-          registerMessage.textContent = 'Registration failed. Please try again.';
+          showToast('Registration failed. Please try again.', 'error');
         }
+
+        submitButton.disabled = false;
+        loader.style.display = 'none';
       });
       
       logoutButton.addEventListener('click', () => {
@@ -335,9 +1109,74 @@
         checkLoginState();
       });
 
+      // Units toggle event listener
+      toggleUnitsButton.addEventListener('click', toggleUnits);
+
+      // Notification settings button
+      const notificationBtn = document.getElementById('notification-settings-btn');
+      if (notificationBtn) {
+        notificationBtn.addEventListener('click', () => {
+          window.notificationUI.showSettings();
+        });
+      }
+
       // Initial check when the page loads
       checkLoginState();
     });
+
+    // Register Service Worker for PWA functionality - TEMPORARILY DISABLED
+    /*
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('SW registered: ', registration);
+          })
+          .catch(registrationError => {
+            console.log('SW registration failed: ', registrationError);
+          });
+      });
+    }
+    */
+  </script>
+  
+  <!-- Ensure DashboardManager is properly initialized -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Wait for all scripts to load
+      setTimeout(function() {
+        if (typeof window.dashboardManager === 'undefined') {
+          console.error('❌ DashboardManager failed to load');
+          // Try to reload the script
+          const script = document.createElement('script');
+          script.src = 'js/dashboard-manager.js?v=3';
+          script.defer = true;
+          document.head.appendChild(script);
+        } else {
+          console.log('✅ DashboardManager loaded successfully');
+        }
+      }, 1000);
+    });
+  </script>
+  
+  <!-- Modern Components -->
+  <script src="js/modern-components.js"></script>
+  <script src="js/push-notifications.js"></script>
+  <script src="js/micro-interactions.js"></script>
+  
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/MAR/sw.js')
+          .then((registration) => {
+            console.log('SW registered: ', registration);
+          })
+          .catch((registrationError) => {
+            console.log('SW registration failed: ', registrationError);
+          });
+      });
+    }
   </script>
 </body>
 

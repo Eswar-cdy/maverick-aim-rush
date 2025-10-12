@@ -5,117 +5,576 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/png" href="images/favicon.png" />
-  <title>Maverick Aim Rush - Workout Tracker</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <!-- Head: CSS + fonts + favicon -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Fredoka:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="icon" href="/MAR/Images/favicon.png">
+  <!-- UnoCSS Reset + Build (absolute path + cache buster) -->
+  <link rel="stylesheet" href="https://unpkg.com/@unocss/reset/tailwind.css">
+  <link rel="stylesheet" href="/MAR/css/uno.css?v=2025-09-30" />
+  
+  <!-- Removed temporary overrides (UnoCSS handles utilities) -->
+  
+  <title>Maverick Aim Rush - Workout Tracker & Fitness Metrics</title>
+  <style>
+    /* Minimal component shims */
+    .font-display { font-family: "Righteous", system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    .visually-hidden-focusable { position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
+    .visually-hidden-focusable:focus { position:static; width:auto; height:auto; margin:1rem; padding:.5rem .75rem; background:#fff; border:1px solid #e5e7eb; border-radius:.5rem; }
+    .app-side.sidebar { position:sticky; top:64px; display:none; }
+    @media (min-width: 1024px) { .app-side.sidebar { display:block; } }
+    .sidebar__nav { display:flex; flex-direction:column; gap:.25rem; padding:1rem; }
+    .sidebar__link { display:block; padding:.5rem .75rem; border-radius:.5rem; color:#374151; text-decoration:none; }
+    .sidebar__link:hover { background:#f3f4f6; }
+    .sidebar__link--active { background:#fef3c7; color:#b45309; }
+    
+    /* Enhanced Fitness Tracker Styles */
+    .tracker-card {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .tracker-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #ff6b35, #f7931e, #fbbf24);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .tracker-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    .tracker-card:hover::before {
+      opacity: 1;
+    }
+    
+    .metric-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .metric-circle::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      padding: 4px;
+      background: linear-gradient(135deg, #ff6b35, #f7931e);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+    }
+    
+    .water-wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 0%;
+      background: linear-gradient(180deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.6));
+      transition: height 1s ease;
+    }
+    
+    .sleep-bar {
+      height: 40px;
+      background: linear-gradient(90deg, #8b5cf6, #6366f1);
+      border-radius: 8px;
+      transition: width 1s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .sleep-bar::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    /* Responsive Design Enhancements */
+    @media (max-width: 768px) {
+      .tracker-card {
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      
+      .metric-circle {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .macro-ring {
+        width: 120px;
+        height: 120px;
+      }
+      
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      
+      .hero-subtitle {
+        font-size: 1.125rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .tracker-card {
+        padding: 1rem;
+      }
+      
+      .metric-circle {
+        width: 80px;
+        height: 80px;
+      }
+      
+      .macro-ring {
+        width: 100px;
+        height: 100px;
+      }
+    }
+    
+    /* Enhanced Animations */
+    .animate-fade-in {
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    .animate-slide-up {
+      animation: slideUp 0.8s ease-out;
+    }
+    
+    .animate-scale-in {
+      animation: scaleIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    /* Set-Logging Card Styles */
+    .set-card {
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 2px rgba(0,0,0,.04);
+      margin-bottom: 1rem;
+    }
+    
+    .set-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    
+    .set-title {
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: #111827;
+    }
+    
+    .set-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    
+    @media (max-width: 768px) {
+      .set-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    
+    .set-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .set-label {
+      font-size: 12px;
+      color: #6b7280;
+      font-weight: 500;
+    }
+    
+    .set-input {
+      height: 36px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 0 10px;
+      outline: none;
+      font-size: 14px;
+    }
+    
+    .set-input:focus {
+      border-color: #d1d5db;
+      box-shadow: 0 0 0 3px rgba(251,146,60,.25);
+    }
+    
+    .set-ok {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 9999px;
+      background: #10b981;
+      color: #fff;
+      height: 32px;
+      padding: 0 12px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    
+    .set-ok:hover {
+      background: #059669;
+      transform: scale(1.05);
+    }
+    
+    .set-ok[aria-pressed="true"] {
+      background: #059669;
+    }
+  </style>
+  <meta name="description" content="Log workouts, view weekly plans, and track performance with AI insights." />
+  <link rel="canonical" href="http://localhost:8001/about.html" />
+  <meta property="og:title" content="Workout Tracker | Maverick Aim Rush" />
+  <meta property="og:description" content="Plan, log, and analyze workouts with personalized insights." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="http://localhost:8001/about.html" />
+  <meta property="og:image" content="http://localhost:8001/images/LOGO.png" />
+  <meta name="twitter:card" content="summary_large_image" />
 </head>
 
-<body>
-  <div class="wrapper">
-    <header class="header">
-      <div class="header__container">
-        <a href="index.html" class="header__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.75rem;vertical-align:middle;" /></a>
-        <div class="header__navigation">
-          <div class="header__menu menu">
-            <nav class="menu__body">
-              <ul class="menu__list">
-                <li class="menu__item"><a href="index.html" class="menu__link">Dashboard</a></li>
-                <li class="menu__item"><a href="about.html" class="menu__link">Workout Tracker</a></li>
-                <li class="menu__item"><a href="services.html" class="menu__link">Nutrition Log</a></li>
-                <li class="menu__item"><a href="contact.html" class="menu__link">Progress</a></li>
-              </ul>
-              <a href="about.html" class="actions-header__button">Log Workout</a>
-            </nav>
-          </div>
-          <div class="header__actions actions-header">
-            <button type="button" class="menu__icon icon-menu"><span></span></button>
-          </div>
+<body class="app-shell">
+  <!-- Accessible skip link -->
+  <a href="#main-content" class="visually-hidden-focusable">Skip to content</a>
+
+  <!-- Top bar -->
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur shadow-sm">
+    <nav class="mx-auto max-w-6xl flex items-center justify-between px-4 py-3">
+      <a href="/MAR/index.html" class="flex items-center gap-2 font-display text-xl text-gray-900">
+        <img src="/MAR/Images/LOGO.png" alt="" class="h-8 w-8"> Maverick Aim Rush
+      </a>
+      <ul class="hidden md:flex items-center gap-6 text-gray-700">
+        <li><a href="/MAR/index.html" class="hover:text-orange-600">Dashboard</a></li>
+        <li><a href="/MAR/about.html" class="hover:text-orange-600 font-medium">Workout Tracker</a></li>
+        <li><a href="/MAR/services.html" class="hover:text-orange-600">Nutrition Log</a></li>
+        <li><a href="/MAR/contact.html" class="hover:text-orange-600">Progress</a></li>
+        <li><a href="/MAR/social.html" class="hover:text-orange-600">Social</a></li>
+      </ul>
+      <div class="flex items-center gap-3">
+        <button id="units-toggle" class="hidden md:inline-flex items-center rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50">
+          <span id="units-display">lb/mi</span>
+        </button>
+        <div id="user-status" class="hidden flex items-center gap-2">
+          <span id="welcome-message" class="text-sm text-gray-600"></span>
+          <button id="notification-settings-btn" class="rounded-lg border p-2 hover:bg-gray-50" title="Notification Settings">🔔</button>
+          <button id="logout-button" class="rounded-lg bg-orange-600 px-4 py-2 text-white hover:bg-orange-500">Logout</button>
         </div>
+        <button id="mobile-menu-toggle" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border hover:bg-gray-50">≡</button>
       </div>
-    </header>
-    <main class="page">
-      <section class="page__main main main_about main_pages">
-        <div class="main__container main__container_pages">
-          <h1 class="main__title">Workout Tracker</h1>
-          <div class="main__text main__text_pages">
-            Log your exercises, track performance, and monitor your fitness progress with detailed workout analytics.
+    </nav>
+  </header>
+
+  <!-- Removed secondary side nav to avoid duplicate headers / routing issues -->
+
+  <!-- Main content -->
+  <main class="min-h-screen bg-gray-50">
+    <div class="mx-auto max-w-7xl px-6 py-8" id="main-content">
+      <!-- Enhanced Hero Section -->
+      <section class="relative text-center mb-16 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50"></div>
+        <div class="relative z-10 py-16">
+          <div class="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 mb-6 shadow-lg">
+            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+            <span class="text-sm font-medium text-gray-700">Live Tracking Active</span>
+          </div>
+          <h1 class="text-5xl md:text-6xl font-bold mb-6">
+            <span class="bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600 bg-clip-text text-transparent">
+              Workout Tracker
+            </span>
+          </h1>
+          <p class="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto mb-8 leading-relaxed">
+            Log exercises, track performance, monitor body metrics, and follow personalized workout plans with AI insights.
+          </p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <div class="hero-badge flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-md hover:bg-white hover:shadow-lg transition-all duration-200 cursor-pointer">
+              <span class="text-2xl">🏋️</span>
+              <span class="text-sm font-medium text-gray-700">Smart Workouts</span>
+            </div>
+            <div class="hero-badge flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-md hover:bg-white hover:shadow-lg transition-all duration-200 cursor-pointer">
+              <span class="text-2xl">📊</span>
+              <span class="text-sm font-medium text-gray-700">Real-time Metrics</span>
+            </div>
+            <div class="hero-badge flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-md hover:bg-white hover:shadow-lg transition-all duration-200 cursor-pointer">
+              <span class="text-2xl">🤖</span>
+              <span class="text-sm font-medium text-gray-700">AI Insights</span>
+            </div>
           </div>
         </div>
+        <!-- Floating elements -->
+        <div class="absolute top-20 left-10 w-20 h-20 bg-orange-200/30 rounded-full blur-xl animate-pulse"></div>
+        <div class="absolute bottom-20 right-10 w-32 h-32 bg-amber-200/30 rounded-full blur-xl animate-pulse delay-1000"></div>
       </section>
-      <!-- Workout Overview -->
-      <section class="page__workout-overview workout-overview">
-        <div class="workout-overview__container">
-          <h2 class="workout-overview__title title">Today's Workout Progress</h2>
-          <div class="workout-overview__stats">
-            <div class="workout-stat">
-              <div class="workout-stat__label">Calories Burned</div>
-              <div class="workout-stat__value" id="calories-burned">0</div>
-              <div class="workout-stat__progress">
-                <div class="progress-bar">
-                  <div class="progress-bar__fill" id="calories-progress" style="width: 0%"></div>
-                </div>
-              </div>
-            </div>
-            <div class="workout-stat">
-              <div class="workout-stat__label">Workout Duration</div>
-              <div class="workout-stat__value" id="workout-duration">0 min</div>
-              <div class="workout-stat__progress">
-                <div class="progress-bar">
-                  <div class="progress-bar__fill" id="duration-progress" style="width: 0%"></div>
-                </div>
-              </div>
-            </div>
-            <div class="workout-stat">
-              <div class="workout-stat__label">Exercises</div>
-              <div class="workout-stat__value" id="exercises-completed">0</div>
-              <div class="workout-stat__progress">
-                <div class="progress-bar">
-                  <div class="progress-bar__fill" id="exercises-progress" style="width: 0%"></div>
-                </div>
-              </div>
-            </div>
-            <div class="workout-stat">
-              <div class="workout-stat__label">Personal Records</div>
-              <div class="workout-stat__value" id="personal-records">0</div>
-              <div class="workout-stat__progress">
-                <div class="progress-bar">
-                  <div class="progress-bar__fill" id="records-progress" style="width: 0%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
+
+      <!-- Workout Session Controls -->
+      <div class="flex justify-center gap-4 mb-8">
+        <button id="start-workout-btn" onclick="window.sessionManager.startSession()" class="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-xl font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 hidden">
+          🏋️ Start Workout
+        </button>
+        
+        <div id="workout-timer" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl font-bold text-2xl shadow-lg hidden">
+          00:00:00
+        </div>
+        
+        <button id="end-workout-btn" onclick="window.sessionManager.endSession()" class="bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-4 rounded-xl font-semibold hover:from-red-700 hover:to-red-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 hidden">
+          ⏹️ End Workout
+        </button>
+      </div>
+
+      <!-- AI Recommendations Panel -->
+      <section class="bg-gray-900 text-white py-12 mb-8 rounded-xl">
+        <div class="text-center">
+          <h2 class="text-2xl font-bold mb-4">AI Recommendations</h2>
+          <p class="text-gray-300 mb-6">Personalized tips based on your recent activity and profile</p>
+          <div id="ai-recos-list" class="bg-gray-800 rounded-lg p-6"></div>
         </div>
       </section>
 
-      <!-- Exercise Categories -->
-      <section class="page__exercise-categories exercise-categories">
-        <div class="exercise-categories__container">
-          <h2 class="exercise-categories__title title">Exercise Categories</h2>
-          <div class="exercise-categories__grid">
-            <div class="exercise-category" data-category="strength">
-              <div class="exercise-category__icon">💪</div>
-              <h3 class="exercise-category__title">Strength Training</h3>
-              <p class="exercise-category__description">Build muscle and increase strength</p>
-              <button class="exercise-category__button" onclick="showExercises('strength')">View Exercises</button>
+      <!-- Daily Fitness Metrics section removed - moved to services.html (Nutrition Log page) -->
+
+      <!-- Real-Time Workout Suggestions -->
+      <section class="bg-white rounded-xl shadow-sm border p-8 mb-8">
+        <div class="text-center">
+          <h2 class="text-2xl font-bold text-gray-900 mb-4">🤖 AI-Powered Workout Suggestions</h2>
+          <p class="text-gray-600 mb-8">Get personalized, real-time workout recommendations based on your goals, progress, and preferences</p>
+          
+          <!-- Quick Action Buttons -->
+          <div class="flex flex-wrap gap-4 justify-center mb-8">
+            <button id="generate-suggestions-btn" class="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg hover:shadow-xl">
+              🧠 Generate AI Suggestions
+            </button>
+            <button id="trainer-setup-btn" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl">
+              🧑‍🏫 Trainer Setup
+            </button>
+            <button id="contra-setup-btn" class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-red-600 hover:to-red-700 transition-all shadow-lg hover:shadow-xl">
+              🚫 Contraindications
+            </button>
+            <button id="generate-weekly-schedule-btn" class="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-amber-600 hover:to-amber-700 transition-all shadow-lg hover:shadow-xl">
+              📅 Generate Weekly Schedule
+            </button>
+            <button id="start-suggested-workout-btn" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-lg hover:shadow-xl hidden">
+              🏋️ Start Suggested Workout
+            </button>
+            <button id="end-workout-btn" class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-red-600 hover:to-red-700 transition-all shadow-lg hover:shadow-xl hidden">
+              ⏹️ End Workout
+            </button>
+          </div>
+          
+          <!-- AI Suggestions Panel -->
+          <div class="bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl p-8 mb-8 text-white shadow-xl" id="ai-suggestions-panel">
+            <div class="flex items-center gap-4 mb-6">
+              <div class="text-3xl">🤖</div>
+              <div>
+                <h3 class="text-2xl font-bold">Smart Workout Recommendations</h3>
+                <p class="text-blue-100">Based on your goals, progress, and preferences</p>
+              </div>
             </div>
-            <div class="exercise-category" data-category="cardio">
-              <div class="exercise-category__icon">🏃</div>
-              <h3 class="exercise-category__title">Cardio</h3>
-              <p class="exercise-category__description">Improve endurance and burn calories</p>
-              <button class="exercise-category__button" onclick="showExercises('cardio')">View Exercises</button>
+            
+            <div class="text-center" id="suggestions-content">
+              <div class="loading-suggestions py-8">
+                <div class="w-10 h-10 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
+                <p class="text-blue-100">Analyzing your data and generating personalized suggestions...</p>
+              </div>
             </div>
-            <div class="exercise-category" data-category="flexibility">
-              <div class="exercise-category__icon">🧘</div>
-              <h3 class="exercise-category__title">Flexibility</h3>
-              <p class="exercise-category__description">Improve mobility and prevent injury</p>
-              <button class="exercise-category__button" onclick="showExercises('flexibility')">View Exercises</button>
+          </div>
+        </section>
+        
+        <!-- Weekly Schedule Panel -->
+        <div class="weekly-schedule-panel" id="weekly-schedule-panel" class="hidden" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 20px; padding: 2rem; margin-bottom: 2rem; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: none;">
+          <div class="schedule-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+            <div class="schedule-icon" style="font-size: 2rem;">📅</div>
+            <div>
+              <h3 style="margin: 0; font-size: 1.5rem; font-weight: 700;">7-Day Complete Fitness Program</h3>
+              <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Personalized weekly workout schedule based on your goals and experience level</p>
             </div>
-            <div class="exercise-category" data-category="bodyweight">
-              <div class="exercise-category__icon">🏋️</div>
-              <h3 class="exercise-category__title">Bodyweight</h3>
-              <p class="exercise-category__description">No equipment needed workouts</p>
-              <button class="exercise-category__button" onclick="showExercises('bodyweight')">View Exercises</button>
+          </div>
+          
+          <div class="schedule-content" id="weekly-schedule-content-secondary">
+            <div class="loading-schedule" style="text-align: center; padding: 2rem;">
+              <div class="loading-spinner" style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
+              <p>Creating your personalized 7-day fitness program...</p>
             </div>
+          </div>
+        </div>
+        
+        </div>
+      </section>
+
+      <!-- Enhanced Exercise Categories Section -->
+      <section id="exercise-categories" class="mx-auto max-w-6xl px-4 py-12 mb-12">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">
+            <span class="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
+              💪 Exercise Categories
+            </span>
+          </h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">Switch tabs to explore exercises by focus area and start your workout journey</p>
+        </div>
+
+        <!-- Enhanced KPI Cards -->
+        <div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div class="group relative bg-white rounded-2xl shadow-lg border border-gray-100 p-6 text-center hover:shadow-xl transform hover:-translate-y-2 transition-all duration-500 overflow-hidden">
+            <div class="absolute -inset-4 bg-gradient-to-r from-orange-400 to-amber-400 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+            <div class="relative z-10">
+              <div class="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-white text-xl group-hover:animate-pulse shadow-lg">
+                🔥
+              </div>
+              <p class="text-xs text-gray-500 mb-1">Calories Burned</p>
+              <p id="kpi-calories" class="text-2xl font-bold bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent">0</p>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-amber-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+          </div>
+          <div class="group relative bg-white rounded-2xl shadow-lg border border-gray-100 p-6 text-center hover:shadow-xl transform hover:-translate-y-2 transition-all duration-500 overflow-hidden">
+            <div class="absolute -inset-4 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+            <div class="relative z-10">
+              <div class="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white text-xl group-hover:animate-pulse shadow-lg">
+                ⏱️
+              </div>
+              <p class="text-xs text-gray-500 mb-1">Workout Duration</p>
+              <p id="kpi-duration" class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">0 min</p>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+          </div>
+          <div class="group relative bg-white rounded-2xl shadow-lg border border-gray-100 p-6 text-center hover:shadow-xl transform hover:-translate-y-2 transition-all duration-500 overflow-hidden">
+            <div class="absolute -inset-4 bg-gradient-to-r from-green-400 to-emerald-400 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+            <div class="relative z-10">
+              <div class="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center text-white text-xl group-hover:animate-pulse shadow-lg">
+                💪
+              </div>
+              <p class="text-xs text-gray-500 mb-1">Exercises</p>
+              <p id="kpi-exercises" class="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">0</p>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+          </div>
+          <div class="group relative bg-white rounded-2xl shadow-lg border border-gray-100 p-6 text-center hover:shadow-xl transform hover:-translate-y-2 transition-all duration-500 overflow-hidden">
+            <div class="absolute -inset-4 bg-gradient-to-r from-purple-400 to-pink-400 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+            <div class="relative z-10">
+              <div class="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-xl group-hover:animate-pulse shadow-lg">
+                🏆
+              </div>
+              <p class="text-xs text-gray-500 mb-1">Personal Records</p>
+              <p id="kpi-prs" class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent">0</p>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+          </div>
+        </div>
+
+        <!-- Enhanced Tabs -->
+        <div class="mb-8 flex w-full justify-center">
+          <div class="inline-flex rounded-2xl border border-gray-200 bg-white p-2 shadow-lg">
+            <button class="tab-btn rounded-xl px-6 py-3 text-sm font-medium text-gray-600 hover:bg-orange-50 hover:text-orange-700 transition-all duration-200 data-[active=true]:bg-gradient-to-r data-[active=true]:from-orange-500 data-[active=true]:to-orange-600 data-[active=true]:text-white data-[active=true]:shadow-lg" data-tab="strength">💪 Strength</button>
+            <button class="tab-btn rounded-xl px-6 py-3 text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 data-[active=true]:bg-gradient-to-r data-[active=true]:from-blue-500 data-[active=true]:to-blue-600 data-[active=true]:text-white data-[active=true]:shadow-lg" data-tab="cardio">🏃 Cardio</button>
+            <button class="tab-btn rounded-xl px-6 py-3 text-sm font-medium text-gray-600 hover:bg-green-50 hover:text-green-700 transition-all duration-200 data-[active=true]:bg-gradient-to-r data-[active=true]:from-green-500 data-[active=true]:to-green-600 data-[active=true]:text-white data-[active=true]:shadow-lg" data-tab="flexibility">🧘 Flexibility</button>
+            <button class="tab-btn rounded-xl px-6 py-3 text-sm font-medium text-gray-600 hover:bg-purple-50 hover:text-purple-700 transition-all duration-200 data-[active=true]:bg-gradient-to-r data-[active=true]:from-purple-500 data-[active=true]:to-purple-600 data-[active=true]:text-white data-[active=true]:shadow-lg" data-tab="bodyweight">🤸 Bodyweight</button>
+          </div>
+        </div>
+
+        <!-- Enhanced Panels -->
+        <div id="tab-panels" class="space-y-6">
+          <div id="tab-strength" class="tab-panel group relative bg-white rounded-2xl border border-gray-200 p-8 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-orange-600"></div>
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
+                💪
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold text-gray-900">Strength Training</h3>
+                <p class="text-sm text-gray-600">Build muscle and increase strength</p>
+              </div>
+            </div>
+            <ul class="space-y-3" id="strength-list"></ul>
+          </div>
+          <div id="tab-cardio" class="tab-panel group relative bg-white rounded-2xl border border-gray-200 p-8 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden hidden">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-blue-600"></div>
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
+                🏃
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold text-gray-900">Cardio</h3>
+                <p class="text-sm text-gray-600">Improve endurance and burn calories</p>
+              </div>
+            </div>
+            <ul class="space-y-3" id="cardio-list"></ul>
+          </div>
+          <div id="tab-flexibility" class="tab-panel group relative bg-white rounded-2xl border border-gray-200 p-8 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden hidden">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-green-600"></div>
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
+                🧘
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold text-gray-900">Flexibility</h3>
+                <p class="text-sm text-gray-600">Improve mobility and prevent injury</p>
+              </div>
+            </div>
+            <ul class="space-y-3" id="flexibility-list"></ul>
+          </div>
+          <div id="tab-bodyweight" class="tab-panel group relative bg-white rounded-2xl border border-gray-200 p-8 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden hidden">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-purple-600"></div>
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
+                🤸
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold text-gray-900">Bodyweight</h3>
+                <p class="text-sm text-gray-600">No equipment needed workouts</p>
+              </div>
+            </div>
+            <ul class="space-y-3" id="bodyweight-list"></ul>
           </div>
         </div>
       </section>
@@ -202,52 +661,844 @@
         </div>
       </section>
 
-      <!-- Workout History -->
-      <section class="page__workout-history workout-history">
+      <!-- Enhanced Workout History -->
+      <section class="page__workout-history workout-history mb-12">
         <div class="workout-history__container">
-          <h2 class="workout-history__title title">Recent Workouts</h2>
-          <div class="workout-history__list" id="workout-history">
+          <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">
+              <span class="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                📊 Recent Workouts
+              </span>
+            </h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">Track your progress and see your fitness journey unfold</p>
+          </div>
+          <div class="workout-history__list bg-white rounded-2xl shadow-lg border border-gray-200 p-8" id="workout-history">
             <!-- Workout history will be loaded here -->
+            <div class="text-center py-12">
+              <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center text-white text-2xl">
+                🏋️
+              </div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">No workouts yet</h3>
+              <p class="text-gray-600 mb-4">Start your first workout to see your progress here</p>
+              <button class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl">
+                Start Your First Workout
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
       <!-- Weekly Workout Schedule -->
-      <section class="page__weekly-schedule weekly-schedule">
-        <div class="weekly-schedule__container">
-          <h2 class="weekly-schedule__title title">Weekly Workout Schedule</h2>
-          <div class="weekly-schedule__subtitle">7-Day Complete Fitness Program</div>
+      <section class="page__weekly-schedule weekly-schedule mb-12">
+        <div class="weekly-schedule__container max-w-4xl mx-auto">
+          <!-- Simple Header -->
+          <div class="text-center mb-8">
+            <p class="text-sm text-gray-600 mb-2">Week of July 17, 2025</p>
+            <h2 class="text-3xl font-bold mb-4 text-gray-900">
+              📅 Weekly Workout Schedule
+            </h2>
+            <p class="text-gray-600">7-Day Complete Fitness Program tailored to your goals</p>
+          </div>
           
-          <!-- Day Navigation -->
-          <div class="weekly-schedule__tabs">
-            <button class="schedule-tab active" data-day="Day1" onclick="showDaySchedule('Day1')">Day 1</button>
-            <button class="schedule-tab" data-day="Day2" onclick="showDaySchedule('Day2')">Day 2</button>
-            <button class="schedule-tab" data-day="Day3" onclick="showDaySchedule('Day3')">Day 3</button>
-            <button class="schedule-tab" data-day="Day4" onclick="showDaySchedule('Day4')">Day 4</button>
-            <button class="schedule-tab" data-day="Day5" onclick="showDaySchedule('Day5')">Day 5</button>
-            <button class="schedule-tab" data-day="Day6" onclick="showDaySchedule('Day6')">Day 6</button>
-            <button class="schedule-tab" data-day="Day7" onclick="showDaySchedule('Day7')">Day 7</button>
+          <!-- Simple Week Grid (like your image) -->
+          <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+            <!-- Monday -->
+            <div class="workout-day-card bg-yellow-100 border-2 border-yellow-200 rounded-xl p-6 min-h-[200px] cursor-pointer hover:shadow-md transition-all" onclick="showDaySchedule('Day1')">
+              <div class="text-sm font-semibold text-gray-700 mb-2">monday</div>
+              <!-- Exercises will be dynamically loaded here -->
+            </div>
+            
+            <!-- Tuesday -->
+            <div class="workout-day-card bg-gray-100 border-2 border-gray-200 rounded-xl p-6 min-h-[200px] cursor-pointer hover:shadow-md transition-all" onclick="showDaySchedule('Day2')">
+              <div class="text-sm font-semibold text-gray-700 mb-2">tuesday</div>
+            </div>
+            
+            <!-- Wednesday -->
+            <div class="workout-day-card bg-pink-100 border-2 border-pink-200 rounded-xl p-6 min-h-[200px] cursor-pointer hover:shadow-md transition-all" onclick="showDaySchedule('Day3')">
+              <div class="text-sm font-semibold text-gray-700 mb-2">wednesday</div>
+            </div>
+            
+            <!-- Thursday -->
+            <div class="workout-day-card bg-teal-100 border-2 border-teal-200 rounded-xl p-6 min-h-[200px] cursor-pointer hover:shadow-md transition-all" onclick="showDaySchedule('Day4')">
+              <div class="text-sm font-semibold text-gray-700 mb-2">thursday</div>
+            </div>
+            
+            <!-- Friday -->
+            <div class="workout-day-card bg-red-100 border-2 border-red-200 rounded-xl p-6 min-h-[200px] cursor-pointer hover:shadow-md transition-all" onclick="showDaySchedule('Day5')">
+              <div class="text-sm font-semibold text-gray-700 mb-2">friday</div>
+            </div>
+            
+            <!-- Saturday (full width on mobile, takes 2 cols on desktop) -->
+            <div class="workout-day-card bg-red-50 border-2 border-red-100 rounded-xl p-6 min-h-[200px] cursor-pointer hover:shadow-md transition-all md:col-span-2" onclick="showDaySchedule('Day6')">
+              <div class="text-sm font-semibold text-gray-700 mb-2">saturday</div>
+            </div>
+            
+            <!-- Sunday (takes remaining cols) -->
+            <div class="workout-day-card bg-gray-50 border-2 border-gray-100 rounded-xl p-6 min-h-[200px] cursor-pointer hover:shadow-md transition-all md:col-span-3" onclick="showDaySchedule('Day7')">
+              <div class="text-sm font-semibold text-gray-700 mb-2">sunday</div>
+            </div>
           </div>
 
-          <!-- Day Content -->
-          <div class="weekly-schedule__content" id="schedule-content">
+          <!-- Enhanced Day Content -->
+          <div class="weekly-schedule__content bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden" id="weekly-plan-content">
             <!-- Day content will be loaded here dynamically -->
+            <div class="text-center py-12">
+              <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl">
+                📅
+              </div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Select a day to view your workout</h3>
+              <p class="text-gray-600">Choose any day from the schedule above to see your personalized workout plan</p>
+            </div>
+            
+            <!-- Sample Workout Content (Hidden by default) -->
+            <div id="day1-content" class="hidden">
+              <!-- Day Header -->
+              <div class="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-6">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="text-2xl font-bold">Day 1 - Chest and Triceps</h3>
+                    <p class="text-purple-100">Monday, July 17, 2025</p>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-sm text-purple-100">Estimated Time</div>
+                    <div class="text-xl font-bold">60 min</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Workout Stats -->
+              <div class="grid grid-cols-3 gap-4 p-6 bg-gray-50">
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-purple-600">6</div>
+                  <div class="text-sm text-gray-600">Exercises</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-purple-600">24</div>
+                  <div class="text-sm text-gray-600">Total Sets</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-purple-600">280</div>
+                  <div class="text-sm text-gray-600">Est. Calories</div>
+                </div>
+              </div>
+              
+              <!-- Exercise List -->
+              <div class="p-6 space-y-6">
+                <!-- Exercise 1 -->
+                <div class="exercise-card bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-xl">
+                        💪
+                      </div>
+                      <div>
+                        <h4 class="text-lg font-semibold text-gray-900">Bench Press</h4>
+                        <p class="text-sm text-gray-600">Target: 4 sets of 8-12 reps</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <button class="w-8 h-8 bg-green-100 hover:bg-green-200 rounded-full flex items-center justify-center text-green-600 transition-colors duration-200">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <!-- Sets -->
+                  <div class="grid grid-cols-4 gap-4">
+                    <div class="set-card bg-gray-50 rounded-lg p-4 text-center">
+                      <div class="text-xs text-gray-500 mb-2">Set 1</div>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs text-gray-600">Reps</span>
+                          <input type="number" value="10" class="w-12 text-center text-sm border border-gray-300 rounded px-1 py-1">
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs text-gray-600">Weight</span>
+                          <input type="number" value="135" class="w-12 text-center text-sm border border-gray-300 rounded px-1 py-1">
+                        </div>
+                        <button class="w-6 h-6 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center text-white text-xs transition-colors duration-200">✓</button>
+                      </div>
+                    </div>
+                    
+                    <div class="set-card bg-gray-50 rounded-lg p-4 text-center">
+                      <div class="text-xs text-gray-500 mb-2">Set 2</div>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs text-gray-600">Reps</span>
+                          <input type="number" value="10" class="w-12 text-center text-sm border border-gray-300 rounded px-1 py-1">
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs text-gray-600">Weight</span>
+                          <input type="number" value="135" class="w-12 text-center text-sm border border-gray-300 rounded px-1 py-1">
+                        </div>
+                        <button class="w-6 h-6 bg-gray-300 hover:bg-gray-400 rounded-full flex items-center justify-center text-white text-xs transition-colors duration-200">✓</button>
+                      </div>
+                    </div>
+                    
+                    <div class="set-card bg-gray-50 rounded-lg p-4 text-center">
+                      <div class="text-xs text-gray-500 mb-2">Set 3</div>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs text-gray-600">Reps</span>
+                          <input type="number" value="10" class="w-12 text-center text-sm border border-gray-300 rounded px-1 py-1">
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs text-gray-600">Weight</span>
+                          <input type="number" value="135" class="w-12 text-center text-sm border border-gray-300 rounded px-1 py-1">
+                        </div>
+                        <button class="w-6 h-6 bg-gray-300 hover:bg-gray-400 rounded-full flex items-center justify-center text-white text-xs transition-colors duration-200">✓</button>
+                      </div>
+                    </div>
+                    
+                    <div class="set-card bg-gray-50 rounded-lg p-4 text-center">
+                      <div class="text-xs text-gray-500 mb-2">Set 4</div>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs text-gray-600">Reps</span>
+                          <input type="number" value="10" class="w-12 text-center text-sm border border-gray-300 rounded px-1 py-1">
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs text-gray-600">Weight</span>
+                          <input type="number" value="135" class="w-12 text-center text-sm border border-gray-300 rounded px-1 py-1">
+                        </div>
+                        <button class="w-6 h-6 bg-gray-300 hover:bg-gray-400 rounded-full flex items-center justify-center text-white text-xs transition-colors duration-200">✓</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Exercise 2 -->
+                <div class="exercise-card bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white text-xl">
+                        🏋️
+                      </div>
+                      <div>
+                        <h4 class="text-lg font-semibold text-gray-900">Incline Dumbbell Press</h4>
+                        <p class="text-sm text-gray-600">Target: 3 sets of 10-15 reps</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <button class="w-8 h-8 bg-gray-300 hover:bg-gray-400 rounded-full flex items-center justify-center text-white transition-colors duration-200">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <!-- Sets -->
+                  <div class="grid grid-cols-3 gap-4">
+                    <div class="set-card bg-gray-50 rounded-lg p-4 text-center">
+                      <div class="text-xs text-gray-500 mb-2">Set 1</div>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs text-gray-600">Reps</span>
+                          <input type="number" value="12" class="w-12 text-center text-sm border border-gray-300 rounded px-1 py-1">
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs text-gray-600">Weight</span>
+                          <input type="number" value="45" class="w-12 text-center text-sm border border-gray-300 rounded px-1 py-1">
+                        </div>
+                        <button class="w-6 h-6 bg-gray-300 hover:bg-gray-400 rounded-full flex items-center justify-center text-white text-xs transition-colors duration-200">✓</button>
+                      </div>
+                    </div>
+                    
+                    <div class="set-card bg-gray-50 rounded-lg p-4 text-center">
+                      <div class="text-xs text-gray-500 mb-2">Set 2</div>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs text-gray-600">Reps</span>
+                          <input type="number" value="12" class="w-12 text-center text-sm border border-gray-300 rounded px-1 py-1">
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs text-gray-600">Weight</span>
+                          <input type="number" value="45" class="w-12 text-center text-sm border border-gray-300 rounded px-1 py-1">
+                        </div>
+                        <button class="w-6 h-6 bg-gray-300 hover:bg-gray-400 rounded-full flex items-center justify-center text-white text-xs transition-colors duration-200">✓</button>
+                      </div>
+                    </div>
+                    
+                    <div class="set-card bg-gray-50 rounded-lg p-4 text-center">
+                      <div class="text-xs text-gray-500 mb-2">Set 3</div>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs text-gray-600">Reps</span>
+                          <input type="number" value="12" class="w-12 text-center text-sm border border-gray-300 rounded px-1 py-1">
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs text-gray-600">Weight</span>
+                          <input type="number" value="45" class="w-12 text-center text-sm border border-gray-300 rounded px-1 py-1">
+                        </div>
+                        <button class="w-6 h-6 bg-gray-300 hover:bg-gray-400 rounded-full flex items-center justify-center text-white text-xs transition-colors duration-200">✓</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Start Workout Button -->
+                <div class="text-center pt-6">
+                  <button class="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-8 py-4 rounded-xl font-semibold hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                    🏋️ Start This Workout
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
+      <!-- END existing content -->
+    </div>
     </main>
-    <footer class="footer">
-      <div class="footer__container">
-        <a href="contact.html" class="footer__policy">Privacy Policy – Terms & Conditions</a>
-        <a href="index.html" class="footer__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.2rem;vertical-align:middle;" /></a>
-        <div class="footer__copyright">Copyright © 2025 Maverick Aim Rush – All Rights Reserved</div>
-      </div>
-    </footer>
-  </div>
+
+  <!-- Optional toast container -->
+  <div id="toast" class="toast" hidden></div>
+
+  <script>
+    // Highlight active nav link
+    (function () {
+      var p = location.pathname.replace(/\/+$/, '');
+      document.querySelectorAll('.sidebar__link').forEach(a=>{
+        if (p.endsWith(a.dataset.path)) a.classList.add('sidebar__link--active');
+      });
+    }());
+  </script>
   <script src="js/script.js"></script>
-  <script src="js/api.js"></script>
+  <script src="js/api.js?v=10"></script>
+  <script src="js/offline-queue.js?v=1"></script>
   <script src="js/workout.js"></script>
   <script src="js/weekly-schedule.js"></script>
+  <script src="js/ai-engine.js"></script>
+  <script src="js/ai-config.js"></script>
+  <script src="js/recipe-database.js"></script>
+  <script>
+    // Inline lightweight data + tabs for Exercise Categories
+    (function(){
+      const EXERCISES = {
+        strength: [
+          { name: 'Squat', equipment: 'Barbell', difficulty: 'Intermediate' },
+          { name: 'Bench Press', equipment: 'Barbell', difficulty: 'Intermediate' }
+        ],
+        cardio: [
+          { name: 'Running', equipment: 'Treadmill', difficulty: 'All' },
+          { name: 'Cycling', equipment: 'Bike', difficulty: 'All' }
+        ],
+        flexibility: [
+          { name: 'Hamstring Stretch', equipment: 'Mat', difficulty: 'Beginner' },
+          { name: 'Hip Flexor Stretch', equipment: 'Mat', difficulty: 'Beginner' }
+        ],
+        bodyweight: [
+          { name: 'Push-Up', equipment: 'None', difficulty: 'Beginner' },
+          { name: 'Plank', equipment: 'None', difficulty: 'Beginner' }
+        ]
+      };
+
+      function renderExercises(){
+        Object.keys(EXERCISES).forEach(cat => {
+          const list = document.getElementById(cat+'-list');
+          if (!list) return;
+          list.innerHTML = EXERCISES[cat].map(ex => (
+            `<li class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm">
+               <div>
+                 <p class="font-medium">${ex.name}</p>
+                 <p class="text-xs text-gray-500">${ex.equipment} • ${ex.difficulty}</p>
+               </div>
+               <button class="rounded-md bg-orange-600 px-3 py-1 text-xs text-white hover:bg-orange-500">Start</button>
+             </li>`
+          )).join('');
+        });
+      }
+
+      function initTabs(){
+        const scope = document.getElementById('exercise-categories');
+        const btns = scope.querySelectorAll('.tab-btn');
+        const panels = scope.querySelectorAll('.tab-panel');
+        function activate(key){
+          btns.forEach(b => b.dataset.active = (b.dataset.tab === key));
+          panels.forEach(p => p.classList.toggle('hidden', p.id !== 'tab-'+key));
+        }
+        btns.forEach(b => b.addEventListener('click', () => activate(b.dataset.tab)));
+        activate('strength');
+      }
+
+      document.addEventListener('DOMContentLoaded', ()=>{ renderExercises(); initTabs(); });
+    })();
+  </script>
+  
+  <!-- Enhanced AI script tag will be moved to the bottom AFTER the inline base class -->
+  
+  <script>
+    // --- AUTHENTICATION AND UNITS TOGGLE LOGIC ---
+    document.addEventListener('DOMContentLoaded', () => {
+      const userStatus = document.getElementById('user-status');
+      const welcomeMessage = document.getElementById('welcome-message');
+      const unitsToggle = document.getElementById('units-toggle');
+      const unitsDisplay = document.getElementById('units-display');
+      const toggleUnitsButton = document.getElementById('toggle-units');
+      const logoutButton = document.getElementById('logout-button');
+      
+      let currentProfile = null;
+
+      async function loadUserProfile() {
+        try {
+          currentProfile = await fetchUserProfile();
+          updateUnitsDisplay();
+          return currentProfile;
+        } catch (error) {
+          console.error('Failed to load user profile:', error);
+          return null;
+        }
+      }
+
+      function updateUnitsDisplay() {
+        if (currentProfile) {
+          const isImperial = currentProfile.unit_system === 'imperial';
+          unitsDisplay.textContent = isImperial ? 'lb/mi' : 'kg/km';
+        }
+      }
+
+      async function toggleUnits() {
+        if (!currentProfile) return;
+        
+        try {
+          const newUnitSystem = currentProfile.unit_system === 'imperial' ? 'metric' : 'imperial';
+          const newDistanceUnit = newUnitSystem === 'imperial' ? 'mi' : 'km';
+          
+          currentProfile = await updateUserProfile({
+            unit_system: newUnitSystem,
+            distance_unit: newDistanceUnit
+          });
+          
+          updateUnitsDisplay();
+          
+          // Refresh workout tracker
+          if (typeof workoutTracker !== 'undefined' && workoutTracker.loadUserProfile) {
+            await workoutTracker.loadUserProfile();
+          }
+          
+          // Toast feedback
+          if (window.workoutSuggestionsAI) {
+            window.workoutSuggestionsAI.showToast(`Units updated to ${newUnitSystem.toUpperCase()}`, 'success');
+          }
+          
+          console.log('Units updated to:', newUnitSystem, newDistanceUnit);
+        } catch (error) {
+          console.error('Failed to update units:', error);
+          if (window.workoutSuggestionsAI) {
+            window.workoutSuggestionsAI.showToast('Failed to update units', 'error');
+          }
+        }
+      }
+
+      async function checkLoginState() {
+        const token = getAccessToken();
+        if (token) {
+          // User is logged in
+          if (userStatus) userStatus.style.display = 'flex';
+          if (unitsToggle) unitsToggle.style.display = 'block';
+          
+          // Load user profile
+          await loadUserProfile();
+          
+          if (welcomeMessage) welcomeMessage.textContent = 'Welcome!';
+        } else {
+          // User is logged out - redirect to login
+          window.location.href = 'index.html';
+        }
+      }
+
+      // Event listeners
+      if (toggleUnitsButton) {
+        toggleUnitsButton.addEventListener('click', toggleUnits);
+      }
+      
+      if (logoutButton) {
+        logoutButton.addEventListener('click', () => {
+          logout();
+          window.location.href = 'index.html';
+        });
+      }
+
+      // Initial check when the page loads
+      checkLoginState();
+      // Gate by onboarding status
+      (async function(){
+        try {
+          const headers = {};
+          try {
+            const tk = (typeof getAccessToken === 'function') ? getAccessToken() : null;
+            if (tk) headers['Authorization'] = `Bearer ${tk}`;
+          } catch(_) {}
+          const res = await fetch('/api/onboarding/status', { credentials: 'include', headers });
+          if (!res.ok) throw new Error(`status ${res.status}`);
+          const st = await res.json();
+          if (st && !st.completed && window.OnboardingModal && typeof window.OnboardingModal.open === 'function') {
+            window.OnboardingModal.open(st);
+          }
+        } catch(e) { console.warn('Onboarding status check failed', e); }
+      })();
+    });
+  </script>
+  
+  
+  <!-- Phase 2: WebSocket client for real-time features -->
+  <script src="js/websocket-client.js"></script>
+  <script src="js/onboarding-modal.js"></script>
+  <script src="js/micro-interactions.js"></script>
+  
+  <!-- Phase 1: Weekly Plan Loader with ETag Caching -->
+  <script src="js/weekly-plan-loader.js"></script>
+  
+  <!-- Phase 2A: Session Manager -->
+  <script src="js/session-manager.js"></script>
+  
+  <script>
+    function openMeasurementModal() {
+      if (window.microInteractions) {
+        window.microInteractions.triggerSuccess('Opening measurement tracker...');
+      }
+      // TODO: Implement measurement modal
+    }
+
+    function openSleepModal() {
+      if (window.microInteractions) {
+        window.microInteractions.triggerSuccess('Opening sleep tracker...');
+      }
+      // TODO: Implement sleep modal
+    }
+
+    // Initialize fitness tracking on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeAIButtons();
+      initializeSetTracking();
+    });
+    
+    // AI Button Functionality
+    function initializeAIButtons() {
+      // Generate AI Suggestions
+      const generateBtn = document.getElementById('generate-suggestions-btn');
+      if (generateBtn) {
+        generateBtn.addEventListener('click', generateAISuggestions);
+      }
+      
+      // Trainer Setup
+      const trainerBtn = document.getElementById('trainer-setup-btn');
+      if (trainerBtn) {
+        trainerBtn.addEventListener('click', openTrainerSetup);
+      }
+      
+      // Contraindications
+      const contraBtn = document.getElementById('contra-setup-btn');
+      if (contraBtn) {
+        contraBtn.addEventListener('click', openContraindications);
+      }
+      
+      // Generate Weekly Schedule
+      const scheduleBtn = document.getElementById('generate-weekly-schedule-btn');
+      if (scheduleBtn) {
+        scheduleBtn.addEventListener('click', generateWeeklySchedule);
+      }
+      
+      // Hero Badge Functionality
+      initializeHeroBadges();
+    }
+    
+    function generateAISuggestions() {
+      if (window.microInteractions) {
+        window.microInteractions.triggerSuccess('Generating personalized workout suggestions...');
+      }
+      
+      // Simulate AI processing
+      const suggestionsPanel = document.getElementById('suggestions-content');
+      if (suggestionsPanel) {
+        suggestionsPanel.innerHTML = `
+          <div class="space-y-4">
+            <div class="bg-white/10 rounded-lg p-4">
+              <h4 class="font-semibold mb-2">💪 Strength Training Focus</h4>
+              <p class="text-blue-100">Based on your recent activity, try adding 3 sets of deadlifts to build posterior chain strength.</p>
+            </div>
+            <div class="bg-white/10 rounded-lg p-4">
+              <h4 class="font-semibold mb-2">🏃 Cardio Enhancement</h4>
+              <p class="text-blue-100">Your cardio consistency is great! Consider adding HIIT intervals twice this week.</p>
+            </div>
+            <div class="bg-white/10 rounded-lg p-4">
+              <h4 class="font-semibold mb-2">🧘 Recovery Focus</h4>
+              <p class="text-blue-100">Your sleep quality is improving. Add 10 minutes of stretching before bed.</p>
+            </div>
+          </div>
+        `;
+      }
+    }
+    
+    function openTrainerSetup() {
+      if (window.OnboardingModal && typeof window.OnboardingModal.open === 'function') {
+        window.OnboardingModal.open();
+      } else {
+        alert('Onboarding module not available. Please refresh the page.');
+      }
+    }
+    
+    function openContraindications() {
+      if (window.microInteractions) {
+        window.microInteractions.triggerSuccess('Opening contraindications setup...');
+      }
+      // TODO: Implement contraindications modal
+      alert('Contraindications: Set up any injuries or limitations to customize your workout recommendations.');
+    }
+    
+    function generateWeeklySchedule() {
+      if (window.microInteractions) {
+        window.microInteractions.triggerSuccess('Generating personalized weekly schedule...');
+      }
+      
+      const schedulePanel = document.getElementById('weekly-schedule-panel');
+      if (schedulePanel) {
+        schedulePanel.style.display = 'block';
+        schedulePanel.classList.remove('hidden');
+        
+        // Simulate schedule generation
+        const scheduleContent = document.getElementById('weekly-schedule-content-secondary');
+        if (scheduleContent) {
+          scheduleContent.innerHTML = `
+            <div class="space-y-4">
+              <div class="bg-white/10 rounded-lg p-4">
+                <h4 class="font-semibold mb-2">📅 Your Personalized 7-Day Plan</h4>
+                <div class="grid grid-cols-1 md:grid-cols-7 gap-2 mt-3">
+                  <div class="bg-white/20 rounded p-2 text-center">
+                    <div class="font-semibold">Mon</div>
+                    <div class="text-sm">Upper Body</div>
+                  </div>
+                  <div class="bg-white/20 rounded p-2 text-center">
+                    <div class="font-semibold">Tue</div>
+                    <div class="text-sm">Cardio</div>
+                  </div>
+                  <div class="bg-white/20 rounded p-2 text-center">
+                    <div class="font-semibold">Wed</div>
+                    <div class="text-sm">Lower Body</div>
+                  </div>
+                  <div class="bg-white/20 rounded p-2 text-center">
+                    <div class="font-semibold">Thu</div>
+                    <div class="text-sm">Rest</div>
+                  </div>
+                  <div class="bg-white/20 rounded p-2 text-center">
+                    <div class="font-semibold">Fri</div>
+                    <div class="text-sm">Full Body</div>
+                  </div>
+                  <div class="bg-white/20 rounded p-2 text-center">
+                    <div class="font-semibold">Sat</div>
+                    <div class="text-sm">Flexibility</div>
+                  </div>
+                  <div class="bg-white/20 rounded p-2 text-center">
+                    <div class="font-semibold">Sun</div>
+                    <div class="text-sm">Active Recovery</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      }
+    }
+    
+    function initializeHeroBadges() {
+      // Make hero badges interactive
+      const badges = document.querySelectorAll('.hero-badge');
+      badges.forEach(badge => {
+        badge.style.cursor = 'pointer';
+        badge.addEventListener('click', () => {
+          const badgeText = badge.textContent.trim();
+          if (window.microInteractions) {
+            window.microInteractions.triggerSuccess(`${badgeText} feature clicked!`);
+          }
+          
+          // Scroll to relevant section
+          if (badgeText.includes('Smart Workouts')) {
+            document.getElementById('exercise-categories')?.scrollIntoView({ behavior: 'smooth' });
+          } else if (badgeText.includes('Real-time Metrics')) {
+            document.querySelector('[data-section="fitness-metrics"]')?.scrollIntoView({ behavior: 'smooth' });
+          } else if (badgeText.includes('AI Insights')) {
+            document.getElementById('ai-suggestions-panel')?.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+    }
+    
+    // Weekly Schedule Functions
+    function showDaySchedule(day) {
+      // Update active tab
+      const tabs = document.querySelectorAll('.schedule-tab');
+      tabs.forEach(tab => {
+        tab.classList.remove('active:bg-gradient-to-r', 'active:from-purple-500', 'active:to-purple-600', 'active:text-white', 'active:shadow-lg');
+        tab.classList.add('text-gray-600');
+      });
+      
+      const activeTab = document.querySelector(`[data-day="${day}"]`);
+      if (activeTab) {
+        activeTab.classList.add('active:bg-gradient-to-r', 'active:from-purple-500', 'active:to-purple-600', 'active:text-white', 'active:shadow-lg');
+        activeTab.classList.remove('text-gray-600');
+      }
+      
+      // Load workout content from API with ETag caching
+      if (window.weeklyPlanLoader) {
+        window.weeklyPlanLoader.showDaySchedule(day);
+      } else {
+        console.error('Weekly plan loader not available');
+      }
+    }
+    
+    // Initialize set completion tracking
+    function initializeSetTracking() {
+      const setButtons = document.querySelectorAll('.set-card button');
+      setButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          if (button.classList.contains('bg-gray-300')) {
+            // Mark as completed
+            button.classList.remove('bg-gray-300', 'hover:bg-gray-400');
+            button.classList.add('bg-green-500', 'hover:bg-green-600');
+            
+            // Add success animation
+            if (window.microInteractions) {
+              window.microInteractions.triggerSuccess('Set completed!');
+            }
+          } else {
+            // Mark as incomplete
+            button.classList.remove('bg-green-500', 'hover:bg-green-600');
+            button.classList.add('bg-gray-300', 'hover:bg-gray-400');
+          }
+        });
+      });
+    }
+  </script>
+
+  <!-- Progressive Onboarding Modal -->
+  <div id="onboarding-scrim" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden"></div>
+  <section id="onboarding-modal" role="dialog" aria-modal="true" aria-labelledby="onb-title" class="fixed inset-0 grid place-items-center p-4 hidden">
+    <div class="modal modal--onboarding bg-white rounded-2xl shadow-xl border w-full max-w-xl overflow-hidden">
+      <header class="modal__header px-6 py-4 border-b flex items-center gap-3">
+        <img src="/MAR/Images/LOGO.png" alt="" class="h-8 w-8" />
+        <h2 id="onb-title" class="text-lg font-semibold">Let's tailor your training</h2>
+        <div class="ml-auto modal__progress flex items-center gap-1" aria-hidden="true">
+          <span class="w-2.5 h-2.5 rounded-full bg-gray-300" data-dot="0"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-gray-300" data-dot="1"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-gray-300" data-dot="2"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-gray-300" data-dot="3"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-gray-300" data-dot="4"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-gray-300" data-dot="5"></span>
+        </div>
+      </header>
+      <div class="modal__body px-6 py-5 space-y-6">
+        <!-- Step 0: Welcome -->
+        <div data-step="welcome" class="step">
+          <h3 class="text-xl font-semibold mb-2">Let's tailor your training</h3>
+          <p class="text-gray-600">Two minutes. Five quick questions. We'll optimize workouts and recovery for you.</p>
+          <p class="text-gray-500 text-sm mt-3">You can change these anytime in Profile → Preferences.</p>
+        </div>
+
+        <!-- Step 1: Goal -->
+        <div data-step="goal" class="step hidden">
+          <h3 class="text-xl font-semibold mb-2">What's your primary goal?</h3>
+          <div class="space-y-2" id="goal-group">
+            <label class="flex items-center gap-2"><input type="radio" name="primary_goal" value="fat_loss" class="accent-orange-600" /> Fat loss</label>
+            <label class="flex items-center gap-2"><input type="radio" name="primary_goal" value="muscle_gain" class="accent-orange-600" /> Muscle gain</label>
+            <label class="flex items-center gap-2"><input type="radio" name="primary_goal" value="endurance" class="accent-orange-600" /> Endurance & cardio</label>
+            <label class="flex items-center gap-2"><input type="radio" name="primary_goal" value="general_fitness" class="accent-orange-600" /> General fitness</label>
+          </div>
+          <p class="text-gray-500 text-sm">We'll bias exercise selection and progression to your goal.</p>
+        </div>
+
+        <!-- Step 2: Schedule -->
+        <div data-step="schedule" class="step hidden">
+          <h3 class="text-xl font-semibold mb-2">How many days can you train?</h3>
+          <div id="days-group" class="segmented flex flex-wrap gap-2">
+            <button type="button" data-days="2" class="segmented__btn rounded-lg border px-3 py-1.5">2</button>
+            <button type="button" data-days="3" class="segmented__btn rounded-lg border px-3 py-1.5">3</button>
+            <button type="button" data-days="4" class="segmented__btn rounded-lg border px-3 py-1.5">4</button>
+            <button type="button" data-days="5" class="segmented__btn rounded-lg border px-3 py-1.5">5</button>
+            <button type="button" data-days="6" class="segmented__btn rounded-lg border px-3 py-1.5">6+</button>
+          </div>
+          <label class="block mt-4">
+            <span class="text-sm text-gray-700">When do you prefer to work out?</span>
+            <select id="pref_time" class="w-full rounded-lg border px-3 py-2 mt-1">
+              <option value="morning">Morning (5–9)</option>
+              <option value="midday">Midday (11–2)</option>
+              <option value="evening">Evening (5–9)</option>
+              <option value="none">No preference</option>
+            </select>
+          </label>
+          <p class="text-gray-500 text-sm">We'll suggest short sessions on busy days.</p>
+        </div>
+
+        <!-- Step 3: Equipment -->
+        <div data-step="equipment" class="step hidden">
+          <h3 class="text-xl font-semibold mb-2">What equipment do you have access to?</h3>
+          <div id="equip-group" class="flex flex-wrap gap-2">
+            <!-- pills -->
+            <button type="button" data-equip="dumbbells" class="pill rounded-full border px-3 py-1.5">Dumbbells</button>
+            <button type="button" data-equip="barbell" class="pill rounded-full border px-3 py-1.5">Barbell</button>
+            <button type="button" data-equip="bench" class="pill rounded-full border px-3 py-1.5">Bench</button>
+            <button type="button" data-equip="machines" class="pill rounded-full border px-3 py-1.5">Machines</button>
+            <button type="button" data-equip="kettlebells" class="pill rounded-full border px-3 py-1.5">Kettlebells</button>
+            <button type="button" data-equip="bands" class="pill rounded-full border px-3 py-1.5">Bands</button>
+            <button type="button" data-equip="pullup" class="pill rounded-full border px-3 py-1.5">Pull-up Bar</button>
+            <button type="button" data-equip="bodyweight" class="pill rounded-full border px-3 py-1.5">Bodyweight only</button>
+          </div>
+          <p class="text-gray-500 text-sm">We'll only program exercises you can actually do.</p>
+        </div>
+
+        <!-- Step 4: Contraindications -->
+        <div data-step="contra" class="step hidden">
+          <h3 class="text-xl font-semibold mb-2">Anything we should avoid?</h3>
+          <div id="contra-group" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <label class="flex items-center gap-2"><input type="checkbox" value="lower_back" class="accent-orange-600" /> Lower-back strain</label>
+            <label class="flex items-center gap-2"><input type="checkbox" value="shoulder" class="accent-orange-600" /> Shoulder impingement</label>
+            <label class="flex items-center gap-2"><input type="checkbox" value="knee" class="accent-orange-600" /> Knee pain</label>
+            <label class="flex items-center gap-2"><input type="checkbox" value="wrist" class="accent-orange-600" /> Wrist pain</label>
+            <label class="flex items-center gap-2"><input type="checkbox" value="none" class="accent-orange-600" /> None</label>
+          </div>
+          <label class="block mt-3"><span class="text-sm text-gray-700">Notes (optional)</span>
+            <textarea id="contra-notes" class="textarea--sm w-full rounded-lg border px-3 py-2 mt-1" rows="2"></textarea>
+          </label>
+          <p class="text-gray-500 text-sm">We'll filter risky movements and offer substitutions.</p>
+        </div>
+
+        <!-- Step 5: Notifications -->
+        <div data-step="notify" class="step hidden">
+          <h3 class="text-xl font-semibold mb-2">Stay on track?</h3>
+          <label class="flex items-center justify-between gap-4 py-2">
+            <span>Daily reminder</span>
+            <input type="checkbox" id="notify-daily" class="toggle accent-orange-600" />
+          </label>
+          <label class="flex items-center justify-between gap-4 py-2">
+            <span>Session summaries</span>
+            <input type="checkbox" id="notify-summaries" class="toggle accent-orange-600" />
+          </label>
+          <p class="text-gray-500 text-sm">We'll only send training-related reminders. You can turn these off anytime.</p>
+        </div>
+
+        <!-- Step 6: Success -->
+        <div data-step="success" class="step hidden text-center">
+          <h3 class="text-xl font-semibold mb-2">You're all set</h3>
+          <p class="text-gray-600 mb-4">Plan generated from your answers. Start with today's session below.</p>
+          <div class="flex items-center justify-center gap-3">
+            <button id="onb-start" class="rounded-lg bg-orange-600 px-5 py-2 text-white">Start today's workout</button>
+            <a href="#weekly-schedule" class="rounded-lg border px-4 py-2">View weekly plan</a>
+          </div>
+        </div>
+      </div>
+      <footer class="modal__footer px-6 py-4 border-t flex items-center justify-between">
+        <button id="onb-back" class="rounded-lg border px-4 py-2">Back</button>
+        <div class="flex items-center gap-3">
+          <button id="onb-skip" class="text-gray-500">Skip for now</button>
+          <button id="onb-next" class="rounded-lg bg-orange-600 px-5 py-2 text-white">Let's go</button>
+          <button id="onb-finish" class="rounded-lg bg-orange-600 px-5 py-2 text-white hidden">Finish</button>
+        </div>
+      </footer>
+    </div>
+  </section>
+  
 </body>
 
 </html>

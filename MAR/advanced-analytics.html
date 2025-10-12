@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Analytics - Maverick Aim Rush</title>
+    <link rel="stylesheet" href="css/reset.css?v=3">
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="icon" href="images/favicon.png">
+    
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Maverick Aim Rush">
+    <link rel="apple-touch-icon" href="images/favicon.png">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="main-header">
+        <div class="header__content">
+            <div class="header__logo">
+                <img src="images/LOGO.png" alt="Maverick Aim Rush" class="logo">
+            </div>
+            <nav class="header__nav">
+                <a href="index.html" class="header__nav-link">Dashboard</a>
+                <a href="calculator.html" class="header__nav-link">Calculator</a>
+                <a href="recommendations.html" class="header__nav-link">AI Recommendations</a>
+                <a href="social.html" class="header__nav-link">Social</a>
+                <a href="data-management.html" class="header__nav-link">Data Management</a>
+                <a href="photo-progress.html" class="header__nav-link">Photo Progress</a>
+                <a href="advanced-analytics.html" class="header__nav-link active">Advanced Analytics</a>
+            </nav>
+            <div class="header__auth">
+                <button class="btn btn--primary" onclick="showLogin()">Login</button>
+                <button class="btn btn--secondary" onclick="showRegister()">Register</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main page-offset" id="main-content">
+        <!-- Hero Section -->
+        <section class="hero hero--analytics">
+            <div class="hero__content">
+                <h1 class="hero__title">📊 Advanced Body Analytics</h1>
+                <p class="hero__subtitle">Deep insights into your body composition, muscle growth patterns, and AI-powered progress predictions</p>
+                <div class="hero__actions">
+                    <button class="btn btn--primary btn--large" onclick="showBodyCompositionForm()">
+                        📏 Add Body Composition
+                    </button>
+                    <button class="btn btn--secondary btn--large" onclick="showMuscleMeasurementForm()">
+                        💪 Add Muscle Measurement
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Dashboard -->
+        <section class="analytics-dashboard">
+            <div class="container">
+                <!-- Key Metrics Overview -->
+                <div class="metrics-overview">
+                    <div class="metric-card">
+                        <div class="metric-card__icon">⚖️</div>
+                        <div class="metric-card__content">
+                            <h3 class="metric-card__value" id="current-weight">0 kg</h3>
+                            <p class="metric-card__label">Current Weight</p>
+                            <span class="metric-card__change" id="weight-change">+0 kg</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-card__icon">📊</div>
+                        <div class="metric-card__content">
+                            <h3 class="metric-card__value" id="current-body-fat">0%</h3>
+                            <p class="metric-card__label">Body Fat</p>
+                            <span class="metric-card__change" id="body-fat-change">+0%</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-card__icon">💪</div>
+                        <div class="metric-card__content">
+                            <h3 class="metric-card__value" id="current-muscle-mass">0 kg</h3>
+                            <p class="metric-card__label">Muscle Mass</p>
+                            <span class="metric-card__change" id="muscle-mass-change">+0 kg</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-card__icon">🎯</div>
+                        <div class="metric-card__content">
+                            <h3 class="metric-card__value" id="symmetry-score">0</h3>
+                            <p class="metric-card__label">Symmetry Score</p>
+                            <span class="metric-card__change" id="balance-score">Balance: 0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Body Composition Trends Chart -->
+                <div class="chart-section">
+                    <h2 class="section-title">📈 Body Composition Trends</h2>
+                    <div class="chart-container">
+                        <canvas id="bodyCompositionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Muscle Growth Analysis -->
+                <div class="muscle-growth-section">
+                    <h2 class="section-title">💪 Muscle Growth Analysis</h2>
+                    <div class="muscle-growth-grid" id="muscle-growth-grid">
+                        <!-- Muscle growth data will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- AI Predictions -->
+                <div class="predictions-section">
+                    <h2 class="section-title">🔮 AI Progress Predictions</h2>
+                    <div class="predictions-container">
+                        <div class="prediction-card">
+                            <h3 class="prediction-card__title">30-Day Predictions</h3>
+                            <div class="prediction-metrics">
+                                <div class="prediction-metric">
+                                    <span class="prediction-label">Weight:</span>
+                                    <span class="prediction-value" id="predicted-weight">0 kg</span>
+                                </div>
+                                <div class="prediction-metric">
+                                    <span class="prediction-label">Body Fat:</span>
+                                    <span class="prediction-value" id="predicted-body-fat">0%</span>
+                                </div>
+                                <div class="prediction-metric">
+                                    <span class="prediction-label">Muscle Mass:</span>
+                                    <span class="prediction-value" id="predicted-muscle-mass">0 kg</span>
+                                </div>
+                            </div>
+                            <div class="prediction-confidence">
+                                <span class="confidence-label">Confidence:</span>
+                                <span class="confidence-value" id="prediction-confidence">0%</span>
+                            </div>
+                        </div>
+                        <div class="muscle-predictions-chart">
+                            <canvas id="musclePredictionsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insights & Recommendations -->
+                <div class="insights-section">
+                    <h2 class="section-title">💡 Insights & Recommendations</h2>
+                    <div class="insights-grid">
+                        <div class="insight-card">
+                            <h3 class="insight-card__title">Body Composition Insights</h3>
+                            <div class="insight-list" id="body-composition-insights">
+                                <!-- Insights will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        <div class="insight-card">
+                            <h3 class="insight-card__title">Muscle Growth Insights</h3>
+                            <div class="insight-list" id="muscle-growth-insights">
+                                <!-- Insights will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        <div class="insight-card">
+                            <h3 class="insight-card__title">AI Recommendations</h3>
+                            <div class="insight-list" id="ai-recommendations">
+                                <!-- Recommendations will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Body Composition Modal -->
+    <div class="modal" id="body-composition-modal">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3>📏 Add Body Composition Data</h3>
+                <button class="modal__close" onclick="hideBodyCompositionForm()">&times;</button>
+            </div>
+            <div class="modal__body">
+                <form id="body-composition-form" class="body-composition-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="weight-kg">Weight (kg)</label>
+                            <input type="number" id="weight-kg" name="weight_kg" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="body-fat-percentage">Body Fat (%)</label>
+                            <input type="number" id="body-fat-percentage" name="body_fat_percentage" step="0.1" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="muscle-mass-kg">Muscle Mass (kg)</label>
+                            <input type="number" id="muscle-mass-kg" name="muscle_mass_kg" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bone-mass-kg">Bone Mass (kg)</label>
+                            <input type="number" id="bone-mass-kg" name="bone_mass_kg" step="0.1">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="water-percentage">Water %</label>
+                            <input type="number" id="water-percentage" name="water_percentage" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label for="visceral-fat-level">Visceral Fat Level</label>
+                            <input type="number" id="visceral-fat-level" name="visceral_fat_level" min="1" max="59">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="measurement-method">Measurement Method</label>
+                        <select id="measurement-method" name="measurement_method">
+                            <option value="scale">Smart Scale</option>
+                            <option value="calipers">Skinfold Calipers</option>
+                            <option value="dexa">DEXA Scan</option>
+                            <option value="bodpod">BodPod</option>
+                            <option value="manual">Manual Calculation</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="body-composition-notes">Notes</label>
+                        <textarea id="body-composition-notes" name="notes" placeholder="Any additional notes about this measurement"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn--secondary" onclick="hideBodyCompositionForm()">Cancel</button>
+                        <button type="submit" class="btn btn--primary">Add Measurement</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Muscle Measurement Modal -->
+    <div class="modal" id="muscle-measurement-modal">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3>💪 Add Muscle Group Measurement</h3>
+                <button class="modal__close" onclick="hideMuscleMeasurementForm()">&times;</button>
+            </div>
+            <div class="modal__body">
+                <form id="muscle-measurement-form" class="muscle-measurement-form">
+                    <div class="form-group">
+                        <label for="muscle-group">Muscle Group</label>
+                        <select id="muscle-group" name="muscle_group" required>
+                            <option value="chest">Chest</option>
+                            <option value="back">Back</option>
+                            <option value="shoulders">Shoulders</option>
+                            <option value="biceps">Biceps</option>
+                            <option value="triceps">Triceps</option>
+                            <option value="forearms">Forearms</option>
+                            <option value="core">Core</option>
+                            <option value="quads">Quadriceps</option>
+                            <option value="hamstrings">Hamstrings</option>
+                            <option value="glutes">Glutes</option>
+                            <option value="calves">Calves</option>
+                            <option value="neck">Neck</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="circumference-cm">Circumference (cm)</label>
+                            <input type="number" id="circumference-cm" name="circumference_cm" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="circumference-inches">Circumference (inches)</label>
+                            <input type="number" id="circumference-inches" name="circumference_inches" step="0.1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="muscle-density">Muscle Density</label>
+                        <select id="muscle-density" name="muscle_density">
+                            <option value="soft">Soft</option>
+                            <option value="firm">Firm</option>
+                            <option value="hard">Hard</option>
+                            <option value="very_hard">Very Hard</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="is-flexed" name="is_flexed"> Flexed Measurement
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="is-pumped" name="is_pumped"> Post-Workout Pump
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="workout-context">Measurement Context</label>
+                        <select id="workout-context" name="workout_context">
+                            <option value="morning">Morning</option>
+                            <option value="pre_workout">Pre-Workout</option>
+                            <option value="post_workout">Post-Workout</option>
+                            <option value="rest_day">Rest Day</option>
+                            <option value="evening">Evening</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="muscle-measurement-notes">Notes</label>
+                        <textarea id="muscle-measurement-notes" name="notes" placeholder="Any notes about this measurement"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn--secondary" onclick="hideMuscleMeasurementForm()">Cancel</button>
+                        <button type="submit" class="btn btn--primary">Add Measurement</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentication Modals -->
+    <div class="modal" id="login-modal">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3>Login to Maverick Aim Rush</h3>
+                <button class="modal__close" onclick="hideLogin()">&times;</button>
+            </div>
+            <div class="modal__body">
+                <form id="login-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" name="password" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn--primary btn--full">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="register-modal">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3>Join Maverick Aim Rush</h3>
+                <button class="modal__close" onclick="hideRegister()">&times;</button>
+            </div>
+            <div class="modal__body">
+                <form id="register-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="register-username">Username</label>
+                        <input type="text" id="register-username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password-confirm">Confirm Password</label>
+                        <input type="password" id="register-password-confirm" name="password_confirm" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn--primary btn--full">Create Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js?v=10"></script>
+    <script src="js/advanced-analytics.js?v=4"></script>
+    <script src="js/mobile.js?v=5"></script>
+    <script src="js/notifications.js?v=5"></script>
+    <script src="js/notification-ui.js?v=5"></script>
+    <script src="js/smart-notifications.js?v=5"></script>
+    
+    <!-- Service Worker -->
+    <script>
+      // Disable SW on this page during debugging and gate content behind auth
+      (async () => {
+        try {
+          if ('serviceWorker' in navigator) {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            for (const r of regs) { try { await r.unregister(); } catch(e){} }
+          }
+        } catch (e) {}
+
+        // Auth gate: if no token, show login modal; otherwise hide header auth buttons
+        try {
+          const isAuthed = (window.api && typeof window.api.isAuthenticated === 'function') ? window.api.isAuthenticated() : (localStorage.getItem('access_token') || localStorage.getItem('accessToken'));
+          const authButtons = document.querySelector('.header__auth');
+          if (!isAuthed) {
+            const modal = document.getElementById('login-modal');
+            if (modal) modal.classList.add('modal--show');
+          } else {
+            if (authButtons) authButtons.style.display = 'none';
+            const header = document.getElementById('main-header');
+            if (header) header.style.display = 'block';
+          }
+        } catch (e) {}
+      })();
+    </script>
+</body>
+</html>

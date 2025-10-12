@@ -1,7 +1,11 @@
-document.querySelector(".icon-menu").addEventListener("click", function (event) {
-  event.preventDefault();
-  document.body.classList.toggle("menu-open");
-});
+// Mobile menu toggle - check if element exists before adding listener
+const mobileMenuToggle = document.querySelector("#mobile-menu-toggle");
+if (mobileMenuToggle) {
+  mobileMenuToggle.addEventListener("click", function (event) {
+    event.preventDefault();
+    document.body.classList.toggle("menu-open");
+  });
+}
 
 const spollerButtons = document.querySelectorAll("[data-spoller] .spollers-faq__button");
 

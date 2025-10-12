@@ -12,6 +12,14 @@ A comprehensive full-stack fitness tracking web application built with Django RE
 
 **Maverick Aim Rush** is a complete fitness tracking solution that helps users achieve their fitness goals through personalized workout plans, comprehensive nutrition tracking, and detailed progress monitoring.
 
+### 📝 Project Management & Documentation
+
+This project follows a structured development process using Product Requirement Documents (PRDs) and phased task breakdowns. All planning documents are located in the `/docs` directory.
+
+- **[Product Requirements (PRD)](./docs/create-prd.md)**: The vision, personas, features, and system standards for the project.
+- **[Task Breakdown)](./docs/generate-tasks.md)**: A phased, atomic, and testable list of all development tasks.
+- **[Execution Log](./docs/process-task-list.md)**: A log for tracking the status of each task and storing useful code snippets.
+
 ### ✨ Key Features
 
 - 🏋️ **Workout Tracking**: 150+ exercises with filtering and logging

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ff6b35">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Maverick Aim Rush">
+    <title>Smart Recommendations - Maverick Aim Rush</title>
+    <link rel="stylesheet" href="css/reset.css?v=3">
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/favicon.png">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <!-- Header (unified) -->
+    <header class="header" id="main-header">
+      <div class="header__container">
+        <a href="index.html" class="header__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.75rem;vertical-align:middle;" /></a>
+        <div class="header__navigation">
+          <div class="header__menu menu">
+            <nav class="menu__body">
+              <ul class="menu__list">
+                <li class="menu__item"><a href="index.html" class="menu__link">Dashboard</a></li>
+                <li class="menu__item"><a href="about.html" class="menu__link">Workout Tracker</a></li>
+                <li class="menu__item"><a href="services.html" class="menu__link">Nutrition Log</a></li>
+                <li class="menu__item"><a href="contact.html" class="menu__link">Progress</a></li>
+                <li class="menu__item"><a href="calculator.html" class="menu__link">Calculator</a></li>
+                <li class="menu__item"><a href="recommendations.html" class="menu__link">AI Recommendations</a></li>
+                <li class="menu__item"><a href="social.html" class="menu__link">Social</a></li>
+              </ul>
+              <a href="about.html" class="actions-header__button">Log Workout</a>
+            </nav>
+          </div>
+          <div class="header__actions actions-header">
+            <div id="units-toggle" style="display: none;">
+              <button id="toggle-units" class="actions-header__button actions-header__button_units">
+                <span id="units-display">lb/mi</span>
+              </button>
+            </div>
+            <div id="user-status" style="display: none;">
+              <span id="welcome-message"></span>
+              <button id="logout-button" class="actions-header__button actions-header__button_logout">Logout</button>
+            </div>
+            <button type="button" class="menu__icon icon-menu"><span></span></button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main page-offset" id="main-content">
+        <div class="container">
+            <!-- Recommendations Hero -->
+            <section class="recommendations-hero">
+                <div class="recommendations-hero__content">
+                    <h1 class="recommendations-hero__title">AI-Powered Recommendations</h1>
+                    <p class="recommendations-hero__subtitle">Personalized insights based on your fitness data and goals</p>
+                </div>
+            </section>
+
+            <!-- Filter Tabs -->
+            <section class="recommendations-filters">
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-type="all">All Recommendations</button>
+                    <button class="filter-tab" data-type="workout">Workout</button>
+                    <button class="filter-tab" data-type="nutrition">Nutrition</button>
+                    <button class="filter-tab" data-type="progress">Progress</button>
+                </div>
+                <button id="refresh-recommendations" class="refresh-btn">
+                    <span class="refresh-icon">🔄</span>
+                    Refresh
+                </button>
+            </section>
+
+            <!-- Loading State -->
+            <section id="loading-section" class="loading-section">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Analyzing your data and generating recommendations...</p>
+            </section>
+
+            <!-- Recommendations Content -->
+            <section id="recommendations-content" class="recommendations-content" style="display: none;">
+                
+                <!-- Workout Recommendations -->
+                <div class="recommendations-section" id="workout-section">
+                    <div class="section-header">
+                        <h2 class="section-title">🏋️ Workout Recommendations</h2>
+                        <p class="section-subtitle">Personalized workout suggestions based on your recent activity</p>
+                    </div>
+
+                    <!-- Next Workout -->
+                    <div class="recommendation-card recommendation-card--primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Next Workout</h3>
+                            <span class="card-badge">Recommended</span>
+                        </div>
+                        <div class="card-content">
+                            <div id="next-workout-content">
+                                <!-- Content will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Exercise Suggestions -->
+                    <div class="recommendation-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Exercise Suggestions</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="exercise-suggestions-content">
+                                <!-- Content will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Intensity Adjustment -->
+                    <div class="recommendation-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Intensity Adjustment</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="intensity-adjustment-content">
+                                <!-- Content will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rest Recommendations -->
+                    <div class="recommendation-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Rest & Recovery</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="rest-recommendations-content">
+                                <!-- Content will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nutrition Recommendations -->
+                <div class="recommendations-section" id="nutrition-section">
+                    <div class="section-header">
+                        <h2 class="section-title">🍎 Nutrition Recommendations</h2>
+                        <p class="section-subtitle">Optimize your nutrition for better results</p>
+                    </div>
+
+                    <!-- Macro Balance -->
+                    <div class="recommendation-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Macro Balance Analysis</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="macro-balance-content">
+                                <!-- Content will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Meal Timing -->
+                    <div class="recommendation-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Meal Timing</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="meal-timing-content">
+                                <!-- Content will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hydration -->
+                    <div class="recommendation-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Hydration</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="hydration-content">
+                                <!-- Content will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Supplements -->
+                    <div class="recommendation-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Supplement Suggestions</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="supplements-content">
+                                <!-- Content will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Recommendations -->
+                <div class="recommendations-section" id="progress-section">
+                    <div class="section-header">
+                        <h2 class="section-title">📈 Progress Recommendations</h2>
+                        <p class="section-subtitle">Optimize your progress and break through plateaus</p>
+                    </div>
+
+                    <!-- Goal Adjustments -->
+                    <div class="recommendation-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Goal Adjustments</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="goal-adjustments-content">
+                                <!-- Content will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Plateau Breaking -->
+                    <div class="recommendation-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Plateau Breaking</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="plateau-breaking-content">
+                                <!-- Content will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Consistency Tips -->
+                    <div class="recommendation-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Consistency Tips</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="consistency-tips-content">
+                                <!-- Content will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recovery Optimization -->
+                    <div class="recommendation-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recovery Optimization</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="recovery-optimization-content">
+                                <!-- Content will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Error State -->
+            <section id="error-section" class="error-section" style="display: none;">
+                <div class="error-content">
+                    <div class="error-icon">⚠️</div>
+                    <h3 class="error-title">Unable to Load Recommendations</h3>
+                    <p class="error-message">Please ensure you have logged some workouts and nutrition data to get personalized recommendations.</p>
+                    <button id="retry-btn" class="retry-btn">Try Again</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/api.js?v=3"></script>
+    <script src="js/recommendations.js?v=3"></script>
+    <script src="js/mobile.js?v=5"></script>
+    <script src="js/notifications.js?v=5"></script>
+    <script src="js/notification-ui.js?v=5"></script>
+    <script src="js/smart-notifications.js?v=5"></script>
+</body>
+</html>

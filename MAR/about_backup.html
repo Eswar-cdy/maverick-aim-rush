@@ -1,0 +1,1211 @@
+<!-- Image paths updated to use MAR/images/ consolidation on 2024-08-25 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <title>Maverick Aim Rush - Workout Tracker</title>
+  <meta name="description" content="Log workouts, view weekly plans, and track performance with AI insights." />
+  <link rel="canonical" href="http://localhost:8001/about.html" />
+  <meta property="og:title" content="Workout Tracker | Maverick Aim Rush" />
+  <meta property="og:description" content="Plan, log, and analyze workouts with personalized insights." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="http://localhost:8001/about.html" />
+  <meta property="og:image" content="http://localhost:8001/images/LOGO.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div class="wrapper">
+    <header class="header">
+      <div class="header__container">
+        <a href="index.html" class="header__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.75rem;vertical-align:middle;" /></a>
+        <div class="header__navigation">
+          <div class="header__menu menu">
+            <nav class="menu__body">
+              <ul class="menu__list">
+                <li class="menu__item"><a href="index.html" class="menu__link">Dashboard</a></li>
+                <li class="menu__item"><a href="about.html" class="menu__link">Workout Tracker</a></li>
+                <li class="menu__item"><a href="services.html" class="menu__link">Nutrition Log</a></li>
+                <li class="menu__item"><a href="contact.html" class="menu__link">Progress</a></li>
+                <li class="menu__item"><a href="calculator.html" class="menu__link">Calculator</a></li>
+                <li class="menu__item"><a href="recommendations.html" class="menu__link">AI Recommendations</a></li>
+                <li class="menu__item"><a href="social.html" class="menu__link">Social</a></li>
+              </ul>
+              <a href="about.html" class="actions-header__button">Log Workout</a>
+            </nav>
+          </div>
+          <div class="header__actions actions-header">
+            <!-- Units Toggle (shown when logged in) -->
+            <div id="units-toggle" style="display: none;">
+              <button id="toggle-units" class="actions-header__button actions-header__button_units">
+                <span id="units-display">lb/mi</span>
+              </button>
+            </div>
+            <!-- User Status Display -->
+            <div id="user-status" style="display: none;">
+              <span id="welcome-message"></span>
+              <button id="logout-button" class="actions-header__button actions-header__button_logout">Logout</button>
+            </div>
+            <button type="button" class="menu__icon icon-menu"><span></span></button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="page page-offset" id="main-content" role="main">
+      <section class="page__main main main_about main_pages">
+        <div class="main__container main__container_pages">
+          <h1 class="main__title">Workout Tracker</h1>
+          <div class="main__text main__text_pages">
+            Log your exercises, track performance, and monitor your fitness progress with detailed workout analytics.
+          </div>
+        </div>
+      </section>
+
+      <!-- AI Recommendations Panel -->
+      <section class="page__ai-recos" style="padding:2rem 0;background:#0f172a;">
+        <div class="exercise-categories__container" style="max-width:1200px;margin:0 auto;color:#e5e7eb;">
+          <h2 class="title" style="color:#fff;">AI Recommendations</h2>
+          <p class="subtitle">Personalized tips based on your recent activity and profile</p>
+          <div id="ai-recos-list" class="list-card" style="margin-top:1rem;"></div>
+        </div>
+      </section>
+
+      <!-- Real-Time Workout Suggestions -->
+      <section class="page__workout-suggestions workout-suggestions">
+        <div class="workout-suggestions__container">
+          <h2 class="workout-suggestions__title title">🤖 AI-Powered Workout Suggestions</h2>
+          <p class="workout-suggestions__subtitle">Get personalized, real-time workout recommendations based on your goals, progress, and preferences</p>
+          
+          <!-- Quick Action Buttons -->
+          <div class="suggestion-controls" style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem; flex-wrap: wrap;">
+            <button id="generate-suggestions-btn" class="suggestion-btn primary-btn" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);">
+              🧠 Generate AI Suggestions
+            </button>
+            <button id="start-suggested-workout-btn" class="suggestion-btn start-btn" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); display: none;">
+              🏋️ Start Suggested Workout
+            </button>
+            <button id="end-workout-btn" class="suggestion-btn end-btn" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); display: none;">
+              ⏹️ End Workout
+            </button>
+          </div>
+          
+          <!-- AI Suggestions Panel -->
+          <div class="ai-suggestions-panel" id="ai-suggestions-panel" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; padding: 2rem; margin-bottom: 2rem; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <div class="suggestions-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+              <div class="ai-icon" style="font-size: 2rem;">🤖</div>
+              <div>
+                <h3 style="margin: 0; font-size: 1.5rem; font-weight: 700;">Smart Workout Recommendations</h3>
+                <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Based on your goals, progress, and preferences</p>
+              </div>
+            </div>
+            
+            <div class="suggestions-content" id="suggestions-content">
+              <div class="loading-suggestions" style="text-align: center; padding: 2rem;">
+                <div class="loading-spinner" style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
+                <p>Analyzing your data and generating personalized suggestions...</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="workout-overview__stats">
+            <div class="workout-stat">
+              <div class="workout-stat__label">Calories Burned</div>
+              <div class="workout-stat__value" id="calories-burned">0</div>
+              <div class="workout-stat__progress">
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" id="calories-progress" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="workout-stat">
+              <div class="workout-stat__label">Workout Duration</div>
+              <div class="workout-stat__value" id="workout-duration">0 min</div>
+              <div class="workout-stat__progress">
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" id="duration-progress" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="workout-stat">
+              <div class="workout-stat__label">Exercises</div>
+              <div class="workout-stat__value" id="exercises-completed">0</div>
+              <div class="workout-stat__progress">
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" id="exercises-progress" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="workout-stat">
+              <div class="workout-stat__label">Personal Records</div>
+              <div class="workout-stat__value" id="personal-records">0</div>
+              <div class="workout-stat__progress">
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" id="records-progress" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Exercise Categories -->
+      <section class="page__exercise-categories exercise-categories">
+        <div class="exercise-categories__container">
+          <h2 class="exercise-categories__title title">Exercise Categories</h2>
+          <div class="exercise-categories__grid">
+            <div class="exercise-category" data-category="strength">
+              <div class="exercise-category__icon">💪</div>
+              <h3 class="exercise-category__title">Strength Training</h3>
+              <p class="exercise-category__description">Build muscle and increase strength</p>
+              <button class="exercise-category__button" onclick="showExercises('strength')">View Exercises</button>
+            </div>
+            <div class="exercise-category" data-category="cardio">
+              <div class="exercise-category__icon">🏃</div>
+              <h3 class="exercise-category__title">Cardio</h3>
+              <p class="exercise-category__description">Improve endurance and burn calories</p>
+              <button class="exercise-category__button" onclick="showExercises('cardio')">View Exercises</button>
+            </div>
+            <div class="exercise-category" data-category="flexibility">
+              <div class="exercise-category__icon">🧘</div>
+              <h3 class="exercise-category__title">Flexibility</h3>
+              <p class="exercise-category__description">Improve mobility and prevent injury</p>
+              <button class="exercise-category__button" onclick="showExercises('flexibility')">View Exercises</button>
+            </div>
+            <div class="exercise-category" data-category="bodyweight">
+              <div class="exercise-category__icon">🏋️</div>
+              <h3 class="exercise-category__title">Bodyweight</h3>
+              <p class="exercise-category__description">No equipment needed workouts</p>
+              <button class="exercise-category__button" onclick="showExercises('bodyweight')">View Exercises</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Exercise List -->
+      <section class="page__exercise-list exercise-list" id="exercise-list" style="display: none;">
+        <div class="exercise-list__container">
+          <div class="exercise-list__header">
+            <h2 class="exercise-list__title title" id="exercise-list-title">Exercises</h2>
+            <button class="exercise-list__back" onclick="hideExercises()">← Back to Categories</button>
+          </div>
+          <div class="exercise-filters" id="exercise-filters" style="margin: 0.5rem 0 1rem; display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+            <input id="filter-search" type="text" placeholder="Search (e.g., bench)" />
+            <select id="filter-difficulty">
+              <option value="">All difficulties</option>
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+            <select id="filter-goal">
+              <option value="">All goals</option>
+              <option value="weight_loss">Weight Loss</option>
+              <option value="muscle_gain">Muscle Gain</option>
+              <option value="performance">Performance</option>
+              <option value="general_fitness">General Fitness</option>
+            </select>
+            <div class="filter-group">
+              <input id="filter-equipment" type="text" placeholder="Equipment (e.g., Barbell)" />
+              <div id="equipment-facets" class="facet-chips"></div>
+            </div>
+            <div class="filter-group">
+              <div style="display:flex; gap:0.5rem; align-items:center;">
+                <input id="filter-muscle" type="text" placeholder="Muscle (e.g., Chest)" style="flex:1;" />
+                <select id="filter-muscle-role" title="Match muscle role">
+                  <option value="any">Any</option>
+                  <option value="primary">Primary only</option>
+                  <option value="secondary">Secondary only</option>
+                </select>
+              </div>
+              <div id="muscle-facets" class="facet-chips"></div>
+            </div>
+            <button id="filter-apply" type="button">Apply</button>
+            <button id="filter-reset" type="button">Reset</button>
+          </div>
+          <div class="exercise-list__grid" id="exercise-grid">
+            <!-- Exercises will be loaded here dynamically -->
+          </div>
+          <div id="pagination-controls" class="pagination-controls">
+            <!-- Pagination will be rendered here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Active Workout -->
+      <section class="page__active-workout active-workout" id="active-workout" style="display: none;">
+        <div class="active-workout__container">
+          <div class="active-workout__header">
+            <h2 class="active-workout__title title">Active Workout</h2>
+            <div class="active-workout__timer" id="workout-timer">00:00</div>
+            <button class="active-workout__end" onclick="endWorkout()">End Workout</button>
+          </div>
+          
+          <div class="active-workout__exercises" id="active-exercises">
+            <!-- Active exercises will be shown here -->
+          </div>
+          
+          <div class="active-workout__summary">
+            <h3>Workout Summary</h3>
+            <div class="workout-summary__stats">
+              <div class="summary-stat">
+                <span class="summary-stat__label">Total Time:</span>
+                <span class="summary-stat__value" id="total-time">00:00</span>
+              </div>
+              <div class="summary-stat">
+                <span class="summary-stat__label">Calories Burned:</span>
+                <span class="summary-stat__value" id="total-calories">0</span>
+              </div>
+              <div class="summary-stat">
+                <span class="summary-stat__label">Exercises:</span>
+                <span class="summary-stat__value" id="total-exercises">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Workout History -->
+      <section class="page__workout-history workout-history">
+        <div class="workout-history__container">
+          <h2 class="workout-history__title title">Recent Workouts</h2>
+          <div class="workout-history__list" id="workout-history">
+            <!-- Workout history will be loaded here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Weekly Workout Schedule -->
+      <section class="page__weekly-schedule weekly-schedule">
+        <div class="weekly-schedule__container">
+          <h2 class="weekly-schedule__title title">Weekly Workout Schedule</h2>
+          <div class="weekly-schedule__subtitle">7-Day Complete Fitness Program</div>
+          
+          <!-- Day Navigation -->
+          <div class="weekly-schedule__tabs">
+            <button class="schedule-tab active" data-day="Day1" onclick="showDaySchedule('Day1')">Day 1</button>
+            <button class="schedule-tab" data-day="Day2" onclick="showDaySchedule('Day2')">Day 2</button>
+            <button class="schedule-tab" data-day="Day3" onclick="showDaySchedule('Day3')">Day 3</button>
+            <button class="schedule-tab" data-day="Day4" onclick="showDaySchedule('Day4')">Day 4</button>
+            <button class="schedule-tab" data-day="Day5" onclick="showDaySchedule('Day5')">Day 5</button>
+            <button class="schedule-tab" data-day="Day6" onclick="showDaySchedule('Day6')">Day 6</button>
+            <button class="schedule-tab" data-day="Day7" onclick="showDaySchedule('Day7')">Day 7</button>
+          </div>
+
+          <!-- Day Content -->
+          <div class="weekly-schedule__content" id="schedule-content">
+            <!-- Day content will be loaded here dynamically -->
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="footer__container">
+        <a href="contact.html" class="footer__policy">Privacy Policy – Terms & Conditions</a>
+        <a href="index.html" class="footer__logo logo"><img src="images/LOGO.png" alt="Maverick Aim Rush Logo" style="height:2.2rem;vertical-align:middle;" /></a>
+        <div class="footer__copyright">Copyright © 2025 Maverick Aim Rush – All Rights Reserved</div>
+      </div>
+    </footer>
+  </div>
+  <script src="js/script.js"></script>
+  <script src="js/api.js?v=10"></script>
+  <script src="js/workout.js"></script>
+  <script src="js/weekly-schedule.js"></script>
+  <script>
+    // Initialize the workout tracker
+    const workoutTracker = new WorkoutTracker();
+
+    // --- AUTHENTICATION AND UNITS TOGGLE LOGIC ---
+    document.addEventListener('DOMContentLoaded', () => {
+      const userStatus = document.getElementById('user-status');
+      const welcomeMessage = document.getElementById('welcome-message');
+      const unitsToggle = document.getElementById('units-toggle');
+      const unitsDisplay = document.getElementById('units-display');
+      const toggleUnitsButton = document.getElementById('toggle-units');
+      const logoutButton = document.getElementById('logout-button');
+      
+      let currentProfile = null;
+
+      async function loadUserProfile() {
+        try {
+          currentProfile = await fetchUserProfile();
+          updateUnitsDisplay();
+          return currentProfile;
+        } catch (error) {
+          console.error('Failed to load user profile:', error);
+          return null;
+        }
+      }
+
+      function updateUnitsDisplay() {
+        if (currentProfile) {
+          const isImperial = currentProfile.unit_system === 'imperial';
+          unitsDisplay.textContent = isImperial ? 'lb/mi' : 'kg/km';
+        }
+      }
+
+      async function toggleUnits() {
+        if (!currentProfile) return;
+        
+        try {
+          const newUnitSystem = currentProfile.unit_system === 'imperial' ? 'metric' : 'imperial';
+          const newDistanceUnit = newUnitSystem === 'imperial' ? 'mi' : 'km';
+          
+          currentProfile = await updateUserProfile({
+            unit_system: newUnitSystem,
+            distance_unit: newDistanceUnit
+          });
+          
+          updateUnitsDisplay();
+          
+          // Refresh workout tracker
+          if (typeof workoutTracker !== 'undefined' && workoutTracker.loadUserProfile) {
+            await workoutTracker.loadUserProfile();
+          }
+          
+          console.log('Units updated to:', newUnitSystem, newDistanceUnit);
+        } catch (error) {
+          console.error('Failed to update units:', error);
+        }
+      }
+
+      async function checkLoginState() {
+        const token = getAccessToken();
+        if (token) {
+          // User is logged in
+          if (userStatus) userStatus.style.display = 'flex';
+          if (unitsToggle) unitsToggle.style.display = 'block';
+          
+          // Load user profile
+          await loadUserProfile();
+          
+          if (welcomeMessage) welcomeMessage.textContent = 'Welcome!';
+        } else {
+          // User is logged out - redirect to login
+          window.location.href = 'index.html';
+        }
+      }
+
+      // Event listeners
+      if (toggleUnitsButton) {
+        toggleUnitsButton.addEventListener('click', toggleUnits);
+      }
+      
+      if (logoutButton) {
+        logoutButton.addEventListener('click', () => {
+          logout();
+          window.location.href = 'index.html';
+        });
+      }
+
+      // Initial check when the page loads
+      checkLoginState();
+    });
+
+    // --- Simple AI Recommendations fetch ---
+    (async () => {
+      try {
+        const resp = await apiFetch('/advanced-analytics/');
+        if (!resp.ok) return;
+        const data = await resp.json();
+        const el = document.getElementById('ai-recos-list');
+        if (!el) return;
+        const insights = (data.smart_insights || []).slice(0,4);
+        el.innerHTML = insights.map(i => `<div class="activity-item" style="display:flex;gap:.75rem;align-items:center;"><div class="activity-icon">💡</div><div>${i}</div></div>`).join('') || '<div>No insights yet. Log some data first.</div>';
+      } catch (e) {
+        // silent
+      }
+    })();
+
+          const response = await fetch('/api/exercises/?page_size=5');
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          
+          const data = await response.json();
+          this.log(`  ✅ API Response: ${data.results?.length || 0} exercises found`, 'success');
+          
+          // Test 2: Category filtering
+          this.log('  → Testing category filtering...', 'info');
+          const strengthResponse = await fetch('/api/exercises/?category=strength&page_size=3');
+          if (strengthResponse.ok) {
+            const strengthData = await strengthResponse.json();
+            this.log(`  ✅ Strength exercises: ${strengthData.results?.length || 0} found`, 'success');
+          }
+          
+          // Test 3: Search functionality
+          this.log('  → Testing search functionality...', 'info');
+          const searchResponse = await fetch('/api/exercises/?search=bench&page_size=3');
+          if (searchResponse.ok) {
+            const searchData = await searchResponse.json();
+            this.log(`  ✅ Search results: ${searchData.results?.length || 0} found`, 'success');
+          }
+          
+          this.log('🎉 Exercise API tests completed successfully!', 'success');
+          
+        } catch (error) {
+          this.log(`❌ Exercise API test failed: ${error.message}`, 'error');
+        }
+      }
+
+      async testWorkoutFlow() {
+        this.log('🧪 Testing Workout Flow...', 'info');
+        
+        try {
+          // Test 1: Workout Tracker Instance
+          this.log('  → Checking workout tracker instance...', 'info');
+          if (window.workoutTracker) {
+            this.log('  ✅ Workout tracker instance found', 'success');
+          } else {
+            this.log('  ❌ Workout tracker instance not found', 'error');
+            return;
+          }
+          
+          // Test 2: Start/End Buttons
+          this.log('  → Testing start/end buttons...', 'info');
+          const startBtn = document.getElementById('start-workout-btn');
+          const endBtn = document.getElementById('end-workout-btn');
+          
+          if (startBtn && endBtn) {
+            this.log('  ✅ Start and End buttons found', 'success');
+            this.log(`  → Start button display: ${startBtn.style.display || 'block'}`, 'info');
+            this.log(`  → End button display: ${endBtn.style.display || 'none'}`, 'info');
+          } else {
+            this.log('  ❌ Start or End buttons missing', 'error');
+          }
+          
+          // Test 3: Timer Element
+          this.log('  → Testing timer element...', 'info');
+          const timer = document.getElementById('workout-timer');
+          if (timer) {
+            this.log('  ✅ Timer element found', 'success');
+            this.log(`  → Timer text: "${timer.textContent}"`, 'info');
+          } else {
+            this.log('  ❌ Timer element missing', 'error');
+          }
+          
+          // Test 4: Active Workout Section
+          this.log('  → Testing active workout section...', 'info');
+          const activeWorkout = document.getElementById('active-workout');
+          if (activeWorkout) {
+            this.log('  ✅ Active workout section found', 'success');
+            this.log(`  → Active workout display: ${activeWorkout.style.display || 'none'}`, 'info');
+          } else {
+            this.log('  ❌ Active workout section missing', 'error');
+          }
+          
+          this.log('🎉 Workout flow tests completed!', 'success');
+          
+        } catch (error) {
+          this.log(`❌ Workout flow test failed: ${error.message}`, 'error');
+        }
+      }
+
+      async testCategories() {
+        this.log('🧪 Testing Exercise Categories...', 'info');
+        
+        try {
+          const categories = ['strength', 'cardio', 'flexibility', 'bodyweight'];
+          
+          for (const category of categories) {
+            this.log(`  → Testing ${category} category...`, 'info');
+            
+            // Test category button
+            const categoryCard = document.querySelector(`[data-category="${category}"]`);
+            if (categoryCard) {
+              this.log(`    ✅ ${category} category card found`, 'success');
+              
+              const button = categoryCard.querySelector('.exercise-category__button');
+              if (button) {
+                this.log(`    ✅ ${category} button found`, 'success');
+              } else {
+                this.log(`    ❌ ${category} button missing`, 'error');
+              }
+            } else {
+              this.log(`    ❌ ${category} category card missing`, 'error');
+            }
+          }
+          
+          // Test global functions
+          this.log('  → Testing global functions...', 'info');
+          if (typeof window.showExercises === 'function') {
+            this.log('  ✅ showExercises function available', 'success');
+          } else {
+            this.log('  ❌ showExercises function missing', 'error');
+          }
+          
+          if (typeof window.hideExercises === 'function') {
+            this.log('  ✅ hideExercises function available', 'success');
+          } else {
+            this.log('  ❌ hideExercises function missing', 'error');
+          }
+          
+          this.log('🎉 Category tests completed!', 'success');
+          
+        } catch (error) {
+          this.log(`❌ Category test failed: ${error.message}`, 'error');
+        }
+      }
+
+      async testTimer() {
+        this.log('🧪 Testing Timer Functionality...', 'info');
+        
+        try {
+          // Test 1: Timer Element
+          const timer = document.getElementById('workout-timer');
+          if (!timer) {
+            this.log('  ❌ Timer element not found', 'error');
+            return;
+          }
+          
+          this.log('  ✅ Timer element found', 'success');
+          this.log(`  → Initial timer value: "${timer.textContent}"`, 'info');
+          
+          // Test 2: Workout Tracker Timer Methods
+          if (window.workoutTracker) {
+            this.log('  → Testing timer methods...', 'info');
+            
+            if (typeof window.workoutTracker.startTimer === 'function') {
+              this.log('  ✅ startTimer method available', 'success');
+            } else {
+              this.log('  ❌ startTimer method missing', 'error');
+            }
+            
+            if (typeof window.workoutTracker.stopTimer === 'function') {
+              this.log('  ✅ stopTimer method available', 'success');
+            } else {
+              this.log('  ❌ stopTimer method missing', 'error');
+            }
+          }
+          
+          // Test 3: Timer State
+          this.log('  → Checking timer state...', 'info');
+          if (window.workoutTracker && window.workoutTracker.timerInterval) {
+            this.log('  ⚠️ Timer is currently running', 'warning');
+          } else {
+            this.log('  ℹ️ Timer is not currently running', 'info');
+          }
+          
+          this.log('🎉 Timer tests completed!', 'success');
+          
+        } catch (error) {
+          this.log(`❌ Timer test failed: ${error.message}`, 'error');
+        }
+      }
+
+      async testStorage() {
+        this.log('🧪 Testing Storage Functionality...', 'info');
+        
+        try {
+          // Test 1: Local Storage Methods
+          if (window.workoutTracker) {
+            this.log('  → Testing local storage methods...', 'info');
+            
+            if (typeof window.workoutTracker.loadLocal === 'function') {
+              this.log('  ✅ loadLocal method available', 'success');
+            } else {
+              this.log('  ❌ loadLocal method missing', 'error');
+            }
+            
+            if (typeof window.workoutTracker.saveLocal === 'function') {
+              this.log('  ✅ saveLocal method available', 'success');
+            } else {
+              this.log('  ❌ saveLocal method missing', 'error');
+            }
+          }
+          
+          // Test 2: Workout History
+          this.log('  → Testing workout history...', 'info');
+          if (window.workoutTracker && window.workoutTracker.workoutHistory) {
+            this.log(`  ✅ Workout history found: ${window.workoutTracker.workoutHistory.length} entries`, 'success');
+          } else {
+            this.log('  ℹ️ No workout history found', 'info');
+          }
+          
+          // Test 3: Personal Records
+          this.log('  → Testing personal records...', 'info');
+          if (window.workoutTracker && window.workoutTracker.personalRecords) {
+            const recordCount = Object.keys(window.workoutTracker.personalRecords).length;
+            this.log(`  ✅ Personal records found: ${recordCount} entries`, 'success');
+          } else {
+            this.log('  ℹ️ No personal records found', 'info');
+          }
+          
+          // Test 4: Current Workout
+          this.log('  → Testing current workout...', 'info');
+          if (window.workoutTracker && window.workoutTracker.currentWorkout) {
+            this.log('  ✅ Current workout object found', 'success');
+            this.log(`  → Exercises in current workout: ${window.workoutTracker.currentWorkout.exercises?.length || 0}`, 'info');
+          } else {
+            this.log('  ❌ Current workout object missing', 'error');
+          }
+          
+          this.log('🎉 Storage tests completed!', 'success');
+          
+        } catch (error) {
+          this.log(`❌ Storage test failed: ${error.message}`, 'error');
+        }
+      }
+
+      async testIntegration() {
+        this.log('🧪 Running Integration Test - Complete Workout Simulation...', 'info');
+        
+        try {
+          if (!window.workoutTracker) {
+            this.log('  ❌ Workout tracker not available', 'error');
+            return;
+          }
+
+          // Step 1: Test Session Creation
+          this.log('  → Step 1: Testing session creation...', 'info');
+          try {
+            const start_time = new Date().toISOString();
+            const response = await fetch('/api/sessions/', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ start_time })
+            });
+            
+            if (response.ok) {
+              const sessionData = await response.json();
+              this.log(`  ✅ Session created successfully: ID ${sessionData.id}`, 'success');
+            } else {
+              const errorText = await response.text();
+              this.log(`  ❌ Session creation failed: ${response.status} - ${errorText}`, 'error');
+            }
+          } catch (error) {
+            this.log(`  ❌ Session creation error: ${error.message}`, 'error');
+          }
+
+          // Step 2: Start Workout
+          this.log('  → Step 2: Starting workout...', 'info');
+          window.workoutTracker.startWorkout();
+          this.log('  ✅ Workout started successfully', 'success');
+          
+          // Step 3: Add Exercise
+          this.log('  → Step 3: Adding exercise to workout...', 'info');
+          const mockExercise = {
+            id: 'test-exercise-1',
+            name: 'Test Bench Press',
+            category: 'strength',
+            muscles: { primary: ['chest'], secondary: ['triceps', 'shoulders'] }
+          };
+          
+          if (typeof window.workoutTracker.addExerciseToWorkout === 'function') {
+            window.workoutTracker.addExerciseToWorkout(mockExercise);
+            this.log('  ✅ Exercise added to workout', 'success');
+          } else {
+            this.log('  ⚠️ addExerciseToWorkout method not found', 'warning');
+          }
+          
+          // Step 4: Add Set
+          this.log('  → Step 4: Adding set to exercise...', 'info');
+          if (typeof window.workoutTracker.addSet === 'function') {
+            window.workoutTracker.addSet('test-exercise-1', 135, 10);
+            this.log('  ✅ Set added successfully', 'success');
+          } else {
+            this.log('  ⚠️ addSet method not found', 'warning');
+          }
+          
+          // Step 5: Check Timer
+          this.log('  → Step 5: Checking timer status...', 'info');
+          const timer = document.getElementById('workout-timer');
+          if (timer && timer.textContent !== '00:00') {
+            this.log(`  ✅ Timer is running: ${timer.textContent}`, 'success');
+          } else {
+            this.log('  ⚠️ Timer may not be running properly', 'warning');
+          }
+          
+          // Step 6: Check Active Workout Display
+          this.log('  → Step 6: Checking active workout display...', 'info');
+          const activeWorkout = document.getElementById('active-workout');
+          if (activeWorkout && activeWorkout.style.display !== 'none') {
+            this.log('  ✅ Active workout section is visible', 'success');
+          } else {
+            this.log('  ⚠️ Active workout section may not be visible', 'warning');
+          }
+          
+          // Step 7: End Workout
+          this.log('  → Step 7: Ending workout...', 'info');
+          window.workoutTracker.endWorkout();
+          this.log('  ✅ Workout ended successfully', 'success');
+          
+          // Step 8: Verify History
+          this.log('  → Step 8: Verifying workout history...', 'info');
+          if (window.workoutTracker.workoutHistory && window.workoutTracker.workoutHistory.length > 0) {
+            this.log(`  ✅ Workout saved to history: ${window.workoutTracker.workoutHistory.length} total workouts`, 'success');
+          } else {
+            this.log('  ⚠️ Workout may not have been saved to history', 'warning');
+          }
+          
+          this.log('🎉 Integration test completed successfully!', 'success');
+          this.log('  → All major workout flow components are working', 'success');
+          
+        } catch (error) {
+          this.log(`❌ Integration test failed: ${error.message}`, 'error');
+        }
+      }
+
+      async testEndWorkout() {
+        this.log('🧪 Testing End Workout Button Specifically...', 'info');
+        
+        try {
+          // Test 1: Check if End Workout button exists
+          this.log('  → Step 1: Checking End Workout button...', 'info');
+          const endBtn = document.getElementById('end-workout-btn');
+          if (endBtn) {
+            this.log('  ✅ End Workout button found', 'success');
+            this.log(`  → Button display: ${endBtn.style.display || 'block'}`, 'info');
+            this.log(`  → Button text: "${endBtn.textContent}"`, 'info');
+          } else {
+            this.log('  ❌ End Workout button not found', 'error');
+            return;
+          }
+
+          // Test 2: Check if workout tracker has endWorkout method
+          this.log('  → Step 2: Checking endWorkout method...', 'info');
+          if (window.workoutTracker && typeof window.workoutTracker.endWorkout === 'function') {
+            this.log('  ✅ endWorkout method available', 'success');
+          } else {
+            this.log('  ❌ endWorkout method not available', 'error');
+            return;
+          }
+
+          // Test 3: Check current workout state
+          this.log('  → Step 3: Checking current workout state...', 'info');
+          if (window.workoutTracker.currentWorkout) {
+            this.log('  ✅ Current workout object exists', 'success');
+            this.log(`  → Start time: ${window.workoutTracker.currentWorkout.startTime || 'Not set'}`, 'info');
+            this.log(`  → Exercises: ${window.workoutTracker.currentWorkout.exercises?.length || 0}`, 'info');
+          } else {
+            this.log('  ❌ Current workout object missing', 'error');
+          }
+
+          // Test 4: Simulate clicking the End Workout button
+          this.log('  → Step 4: Simulating End Workout button click...', 'info');
+          try {
+            // Trigger the click event
+            endBtn.click();
+            this.log('  ✅ End Workout button click triggered', 'success');
+            
+            // Wait a moment for the method to execute
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Check if the button states changed
+            const startBtn = document.getElementById('start-workout-btn');
+            if (startBtn && startBtn.style.display !== 'none') {
+              this.log('  ✅ Start button is now visible', 'success');
+            } else {
+              this.log('  ⚠️ Start button may not be visible', 'warning');
+            }
+            
+            if (endBtn.style.display === 'none') {
+              this.log('  ✅ End button is now hidden', 'success');
+            } else {
+              this.log('  ⚠️ End button may not be hidden', 'warning');
+            }
+            
+          } catch (error) {
+            this.log(`  ❌ Error clicking End Workout button: ${error.message}`, 'error');
+          }
+
+          // Test 5: Check workout history
+          this.log('  → Step 5: Checking workout history...', 'info');
+          if (window.workoutTracker.workoutHistory && window.workoutTracker.workoutHistory.length > 0) {
+            this.log(`  ✅ Workout history updated: ${window.workoutTracker.workoutHistory.length} workouts`, 'success');
+          } else {
+            this.log('  ⚠️ Workout history may not be updated', 'warning');
+          }
+          
+          this.log('🎉 End Workout test completed!', 'success');
+          
+        } catch (error) {
+          this.log(`❌ End Workout test failed: ${error.message}`, 'error');
+        }
+      }
+
+      initializeTestButtons() {
+        const buttons = {
+          'test-exercise-api': () => this.testExerciseAPI(),
+          'test-workout-flow': () => this.testWorkoutFlow(),
+          'test-categories': () => this.testCategories(),
+          'test-timer': () => this.testTimer(),
+          'test-storage': () => this.testStorage(),
+          'test-integration': () => this.testIntegration(),
+          'test-end-workout': () => this.testEndWorkout(),
+          'clear-tests': () => this.clearResults()
+        };
+
+        Object.entries(buttons).forEach(([id, handler]) => {
+          const button = document.getElementById(id);
+          if (button) {
+            button.addEventListener('click', handler);
+          }
+        });
+      }
+    }
+
+
+    // --- AI-Powered Workout Suggestions System ---
+    class WorkoutSuggestionsAI {
+      constructor() {
+        this.suggestions = [];
+        this.userProfile = null;
+        this.workoutHistory = [];
+        this.currentGoals = [];
+        this.initializeEventListeners();
+        this.loadUserData();
+      }
+
+      initializeEventListeners() {
+        const generateBtn = document.getElementById('generate-suggestions-btn');
+        const startSuggestedBtn = document.getElementById('start-suggested-workout-btn');
+        const endWorkoutBtn = document.getElementById('end-workout-btn');
+
+        if (generateBtn) {
+          generateBtn.addEventListener('click', () => this.generateSuggestions());
+        }
+
+        if (startSuggestedBtn) {
+          startSuggestedBtn.addEventListener('click', () => this.startSuggestedWorkout());
+        }
+
+        if (endWorkoutBtn) {
+          endWorkoutBtn.addEventListener('click', () => this.endWorkout());
+        }
+      }
+
+      async loadUserData() {
+        try {
+          // Load user profile, goals, and workout history
+          const [profileResponse, goalsResponse, historyResponse] = await Promise.all([
+            fetch('/api/profile/me/'),
+            fetch('/api/goals/'),
+            fetch('/api/sessions/')
+          ]);
+
+          if (profileResponse.ok) {
+            this.userProfile = await profileResponse.json();
+          }
+
+          if (goalsResponse.ok) {
+            const goalsData = await goalsResponse.json();
+            this.currentGoals = goalsData.results || [];
+          }
+
+          if (historyResponse.ok) {
+            const historyData = await historyResponse.json();
+            this.workoutHistory = historyData.results || [];
+          }
+
+          console.log('User data loaded:', {
+            profile: this.userProfile,
+            goals: this.currentGoals,
+            history: this.workoutHistory
+          });
+
+        } catch (error) {
+          console.error('Failed to load user data:', error);
+        }
+      }
+
+      async generateSuggestions() {
+        const suggestionsContent = document.getElementById('suggestions-content');
+        if (!suggestionsContent) return;
+
+        // Show loading state
+        suggestionsContent.innerHTML = `
+          <div class="loading-suggestions" style="text-align: center; padding: 2rem;">
+            <div class="loading-spinner" style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
+            <p>🧠 AI is analyzing your data...</p>
+            <p style="font-size: 0.875rem; opacity: 0.8;">Generating personalized workout recommendations</p>
+          </div>
+        `;
+
+        // Simulate AI processing time
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Generate AI suggestions based on user data
+        this.suggestions = this.createAISuggestions();
+        this.renderSuggestions();
+      }
+
+      createAISuggestions() {
+        const suggestions = [];
+
+        // Analyze user goals
+        const primaryGoal = this.currentGoals.find(g => g.is_active)?.goal_type || 'general_fitness';
+        const userLevel = this.userProfile?.experience_level || 'intermediate';
+        const lastWorkout = this.workoutHistory[0];
+
+        // Suggestion 1: Goal-based workout
+        if (primaryGoal === 'muscle_gain') {
+          suggestions.push({
+            id: 'muscle-gain-workout',
+            title: '💪 Muscle Building Power Session',
+            description: 'High-intensity strength training focused on progressive overload. Perfect for building lean muscle mass.',
+            type: 'strength',
+            duration: '60-75 minutes',
+            difficulty: 'intermediate',
+            exercises: ['Bench Press', 'Squats', 'Deadlifts', 'Overhead Press', 'Pull-ups'],
+            calories: '400-600',
+            tags: ['Strength', 'Muscle Gain', 'Progressive Overload'],
+            reason: 'Based on your muscle gain goal and intermediate level'
+          });
+        } else if (primaryGoal === 'weight_loss') {
+          suggestions.push({
+            id: 'fat-burn-workout',
+            title: '🔥 High-Intensity Fat Burner',
+            description: 'Circuit training combining cardio and strength for maximum calorie burn and fat loss.',
+            type: 'cardio',
+            duration: '45-60 minutes',
+            difficulty: 'intermediate',
+            exercises: ['Burpees', 'Mountain Climbers', 'Kettlebell Swings', 'Jump Squats', 'Battle Ropes'],
+            calories: '500-700',
+            tags: ['Cardio', 'Fat Loss', 'HIIT'],
+            reason: 'Optimized for your weight loss goal with high calorie burn'
+          });
+        }
+
+        // Suggestion 2: Recovery-based workout
+        if (lastWorkout && this.getDaysSinceLastWorkout(lastWorkout) > 2) {
+          suggestions.push({
+            id: 'recovery-workout',
+            title: '🧘 Active Recovery & Mobility',
+            description: 'Gentle movement and stretching to improve flexibility and aid recovery after your break.',
+            type: 'flexibility',
+            duration: '30-45 minutes',
+            difficulty: 'beginner',
+            exercises: ['Yoga Flow', 'Dynamic Stretching', 'Foam Rolling', 'Light Cardio'],
+            calories: '150-250',
+            tags: ['Recovery', 'Flexibility', 'Mobility'],
+            reason: 'Perfect for getting back into your routine after a break'
+          });
+        }
+
+        // Suggestion 3: Skill-based workout
+        suggestions.push({
+          id: 'skill-development',
+          title: '🎯 Skill Development Session',
+          description: 'Focus on improving technique and learning new exercises to enhance your fitness journey.',
+          type: 'bodyweight',
+          duration: '40-50 minutes',
+          difficulty: userLevel,
+          exercises: ['Handstand Practice', 'Muscle-ups', 'Advanced Planks', 'Balance Training'],
+          calories: '200-350',
+          tags: ['Skill Building', 'Technique', 'Bodyweight'],
+          reason: 'Great for developing new skills and improving form'
+        });
+
+        // Suggestion 4: Time-efficient workout
+        suggestions.push({
+          id: 'quick-workout',
+          title: '⚡ Quick & Effective 20-Minute Blast',
+          description: 'Maximum results in minimum time. Perfect for busy schedules while maintaining progress.',
+          type: 'hiit',
+          duration: '20-25 minutes',
+          difficulty: 'intermediate',
+          exercises: ['Tabata Intervals', 'Compound Movements', 'Supersets'],
+          calories: '250-400',
+          tags: ['Quick', 'HIIT', 'Time-Efficient'],
+          reason: 'Fits your schedule while maintaining workout consistency'
+        });
+
+        return suggestions;
+      }
+
+      getDaysSinceLastWorkout(lastWorkout) {
+        if (!lastWorkout?.start_time) return 0;
+        const lastDate = new Date(lastWorkout.start_time);
+        const today = new Date();
+        return Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
+      }
+
+      renderSuggestions() {
+        const suggestionsContent = document.getElementById('suggestions-content');
+        if (!suggestionsContent) return;
+
+        if (this.suggestions.length === 0) {
+          suggestionsContent.innerHTML = `
+            <div style="text-align: center; padding: 2rem;">
+              <p>No suggestions available. Please check your profile and goals.</p>
+            </div>
+          `;
+          return;
+        }
+
+        suggestionsContent.innerHTML = this.suggestions.map(suggestion => `
+          <div class="suggestion-card" data-suggestion-id="${suggestion.id}">
+            <div class="suggestion-title">
+              ${suggestion.title}
+            </div>
+            <div class="suggestion-description">
+              ${suggestion.description}
+            </div>
+            <div class="suggestion-meta">
+              <span class="suggestion-tag">⏱️ ${suggestion.duration}</span>
+              <span class="suggestion-tag">🔥 ${suggestion.calories} cal</span>
+              <span class="suggestion-tag">📊 ${suggestion.difficulty}</span>
+              <span class="suggestion-tag">🎯 ${suggestion.type}</span>
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <strong>Why this workout:</strong> ${suggestion.reason}
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <strong>Exercises:</strong> ${suggestion.exercises.join(', ')}
+            </div>
+            <div class="suggestion-actions">
+              <button class="suggestion-btn accept-btn" onclick="workoutSuggestionsAI.acceptSuggestion('${suggestion.id}')">
+                ✅ Accept & Start
+              </button>
+              <button class="suggestion-btn reject-btn" onclick="workoutSuggestionsAI.rejectSuggestion('${suggestion.id}')">
+                ❌ Not Today
+              </button>
+              <button class="suggestion-btn primary-btn" onclick="workoutSuggestionsAI.customizeSuggestion('${suggestion.id}')">
+                ⚙️ Customize
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        // Show start suggested workout button
+        const startBtn = document.getElementById('start-suggested-workout-btn');
+        if (startBtn) {
+          startBtn.style.display = 'inline-block';
+        }
+      }
+
+      acceptSuggestion(suggestionId) {
+        const suggestion = this.suggestions.find(s => s.id === suggestionId);
+        if (!suggestion) return;
+
+        // Hide suggestions panel and start workout
+        const suggestionsPanel = document.getElementById('ai-suggestions-panel');
+        if (suggestionsPanel) {
+          suggestionsPanel.style.display = 'none';
+        }
+
+        // Start the suggested workout
+        this.startSuggestedWorkout(suggestion);
+      }
+
+      rejectSuggestion(suggestionId) {
+        const suggestionCard = document.querySelector(`[data-suggestion-id="${suggestionId}"]`);
+        if (suggestionCard) {
+          suggestionCard.style.opacity = '0.5';
+          suggestionCard.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            suggestionCard.remove();
+          }, 300);
+        }
+      }
+
+      customizeSuggestion(suggestionId) {
+        const suggestion = this.suggestions.find(s => s.id === suggestionId);
+        if (!suggestion) return;
+
+        // Show customization modal or options
+        alert(`Customizing: ${suggestion.title}\n\nThis feature will allow you to:\n- Adjust duration\n- Modify exercises\n- Change difficulty\n- Set specific goals`);
+      }
+
+      startSuggestedWorkout(suggestion = null) {
+        if (!suggestion) {
+          // Use the first available suggestion
+          suggestion = this.suggestions[0];
+        }
+
+        if (!suggestion) {
+          alert('No workout suggestion available. Please generate suggestions first.');
+          return;
+        }
+
+        // Hide suggestions panel
+        const suggestionsPanel = document.getElementById('ai-suggestions-panel');
+        if (suggestionsPanel) {
+          suggestionsPanel.style.display = 'none';
+        }
+
+        // Show workout controls
+        const startBtn = document.getElementById('start-suggested-workout-btn');
+        const endBtn = document.getElementById('end-workout-btn');
+        
+        if (startBtn) startBtn.style.display = 'none';
+        if (endBtn) endBtn.style.display = 'inline-block';
+
+        // Initialize workout with suggested exercises
+        if (window.workoutTracker) {
+          window.workoutTracker.startWorkout();
+          window.workoutTracker.showActiveWorkout();
+          
+          // Add suggested exercises to workout
+          suggestion.exercises.forEach((exerciseName, index) => {
+            const mockExercise = {
+              id: `suggested-${index}`,
+              name: exerciseName,
+              category: suggestion.type,
+              muscles: { primary: ['full-body'], secondary: [] }
+            };
+            window.workoutTracker.addExerciseToWorkout(mockExercise);
+          });
+        }
+
+        // Show success message
+        this.showToast(`Started: ${suggestion.title}`, 'success');
+      }
+
+      endWorkout() {
+        if (window.workoutTracker) {
+          window.workoutTracker.endWorkout();
+        }
+
+        // Show suggestions panel again
+        const suggestionsPanel = document.getElementById('ai-suggestions-panel');
+        if (suggestionsPanel) {
+          suggestionsPanel.style.display = 'block';
+        }
+
+        // Hide workout controls
+        const startBtn = document.getElementById('start-suggested-workout-btn');
+        const endBtn = document.getElementById('end-workout-btn');
+        
+        if (startBtn) startBtn.style.display = 'inline-block';
+        if (endBtn) endBtn.style.display = 'none';
+
+        this.showToast('Workout completed! Great job! 🎉', 'success');
+      }
+
+      showToast(message, type = 'info') {
+        // Create toast notification
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+          color: white;
+          padding: 1rem 1.5rem;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+          z-index: 1000;
+          font-weight: 600;
+          max-width: 300px;
+        `;
+        toast.textContent = message;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+          toast.remove();
+        }, 3000);
+      }
+    }
+
+    // Initialize AI suggestions system
+    document.addEventListener('DOMContentLoaded', () => {
+      window.workoutSuggestionsAI = new WorkoutSuggestionsAI();
+    });
+  </script>
+</body>
+
+</html>

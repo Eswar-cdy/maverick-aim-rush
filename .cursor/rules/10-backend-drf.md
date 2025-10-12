@@ -1,0 +1,12 @@
+# Backend (Django/DRF)
+- Prefer DRF ViewSets + Routers; validate in serializers.
+- Use Postgres via env-based DATABASES; no SQLite in prod.
+- Write migrations for model changes; idempotent data migrations.
+- Default paginated list responses with page size caps.
+- **MANDATORY: All new endpoints must be under /api/v1/ path. No exceptions.**
+- **MANDATORY: Add schema snapshot tests for all new endpoints to prevent frontend/backend drift.**
+- **MANDATORY: Include OpenAPI contract tests in test suite.**
+- Enforce permissions (`permissions.py`) and throttling where applicable.
+- Never log secrets; use settings/env variables only.
+- Default to `pytest` style if present; otherwise Django test runner.
+- Add tests for serializers, views, and critical utils.
