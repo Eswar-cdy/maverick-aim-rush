@@ -1,40 +1,43 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: Bug Report
+about: Create a report to help us improve Maverick Aim Rush
 title: '[BUG] '
-labels: 'bug'
+labels: bug
 assignees: ''
 
 ---
 
-**Describe the bug**
+## 🐛 Bug Description
 A clear and concise description of what the bug is.
 
-**To Reproduce**
-Steps to reproduce the behavior:
+## 🔄 Steps to Reproduce
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
-**Expected behavior**
+## ✅ Expected Behavior
 A clear and concise description of what you expected to happen.
 
-**Screenshots**
+## ❌ Actual Behavior
+A clear and concise description of what actually happened.
+
+## 📱 Environment
+- **OS**: [e.g. macOS, Windows, Linux]
+- **Browser**: [e.g. Chrome, Safari, Firefox]
+- **Version**: [e.g. 22]
+- **Device**: [e.g. Desktop, Mobile, Tablet]
+
+## 📸 Screenshots
 If applicable, add screenshots to help explain your problem.
 
-**Environment (please complete the following information):**
- - OS: [e.g. macOS, Windows, Linux]
- - Browser: [e.g. Chrome, Safari, Firefox]
- - Version: [e.g. 22]
- - Python Version: [e.g. 3.12]
- - Django Version: [e.g. 5.2.5]
+## 🖥️ Console Output
+If applicable, paste any console errors or relevant output here.
 
-**Additional context**
+## 📋 Additional Context
 Add any other context about the problem here.
 
-**Console Errors**
-If there are any console errors, please paste them here:
-```
-Error messages here
-```
+## 🔍 Checklist
+- [ ] I have searched existing issues to ensure this bug hasn't been reported
+- [ ] I have provided all the information requested above
+- [ ] I have tested this on multiple browsers/devices if applicable

@@ -1,29 +1,63 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
+name: Feature Request
+about: Suggest an idea for Maverick Aim Rush
 title: '[FEATURE] '
-labels: 'enhancement'
+labels: enhancement
 assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
-
-**Describe the solution you'd like**
+## 🚀 Feature Description
 A clear and concise description of what you want to happen.
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+## 💡 Motivation
+Why is this feature needed? What problem does it solve?
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+## 📋 Detailed Description
+Provide a detailed description of the proposed feature, including:
+- How it should work
+- What user interactions are involved
+- Any specific requirements or constraints
 
-**Implementation ideas**
-If you have any ideas on how this could be implemented, please share them here.
+## 🎯 Use Cases
+Describe specific scenarios where this feature would be useful:
+1. As a [user type], I want to [goal] so that [benefit]
+2. As a [user type], I want to [goal] so that [benefit]
+3. As a [user type], I want to [goal] so that [benefit]
 
-**Priority**
-- [ ] Low
-- [ ] Medium
-- [ ] High
-- [ ] Critical
+## 🎨 UI/UX Considerations
+If applicable, describe how this feature should look and behave:
+- Any mockups or wireframes
+- User interface requirements
+- User experience considerations
+
+## 🔧 Technical Considerations
+If you have technical knowledge, describe:
+- Any technical requirements
+- Potential implementation approaches
+- Integration points with existing features
+
+## 📱 Platform Considerations
+- [ ] Web (Desktop)
+- [ ] Web (Mobile)
+- [ ] PWA
+- [ ] API
+- [ ] Real-time features
+
+## 🎯 Priority
+How important is this feature to you?
+- [ ] Critical - Cannot use the app without this
+- [ ] High - Significantly improves my experience
+- [ ] Medium - Nice to have
+- [ ] Low - Minor improvement
+
+## 📸 Mockups/Examples
+If applicable, add mockups, screenshots, or examples from other applications.
+
+## 🔍 Additional Context
+Add any other context, screenshots, or research about the feature request here.
+
+## 📋 Checklist
+- [ ] I have searched existing issues to ensure this feature hasn't been requested
+- [ ] I have provided a clear description and use cases
+- [ ] I have considered the technical and UX implications
