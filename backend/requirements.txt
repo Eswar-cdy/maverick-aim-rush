@@ -16,7 +16,7 @@ redis==5.0.1
 # Development and CI dependencies
 flake8==6.1.0
 safety==3.0.1
-corsheaders==4.3.1
+django-cors-headers==4.3.1
 
 # Testing dependencies
 pytest==7.4.3
