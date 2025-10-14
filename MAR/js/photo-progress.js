@@ -3,7 +3,7 @@
 
 class PhotoProgressManager {
     constructor() {
-        this.apiBaseUrl = 'http://localhost:8000/api';
+        this.apiBaseUrl = 'http://localhost:8000';
         this.photoData = null;
         this.init();
     }

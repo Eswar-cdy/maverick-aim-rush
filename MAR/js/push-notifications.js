@@ -40,7 +40,7 @@ class PushNotificationManager {
     
     async getVapidPublicKey() {
         try {
-            const response = await fetch('/api/v1/notifications/vapid-key/');
+            const response = await fetch('http://localhost:8000/api/v1/notifications/vapid-key/');
             const data = await response.json();
             this.vapidPublicKey = data.vapid_public_key;
         } catch (error) {
@@ -50,7 +50,7 @@ class PushNotificationManager {
     
     async registerServiceWorker() {
         try {
-            this.registration = await navigator.serviceWorker.register('/MAR/sw.js');
+            this.registration = await navigator.serviceWorker.register('/sw.js');
             console.log('Service worker registered:', this.registration);
         } catch (error) {
             console.error('Service worker registration failed:', error);

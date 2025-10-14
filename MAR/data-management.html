@@ -242,7 +242,7 @@
                 if (!token) return;
 
                 // Load workout count
-                const workoutResponse = await fetch('http://localhost:8000/api/sessions/', {
+                const workoutResponse = await fetch('http://localhost:8000/api/v1/sessions/', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (workoutResponse.ok) {
@@ -251,7 +251,7 @@
                 }
 
                 // Load nutrition count
-                const nutritionResponse = await fetch('http://localhost:8000/api/nutrition-logs/', {
+                const nutritionResponse = await fetch('http://localhost:8000/api/v1/nutrition-logs/', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (nutritionResponse.ok) {

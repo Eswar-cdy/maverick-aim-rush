@@ -884,7 +884,7 @@
           } else {
             try {
               // Test if token is valid by making a simple API call (use API wrapper for refresh logic)
-              const response = await api.apiFetch('/profile/');
+              const response = await api.apiFetch('/api/v1/profile/me/');
               
               if (response.ok) {
                 // Token is valid - user is logged in
@@ -1168,7 +1168,7 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/MAR/sw.js')
+        navigator.serviceWorker.register('/sw.js')
           .then((registration) => {
             console.log('SW registered: ', registration);
           })

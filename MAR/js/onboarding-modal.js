@@ -62,16 +62,8 @@
 
   async function saveProfile(payload) {
     try {
-      // First, get the profile to find its ID for the PATCH URL
-      const profile = await apiFetch('/api/v1/profile/');
-      if (!profile.ok) throw new Error('Could not fetch user profile.');
-      const profileData = await profile.json();
-      const profileId = profileData.id;
-
-      if (!profileId) throw new Error('Profile ID not found.');
-
-      // Now, update the profile with the onboarding data
-      const response = await apiFetch(`/api/v1/profile/${profileId}/`, {
+      // Update the profile using the 'me' endpoint
+      const response = await apiFetch('/api/v1/profile/me/', {
         method: 'PATCH',
         body: JSON.stringify(payload.profileData)
       });

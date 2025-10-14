@@ -89,7 +89,7 @@ class BugFixes {
         window.api = {};
       }
       
-      window.api.API_BASE_URL = 'http://localhost:8000/api';
+      window.api.API_BASE_URL = 'http://localhost:8000';
       this.fixesApplied.push('API Configuration');
     }
   }

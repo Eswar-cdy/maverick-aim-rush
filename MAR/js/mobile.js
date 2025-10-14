@@ -75,9 +75,18 @@ class MobileOptimizer {
       return;
     }
     
-    // Go back in browser history if possible
-    if (window.history.length > 1) {
-      window.history.back();
+    // Safe navigation back with error handling
+    try {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        // Fallback to home page if no history
+        window.location.href = 'index.html';
+      }
+    } catch (error) {
+      console.warn('Navigation error:', error);
+      // Fallback to home page
+      window.location.href = 'index.html';
     }
   }
 
