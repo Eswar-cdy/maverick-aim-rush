@@ -318,7 +318,7 @@
             try {
                 // Test API configuration
                 window.testUtils.assertNotNull(window.api, 'API object should exist');
-                window.testUtils.assertEqual(window.api.API_BASE_URL, 'http://localhost:8000/api', 'API base URL should be correct');
+                window.testUtils.assertEqual(window.api.API_BASE_URL, 'http://localhost:8000', 'API base URL should be correct');
                 
                 resultsDiv.innerHTML = 'API tests completed!';
             } catch (error) {
@@ -524,7 +524,7 @@
             debugDiv.innerHTML = 'Testing API connection...';
             
             try {
-                const response = await fetch('http://localhost:8000/api/export-status/');
+                const response = await fetch('http://localhost:8000/api/v1/data/export-status/');
                 if (response.ok) {
                     debugDiv.innerHTML = '✅ API connection successful!';
                 } else {

@@ -6,7 +6,7 @@ class DashboardManager {
         this.isInitialized = false;
         this.authState = 'checking';
         this.userData = null;
-        this.apiBaseUrl = 'http://localhost:8000/api';
+        this.apiBaseUrl = 'http://localhost:8000';
         // Don't auto-initialize, wait for explicit call
     }
 
@@ -72,7 +72,7 @@ class DashboardManager {
 
             // Verify token with backend (do not auto-refresh here to avoid 401 noise on login screen)
             console.log('🔍 Verifying token with backend...');
-            const response = await fetch(`${this.apiBaseUrl}/profile/me/`, {
+            const response = await fetch(`${this.apiBaseUrl}/api/v1/profile/me/`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -392,7 +392,7 @@ class DashboardManager {
     async loadUserProfile() {
         try {
             const token = localStorage.getItem('access_token') || localStorage.getItem('accessToken');
-            const response = await fetch(`${this.apiBaseUrl}/profile/me/`, {
+            const response = await fetch(`${this.apiBaseUrl}/api/v1/profile/me/`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'

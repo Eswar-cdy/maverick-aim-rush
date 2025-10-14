@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginError = document.getElementById('login-error');
     const registerError = document.getElementById('register-error');
 
-    const API_URL = 'http://127.0.0.1:8000/api/users'; // Correct base URL for user auth
+    const API_URL = 'http://127.0.0.1:8000'; // Correct base URL for user auth
 
     function connectWebSocket() {
         const accessToken = localStorage.getItem('accessToken');
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = Object.fromEntries(formData.entries());
 
         try {
-            const response = await fetch(`${API_URL}/token/`, {
+            const response = await fetch(`${API_URL}/api/v1/auth/login/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),

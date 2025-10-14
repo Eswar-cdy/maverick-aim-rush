@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = 'http://127.0.0.1:8000/api/tracker';
+    const API_URL = 'http://127.0.0.1:8000';
     const form = document.getElementById('questionnaire-form');
     const steps = Array.from(form.querySelectorAll('.form-step'));
     const statusDiv = document.getElementById('generation-status');
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Save profile
-            const profileResponse = await fetch(`${API_URL}/profile/`, {
+            const profileResponse = await fetch(`${API_URL}/api/v1/profile/me/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,

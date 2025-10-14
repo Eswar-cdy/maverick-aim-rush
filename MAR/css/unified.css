@@ -1,0 +1,49 @@
+/* Unified Layout System - Resolves conflicts between UnoCSS and custom CSS */
+
+/* Reset conflicting styles */
+.container {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 1rem !important;
+}
+
+/* Fix grid conflicts */
+.grid {
+  display: grid !important;
+  gap: 1.5rem !important;
+}
+
+.grid-cols-1 { grid-template-columns: repeat(1, 1fr) !important; }
+.grid-cols-2 { grid-template-columns: repeat(2, 1fr) !important; }
+.grid-cols-3 { grid-template-columns: repeat(3, 1fr) !important; }
+
+/* Fix flex conflicts */
+.flex {
+  display: flex !important;
+}
+
+.items-center {
+  align-items: center !important;
+}
+
+.justify-between {
+  justify-content: space-between !important;
+}
+
+/* Fix spacing conflicts */
+.gap-4 { gap: 1rem !important; }
+.gap-6 { gap: 1.5rem !important; }
+.gap-8 { gap: 2rem !important; }
+
+/* Fix responsive issues */
+@media (max-width: 768px) {
+  .grid-cols-2,
+  .grid-cols-3,
+  .grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .container {
+    padding: 0 0.5rem !important;
+  }
+}

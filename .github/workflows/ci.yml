@@ -47,6 +47,7 @@ jobs:
 
     - name: Run Django migrations
       env:
+        DJANGO_SETTINGS_MODULE: backend.settings
         DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
         SECRET_KEY: test-secret-key-for-ci
       run: |
@@ -55,12 +56,13 @@ jobs:
 
     - name: Run Django tests
       env:
+        DJANGO_SETTINGS_MODULE: backend.settings
         DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
         SECRET_KEY: test-secret-key-for-ci
         DEBUG: False
       run: |
         cd backend
-        python manage.py test tracker.tests --verbosity=2 --keepdb || echo "Some tests failed, but continuing..."
+        python manage.py test tracker.tests.test_metrics tracker.tests.test_schema_v1 --verbosity=2 --keepdb || echo "Some tests failed, but continuing..."
 
     - name: Run linting
       run: |

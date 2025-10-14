@@ -12,13 +12,13 @@
   "categories": ["fitness", "health", "lifestyle"],
   "icons": [
     {
-      "src": "/MAR/Images/favicon.png",
+      "src": "/MAR/images/favicon.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/MAR/Images/favicon.png",
+      "src": "/MAR/images/favicon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -46,7 +46,7 @@
       "url": "/MAR/index.html",
       "icons": [
         {
-          "src": "/MAR/Images/favicon.png",
+          "src": "/MAR/images/favicon.png",
           "sizes": "96x96"
         }
       ]
@@ -58,7 +58,7 @@
       "url": "/MAR/social.html",
       "icons": [
         {
-          "src": "/MAR/Images/favicon.png",
+          "src": "/MAR/images/favicon.png",
           "sizes": "96x96"
         }
       ]
@@ -70,7 +70,7 @@
       "url": "/MAR/gamification.html",
       "icons": [
         {
-          "src": "/MAR/Images/favicon.png",
+          "src": "/MAR/images/favicon.png",
           "sizes": "96x96"
         }
       ]

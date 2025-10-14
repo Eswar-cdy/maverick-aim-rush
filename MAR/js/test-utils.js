@@ -135,7 +135,7 @@ class TestUtils {
     await this.runTest('API - Base URL Configuration', async () => {
       // Test API base URL
       this.assertNotNull(window.api, 'API object should exist');
-      this.assertEqual(window.api.API_BASE_URL, 'http://localhost:8000/api', 'API base URL should be correct');
+      this.assertEqual(window.api.API_BASE_URL, 'http://localhost:8000', 'API base URL should be correct');
     });
 
     await this.runTest('API - Request Headers', async () => {
@@ -218,7 +218,7 @@ class TestUtils {
     await this.runTest('Data Export - Manager Initialization', async () => {
       // Test data export manager initialization
       this.assertNotNull(window.dataExportManager, 'Data export manager should exist');
-      this.assertEqual(window.dataExportManager.apiBaseUrl, 'http://localhost:8000/api', 'API base URL should be correct');
+      this.assertEqual(window.dataExportManager.apiBaseUrl, 'http://localhost:8000', 'API base URL should be correct');
     });
 
     await this.runTest('Data Export - File Validation', async () => {

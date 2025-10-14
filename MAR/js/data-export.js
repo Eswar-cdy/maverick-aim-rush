@@ -1,7 +1,7 @@
 // Data Export/Import functionality for Maverick Aim Rush
 class DataExportManager {
   constructor() {
-    this.apiBaseUrl = 'http://localhost:8000/api';
+    this.apiBaseUrl = 'http://localhost:8000';
     this.init();
   }
 

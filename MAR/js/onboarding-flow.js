@@ -622,7 +622,7 @@ class OnboardingFlow {
 
             try {
                 // Use apiFetch with POST for upsert, providing robust error handling
-                const response = await api.apiFetch('/profile/', {
+                const response = await api.apiFetch('/api/v1/profile/me/', {
                     method: 'POST', // Use POST for create-or-update (upsert)
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(profilePayload),

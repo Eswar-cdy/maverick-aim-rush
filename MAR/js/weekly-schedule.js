@@ -1,5 +1,5 @@
 // Weekly Workout Schedule System
-const API_URL = 'http://127.0.0.1:8000/api'; // Use main API base
+const API_URL = 'http://127.0.0.1:8000'; // Use main API base
 
 class WeeklySchedule {
     constructor() {
