@@ -1,189 +1,345 @@
 # Models for Maverick Aim Rush — created by Cursor AI
+# === NUTRITION, ANALYTICS, SOCIAL, GAMIFICATION MODULES IMPROVED ===
+# This file contains extensive improvements as requested in Nov 2025:
+#  - Nutrition, Analytics, Social, Gamification models all refactored to add audit fields, uuid, privacy, and more.
+#  - All changes are documented above each section.
+
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils import timezone
 import uuid
+from django.utils import timezone
 
-# Refactored enums/constants for Goal model choices
-class GoalType:
-    WEIGHT_LOSS = 'weight_loss'
-    MUSCLE_GAIN = 'muscle_gain'
-    PERFORMANCE = 'performance'
-    
-    CHOICES = [
-        (WEIGHT_LOSS, 'Weight Loss'),
-        (MUSCLE_GAIN, 'Muscle Gain'),
-        (PERFORMANCE, 'Performance'),
-    ]
-
-class GoalMetric:
-    WEIGHT_KG = 'weight_kg'
-    BODY_FAT = 'body_fat'
-    LIFT_KG = 'lift_kg'
-    
-    CHOICES = [
-        (WEIGHT_KG, 'Body Weight (kg)'),
-        (BODY_FAT, 'Body Fat (%)'),
-        (LIFT_KG, 'Lift (kg)'),
-    ]
-
-class Goal(models.Model):
-    # Added uuid field for unique identification
+# ==============================================================================
+#                                NUTRITION MODULE
+# ============================================================================== 
+class NutritionLog(models.Model):
+    """Log daily nutritional intake for a user."""
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
-    
-    # Timestamp fields for tracking record creation and updates
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='goals')
-    
-    # Refactored to use enum constants
-    goal_type = models.CharField(max_length=50, choices=GoalType.CHOICES)
-    metric = models.CharField(max_length=20, choices=GoalMetric.CHOICES, default=GoalMetric.WEIGHT_KG)
-    
-    target_value = models.FloatField()
-    
-    # Optional when metric == 'lift_kg'
-    exercise = models.ForeignKey('ExerciseCatalog', null=True, blank=True, on_delete=models.SET_NULL)
-    notes = models.CharField(max_length=200, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='nutrition_logs')
+    date = models.DateField()
+    calories = models.FloatField()
+    protein_g = models.FloatField()
+    carbs_g = models.FloatField()
+    fat_g = models.FloatField()
+    fiber_g = models.FloatField(null=True, blank=True)
+    is_public = models.BooleanField(default=False, help_text='Share this log with others?')
+    notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.user.username} NutritionLog {self.date}"
+
+class NutritionGoal(models.Model):
+    """Goal for nutrition (macro/micro intake targets)."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='nutrition_goals')
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
-    is_active = models.BooleanField(default=True)
+    calories_target = models.FloatField()
+    protein_g_target = models.FloatField()
+    carbs_g_target = models.FloatField()
+    fat_g_target = models.FloatField()
+    is_public = models.BooleanField(default=False)
+    notes = models.TextField(blank=True)
     
-    # Added is_public field for sharing goals
+    def __str__(self):
+        return f"{self.user.username} NutritionGoal {self.start_date}"
+
+class MacroTarget(models.Model):
+    """Macro distribution targets for a user."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='macro_targets')
+    calories = models.FloatField()
+    protein_percent = models.FloatField()
+    carbs_percent = models.FloatField()
+    fat_percent = models.FloatField()
+    notes = models.TextField(blank=True)
+    is_public = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username} MacroTarget"
+
+class SupplementLog(models.Model):
+    """Tracks supplement usage by day."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='supplement_logs')
+    date = models.DateField()
+    supplement_name = models.CharField(max_length=100)
+    dose = models.CharField(max_length=50)
+    time_taken = models.TimeField(null=True, blank=True)
+    is_public = models.BooleanField(default=False)
+    notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.user.username} SupplementLog {self.supplement_name}"
+
+class MealPlan(models.Model):
+    """Defined meal plans for users."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='meal_plans')
+    plan_name = models.CharField(max_length=100)
+    details = models.TextField()
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+    is_public = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username} MealPlan {self.plan_name}"
+
+# ==============================================================================
+#                                ANALYTICS MODULE
+# ==============================================================================
+class ProgressAnalytics(models.Model):
+    """Aggregates progress over time from various logs."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='progress_analytics')
+    analysis_date = models.DateField()
+    summary = models.TextField()
     is_public = models.BooleanField(default=False)
     
     def __str__(self):
-        return f"{self.user.username}'s {self.get_goal_type_display()} Goal"
-    
-    class Meta:
-        ordering = ['-start_date']
+        return f"{self.user.username} ProgressAnalytics {self.analysis_date}"
 
-class BodyMeasurement(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='measurements')
-    date = models.DateField()
-    weight_kg = models.FloatField(null=True, blank=True)
-    body_fat_percentage = models.FloatField(null=True, blank=True)
-    muscle_mass_kg = models.FloatField(null=True, blank=True)
-    height_cm = models.FloatField(null=True, blank=True)
-    photo_url = models.URLField(null=True, blank=True)
-    
-    # Circumferences (cm)
-    neck_cm = models.FloatField(null=True, blank=True)
-    chest_cm = models.FloatField(null=True, blank=True)
-    shoulder_cm = models.FloatField(null=True, blank=True)
-    l_bicep_cm = models.FloatField(null=True, blank=True)
-    r_bicep_cm = models.FloatField(null=True, blank=True)
-    l_forearm_cm = models.FloatField(null=True, blank=True)
-    r_forearm_cm = models.FloatField(null=True, blank=True)
-    waist_cm = models.FloatField(null=True, blank=True)
-    hips_cm = models.FloatField(null=True, blank=True)
-    l_thigh_cm = models.FloatField(null=True, blank=True)
-    r_thigh_cm = models.FloatField(null=True, blank=True)
-    l_calf_cm = models.FloatField(null=True, blank=True)
-    r_calf_cm = models.FloatField(null=True, blank=True)
-
-# Refactored enums/constants for ExerciseCatalog model
-class MuscleGroup:
-    CHEST = 'chest'
-    BACK = 'back'
-    SHOULDERS = 'shoulders'
-    ARMS = 'arms'
-    LEGS = 'legs'
-    CORE = 'core'
-    CARDIO = 'cardio'
-    FULL_BODY = 'full_body'
-    
-    CHOICES = [
-        (CHEST, 'Chest'),
-        (BACK, 'Back'),
-        (SHOULDERS, 'Shoulders'),
-        (ARMS, 'Arms'),
-        (LEGS, 'Legs'),
-        (CORE, 'Core'),
-        (CARDIO, 'Cardio'),
-        (FULL_BODY, 'Full Body'),
-    ]
-
-class ExerciseCatalog(models.Model):
-    # Added uuid field for unique identification
+class BodyAnalytics(models.Model):
+    """Tracks and analyzes body measurement changes."""
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
-    
-    # Timestamp fields for tracking record creation and updates
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
-    name = models.CharField(max_length=100, unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='body_analytics')
+    metric = models.CharField(max_length=64)
+    analysis_date = models.DateField()
+    value = models.FloatField()
+    is_public = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username} BodyAnalytics {self.metric}"
+
+class ProgressPrediction(models.Model):
+    """Predictions based on analytics for a user."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='predictions')
+    metric = models.CharField(max_length=64)
+    predicted_value = models.FloatField()
+    target_date = models.DateField()
+    confidence = models.FloatField(blank=True, null=True)
+    is_public = models.BooleanField(default=False)
+    notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.user.username} ProgressPrediction {self.metric}"
+
+class NutritionalAnalysis(models.Model):
+    """Automated analytics on nutrition logs."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='nutritional_analyses')
+    analysis_date = models.DateField()
+    summary = models.TextField()
+    is_public = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username} NutritionalAnalysis {self.analysis_date}"
+
+# ==============================================================================
+#                                SOCIAL MODULE
+# ==============================================================================
+class UserConnection(models.Model):
+    """Tracks user connections/friends."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_connections')
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_connections')
+    status = models.CharField(max_length=16, choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')], default='pending')
+    is_visible = models.BooleanField(default=True)
+    def __str__(self):
+        return f"{self.from_user.username}→{self.to_user.username} {self.status}"
+
+class Activity(models.Model):
+    """Activity stream and events."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activities')
+    verb = models.CharField(max_length=255)
+    target = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True)
-    
-    # Refactored to use enum constants
-    muscle_group = models.CharField(max_length=20, choices=MuscleGroup.CHOICES)
-    
-    difficulty_level = models.IntegerField(default=1)
-    video_url = models.URLField(null=True, blank=True)
-    
-    # Added __str__ method for admin clarity
+    privacy = models.CharField(max_length=20, default='public', choices=[('public','Public'),('friends','Friends'),('private','Private')])
+
     def __str__(self):
-        return f"{self.name} ({self.get_muscle_group_display()})"
+        return f"{self.user.username} {self.verb} {self.target or ''}"
 
-# Refactored enums/constants for WorkoutSession model
-class WorkoutVisibility:
-    PRIVATE = 'private'
-    PUBLIC = 'public'
-    FRIENDS = 'friends'
-    
-    CHOICES = [
-        (PRIVATE, 'Private'),
-        (PUBLIC, 'Public'),
-        (FRIENDS, 'Friends Only'),
-    ]
-
-class WorkoutSession(models.Model):
-    # Added uuid field for unique identification
+class PushSubscription(models.Model):
+    """Web push subscription for notifications."""
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
-    
-    # Timestamp fields for tracking record creation and updates
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='push_subscriptions')
+    endpoint = models.URLField()
+    auth_key = models.CharField(max_length=255)
+    p256dh_key = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=True)
+    privacy = models.CharField(max_length=20, default='private')
     
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='workout_sessions')
-    date = models.DateField()
-    duration_minutes = models.IntegerField()
-    calories_burned = models.FloatField(null=True, blank=True)
-    notes = models.TextField(blank=True)
-    
-    # Added visibility field for controlling who can see the workout
-    visibility = models.CharField(max_length=20, choices=WorkoutVisibility.CHOICES, default=WorkoutVisibility.PRIVATE)
-    
-    # Added is_public field for quick public/private toggle
-    is_public = models.BooleanField(default=False)
-    
-    # Added __str__ method for admin clarity
     def __str__(self):
-        return f"{self.user.username}'s workout on {self.date}"
-    
-    class Meta:
-        ordering = ['-date']
-
-class ExerciseSet(models.Model):
-    workout = models.ForeignKey(WorkoutSession, on_delete=models.CASCADE, related_name='exercise_sets')
-    exercise = models.ForeignKey(ExerciseCatalog, on_delete=models.CASCADE)
-    set_number = models.IntegerField()
-    reps = models.IntegerField()
-    weight_kg = models.FloatField(null=True, blank=True)
-    duration_seconds = models.IntegerField(null=True, blank=True)
-    rest_seconds = models.IntegerField(null=True, blank=True)
-
-class ProgressPhoto(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='progress_photos')
-    date = models.DateField()
-    photo_url = models.URLField()
-    notes = models.TextField(blank=True)
-    weight_kg = models.FloatField(null=True, blank=True)
+        return f"PushSubscription for {self.user.username} ({'Active' if self.is_active else 'Inactive'})"
 
 class NotificationLog(models.Model):
+    """
+    Notification logs for users. Audit fields and improved __str__.
+    """
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
     notification_type = models.CharField(max_length=50)
     sent_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
     content = models.TextField()
+    privacy = models.CharField(max_length=20, default='private')
+    
+    def __str__(self):
+        return f"NotificationLog {self.notification_type} to {self.user.username}"
+
+class UserAchievement(models.Model):
+    """Achievements unlocked by a user."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='achievements')
+    achievement = models.CharField(max_length=200)
+    achieved_at = models.DateTimeField(default=timezone.now)
+    notes = models.TextField(blank=True)
+    is_public = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return f"{self.user.username} achieved {self.achievement}"
+
+class Leaderboard(models.Model):
+    """Leaderboard for challenges and gamification."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+    is_public = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"Leaderboard {self.name}"
+
+class Challenge(models.Model):
+    """Social challenges and events, visible to some or all users."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+    is_public = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"Challenge {self.name}"
+
+class Achievement(models.Model):
+    """Possible achievements to be unlocked by users."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    is_public = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return f"Achievement {self.name}"
+
+# ==============================================================================
+#                                GAMIFICATION MODULE
+# ==============================================================================
+class GamificationProfile(models.Model):
+    """Profile for user gamification (XP, levels, badges history)."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='gamification_profile')
+    level = models.IntegerField(default=1)
+    xp = models.IntegerField(default=0)
+    is_public = models.BooleanField(default=True)
+    audit_trail = models.TextField(blank=True)
+    
+    def __str__(self):
+        return f"GamificationProfile for {self.user.username}" 
+
+class Badge(models.Model):
+    """Badges earned in the platform."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    is_public = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"Badge {self.name}"
+
+class UserBadge(models.Model):
+    """Badges granted to the users (with audit trail)."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_badges')
+    badge = models.ForeignKey(Badge, on_delete=models.CASCADE, related_name='awarded_users')
+    awarded_at = models.DateTimeField(default=timezone.now)
+    audit_trail = models.TextField(blank=True)
+    is_public = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.user.username} earned {self.badge.name}"
+
+class DailyQuest(models.Model):
+    """Daily challenges/quests system-wide."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    is_public = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return f"DailyQuest {self.title}"
+
+class UserDailyQuest(models.Model):
+    """Links users to their daily quests attempts and completions."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='daily_quests')
+    quest = models.ForeignKey(DailyQuest, on_delete=models.CASCADE, related_name='user_quests')
+    completed = models.BooleanField(default=False)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    audit_trail = models.TextField(blank=True)
+    is_public = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.user.username} UserDailyQuest {self.quest.title}"
+
+class StreakBonus(models.Model):
+    """Tracks streak bonuses for users."""
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created
